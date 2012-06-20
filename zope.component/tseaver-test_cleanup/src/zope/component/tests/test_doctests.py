@@ -145,7 +145,8 @@ class StandaloneTests(unittest.TestCase):
         import pickle
 
         executable = os.path.abspath(sys.executable)
-        program = os.path.join(os.path.dirname(__file__), 'standalonetests.py')
+        where = os.path.dirname(os.path.dirname(__file__))
+        program = os.path.join(where, 'standalonetests.py')
         process = subprocess.Popen([executable, program],
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.STDOUT,
@@ -154,28 +155,11 @@ class StandaloneTests(unittest.TestCase):
         process.stdin.close()
 
         try:
-            process.wait()
+            rc = process.wait()
         except OSError, e:
             if e.errno != 4: # MacIntel raises apparently unimportant EINTR?
                 raise # TODO verify sanity of a pass on EINTR :-/
-        lines = process.stdout.readlines()
-        process.stdout.close()
-        success = True
-        # Interpret the result: We scan the output from the end backwards
-        # until we find either a line that says 'OK' (which means the tests
-        # ran successfully) or a line that starts with quite a few dashes
-        # (which means we didn't find a line that says 'OK' within the summary
-        # of the test runner and the tests did not run successfully.)
-        for l in reversed(lines):
-            l = l.strip()
-            if not l:
-                continue
-            if l.startswith('-----'):
-                break
-            if l.endswith('OK'):
-                sucess = True
-        if not success:
-            self.fail(''.join(lines))
+        self.assertEqual(rc, 0)
 
 template = """<configure
    xmlns='http://namespaces.zope.org/zope'

@@ -75,12 +75,3 @@ def provideSubscriptionAdapter(factory, adapts=None, provides=None):
 
 def provideHandler(factory, adapts=None):
     base.registerHandler(factory, adapts, event=False)
-
-import zope.component._api # see https://bugs.launchpad.net/zope3/+bug/98401
-# Ideally, we will switch to an explicit adapter hook registration.  For now,
-# if you provide an adapter, we want to make sure that the adapter hook is
-# registered, and that registration depends on code in _api, which itself
-# depends on code in this module.  So, for now, we do another of these nasty
-# circular import workarounds.  See also standalonetests.py, as run by
-# tests.py in StandaloneTests, for a test that fails without this hack, and
-# succeeds with it.

@@ -9,46 +9,39 @@ import pickle
 if __name__ == "__main__":
     sys.path = pickle.loads(sys.stdin.read())
 
-from zope import interface
-from zope.component.testing import setUp, tearDown
+    from zope.interface import Interface
+    from zope.interface import implementer
 
-class I1(interface.Interface):
-    pass
+    with open('/tmp/foo.txt', 'w') as f:
+        print >>f, sys.executable
+        print >>f, '-' * 80
+        for p in sys.path:
+            print >>f, p
+        print >>f, '-' * 80
+        import zope
+        for p in zope.__path__:
+            print >>f, p
 
-class I2(interface.Interface):
-    pass
+    class I1(Interface):
+        pass
 
-class Ob(object):
-    interface.implements(I1)
-    def __repr__(self):
-        return '<instance Ob>'
+    class I2(Interface):
+        pass
 
-ob = Ob()
+    @implementer(I1)
+    class Ob(object):
+        def __repr__(self):
+            return '<instance Ob>'
 
-class Comp(object):
-    interface.implements(I2)
-    def __init__(self, context):
-        self.context = context
+    ob = Ob()
 
-def providing_adapter_sets_adapter_hook():
-    """
-    A side effect of importing installs the adapter hook.  See
-    https://bugs.launchpad.net/zope3/+bug/98401
+    @implementer(I2)
+    class Comp(object):
+        def __init__(self, context):
+            self.context = context
 
-      >>> import zope.component
-      >>> zope.component.provideAdapter(Comp, (I1,), I2)
-      >>> adapter = I2(ob)
-      >>> adapter.__class__ is Comp
-      True
-      >>> adapter.context is ob
-      True
-    """
-
-
-def test_suite():
-    return unittest.TestSuite((
-        doctest.DocTestSuite(setUp=setUp, tearDown=tearDown),
-        ))
-
-if __name__ == "__main__":
-    unittest.main(defaultTest='test_suite')
+    import zope.component
+    zope.component.provideAdapter(Comp, (I1,), I2)
+    adapter = I2(ob)
+    assert adapter.__class__ is Comp
+    assert adapter.context is ob
