@@ -16,12 +16,15 @@
 import unittest
 
 
-class Test_handle(unittest.TestCase):
+class Test_handler(unittest.TestCase):
+
+    def _callFUT(self, *args, **kw):
+        from zope.component.zcml import handler
+        return handler(*args, **kw)
 
     def test_uses_configured_site_manager(self):
         from zope.component import getSiteManager
         from zope.component.testfiles.components import comp, IApp
-        from zope.component.zcml import handler
         from zope.interface.registry import Components
 
         registry = Components()
@@ -30,7 +33,7 @@ class Test_handle(unittest.TestCase):
         getSiteManager.sethook(dummy)
 
         try:
-            handler('registerUtility', comp, IApp, u'')
+            self._callFUT('registerUtility', comp, IApp, u'')
             self.assertTrue(registry.getUtility(IApp) is comp)
         finally:
             getSiteManager.reset()
@@ -38,6 +41,5 @@ class Test_handle(unittest.TestCase):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(Test_handle),
+        unittest.makeSuite(Test_handler),
     ))
-
