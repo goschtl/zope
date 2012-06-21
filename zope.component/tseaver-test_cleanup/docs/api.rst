@@ -10,3 +10,4 @@
    api/utility
    api/adapter
    api/factory
+   api/interface

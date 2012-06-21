@@ -41,6 +41,21 @@ class I2(Interface):
 class I3(Interface):
     pass
 
+class I4(Interface):
+    pass
+
+class IGI(Interface):
+    pass
+
+class IQI(Interface):
+    pass
+
+class ISI(Interface):
+    pass
+
+class ISII(Interface):
+    pass
+
 def noop(*args):
     pass
 
@@ -122,8 +137,6 @@ def clearZCML(test=None):
 def test_suite():
     import doctest
     return unittest.TestSuite((
-        doctest.DocTestSuite('zope.component.interface',
-                             setUp=setUp, tearDown=tearDown),
         doctest.DocTestSuite('zope.component.nexttesting'),
         unittest.makeSuite(StandaloneTests),
         ))
