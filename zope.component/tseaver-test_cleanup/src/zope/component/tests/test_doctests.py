@@ -87,26 +87,6 @@ class ConformsToIComponentLookup(object):
             return self.sitemanager
 
 
-def testNo__component_adapts__leakage():
-    """
-    We want to make sure that an `adapts()` call in a class definition
-    doesn't affect instances.
-
-      >>> from zope.component.testing import setUp, tearDown
-      >>> from zope.component import adapts
-      >>> setUp()
-      >>> class C:
-      ...     adapts()
-
-      >>> C.__component_adapts__
-      ()
-      >>> C().__component_adapts__
-      Traceback (most recent call last):
-      ...
-      AttributeError: __component_adapts__
-      >>> tearDown()
-    """
-
 def test_zcml_handler_site_manager():
     """
     The ZCML directives provided by zope.component use the ``getSiteManager``
