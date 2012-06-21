@@ -70,8 +70,7 @@ class PackageAPITests(unittest.TestCase):
 
     def test_getSiteManager_w_conforming_context(self):
         from zope.component import getSiteManager
-        from zope.component.tests.test_doctests \
-            import ConformsToIComponentLookup
+        from zope.component.tests.examples import ConformsToIComponentLookup
         sitemanager = object()
         context = ConformsToIComponentLookup(sitemanager)
         self.assertTrue(getSiteManager(context) is sitemanager)
@@ -121,8 +120,7 @@ class PackageAPITests(unittest.TestCase):
         from zope.interface import Interface
         from zope.component import getGlobalSiteManager
         from zope.component import getUtility
-        from zope.component.tests.test_doctests \
-            import ConformsToIComponentLookup
+        from zope.component.tests.examples import ConformsToIComponentLookup
         class SM(object):
             def __init__(self, obj):
                 self._obj = obj
@@ -191,8 +189,7 @@ class PackageAPITests(unittest.TestCase):
         from zope.interface import Interface
         from zope.component import getGlobalSiteManager
         from zope.component import queryUtility
-        from zope.component.tests.test_doctests \
-            import ConformsToIComponentLookup
+        from zope.component.tests.examples import ConformsToIComponentLookup
         class SM(object):
             def __init__(self, obj):
                 self._obj = obj
@@ -331,8 +328,7 @@ class PackageAPITests(unittest.TestCase):
         from zope.interface.registry import Components
         from zope.component import getGlobalSiteManager
         from zope.component import getAdapterInContext
-        from zope.component.tests.test_doctests \
-            import ConformsToIComponentLookup
+        from zope.component.tests.examples import ConformsToIComponentLookup
         class IFoo(Interface):
             pass
         class IBar(Interface):
@@ -565,8 +561,7 @@ class PackageAPITests(unittest.TestCase):
         from zope.interface.registry import Components
         from zope.component import getGlobalSiteManager
         from zope.component import queryAdapter
-        from zope.component.tests.test_doctests \
-            import ConformsToIComponentLookup
+        from zope.component.tests.examples import ConformsToIComponentLookup
         class IFoo(Interface):
             pass
         class IBar(Interface):
@@ -832,8 +827,7 @@ class PackageAPITests(unittest.TestCase):
         from zope.interface.registry import Components
         from zope.component import getGlobalSiteManager
         from zope.component import queryMultiAdapter
-        from zope.component.tests.test_doctests \
-            import ConformsToIComponentLookup
+        from zope.component.tests.examples import ConformsToIComponentLookup
         class IFoo(Interface):
             pass
         class IBar(Interface):
@@ -902,7 +896,7 @@ def _makeMyUtility(name, sm):
     global IMyUtility
     from zope.interface import Interface
     from zope.interface import implementer
-    from zope.component.tests.test_doctests import ConformsToIComponentLookup
+    from zope.component.tests.examples import ConformsToIComponentLookup
 
     if IMyUtility is None:
         class IMyUtility(Interface):

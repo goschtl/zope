@@ -24,8 +24,8 @@ Let's start by creating a component that supports the `__conform__()` method:
 .. doctest::
 
    >>> from zope.interface import implementer
-   >>> from zope.component.tests.test_doctests import I1
-   >>> from zope.component.tests.test_doctests import I2
+   >>> from zope.component.tests.examples import I1
+   >>> from zope.component.tests.examples import I2
    >>> @implementer(I1)
    ... class Component(object):
    ...     def __conform__(self, iface, default=None):
@@ -49,8 +49,7 @@ manager.
 
 .. doctest::
 
-   >>> from zope.component.tests.test_doctests \
-   ...      import ConformsToIComponentLookup
+   >>> from zope.component.tests.examples import ConformsToIComponentLookup
    >>> context = ConformsToIComponentLookup(sitemanager)
 
 If an object implements the interface you want to adapt to,
@@ -102,7 +101,7 @@ registered adapter:
 
 .. doctest::
 
-   >>> from zope.component.tests.test_doctests import I3
+   >>> from zope.component.tests.examples import I3
    >>> sitemanager.registerAdapter(lambda x: 43, (I1,), I3, '')
    >>> getAdapterInContext(ob, I3, context)
    43
@@ -129,13 +128,13 @@ returns the default:
 
    >>> from zope.component import getAdapter
    >>> from zope.component import queryAdapter
-   >>> from zope.component.tests.test_doctests import I2
-   >>> from zope.component.tests.test_doctests import ob
+   >>> from zope.component.tests.examples import I2
+   >>> from zope.component.tests.examples import ob
    >>> getAdapter(ob, I2, '')
    Traceback (most recent call last):
    ...
    ComponentLookupError: (<instance Ob>,
-                          <InterfaceClass zope.component.tests.test_doctests.I2>,
+                          <InterfaceClass zope.component.tests.examples.I2>,
                           '')
    >>> queryAdapter(ob, I2, '', '<default>')
    '<default>'
@@ -146,7 +145,7 @@ a single interface:
 .. doctest::
 
    >>> from zope.component import getGlobalSiteManager
-   >>> from zope.component.tests.test_doctests import Comp
+   >>> from zope.component.tests.examples import Comp
    >>> gsm = getGlobalSiteManager()
    >>> gsm.registerAdapter(Comp, I1, I2, '')
    Traceback (most recent call last):
@@ -158,7 +157,7 @@ After register an adapter from `I1` to `I2` with the global site manager:
 .. doctest::
 
    >>> from zope.component import getGlobalSiteManager
-   >>> from zope.component.tests.test_doctests import Comp
+   >>> from zope.component.tests.examples import Comp
    >>> gsm = getGlobalSiteManager()
    >>> gsm.registerAdapter(Comp, (I1,), I2, '')
 
@@ -278,7 +277,7 @@ adapted:
 
 .. doctest::
 
-   >>> from zope.component.tests.test_doctests import Ob2
+   >>> from zope.component.tests.examples import Ob2
    >>> ob2 = Ob2()
 
 As with regular adapters, if an adapter isn't registered for the given
@@ -293,7 +292,7 @@ raises `ComponentLookupError`:
    ...
    ComponentLookupError:
    ((<instance Ob>, <instance Ob2>),
-    <InterfaceClass zope.component.tests.test_doctests.I3>,
+    <InterfaceClass zope.component.tests.examples.I3>,
     u'')
 
 while the :func:`~zope.component.queryMultiAdapter` API returns the default:

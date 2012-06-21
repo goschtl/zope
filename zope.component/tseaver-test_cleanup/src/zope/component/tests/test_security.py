@@ -22,7 +22,7 @@ from zope.component.testfiles.views import V1
 from zope.component.testfiles.views import R1
 from zope.component.testfiles.views import IR
 
-from zope.component.tests.test_doctests import Ob3 #XXX
+from zope.component.tests.examples import Ob3 #XXX
 
 
 _ZCML_TEMPLATE = """<configure

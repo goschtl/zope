@@ -19,7 +19,7 @@ First, declare a new interface, which itself provides only the core API,
 
    >>> from zope.interface import Interface
    >>> from zope.interface.interfaces import IInterface
-   >>> from zope.component.tests.test_doctests import ITestType
+   >>> from zope.component.tests.examples import ITestType
    >>> from zope.component import getGlobalSiteManager
    >>> gsm = getGlobalSiteManager()
 
@@ -74,22 +74,22 @@ We can register ``IDemo`` as providing more than one interface:
 
    >>> from zope.interface import Interface
    >>> from zope.component.interface import getInterface
-   >>> from zope.component.tests.test_doctests import ITestType
-   >>> from zope.component.tests.test_doctests import IGI
+   >>> from zope.component.tests.examples import ITestType
+   >>> from zope.component.tests.examples import IGI
 
    >>> IInterface.providedBy(IGI)
    True
    >>> ITestType.providedBy(IGI)
    False
-   >>> getInterface(None, 'zope.component.tests.test_doctests.IGI')
+   >>> getInterface(None, 'zope.component.tests.examples.IGI')
    Traceback (most recent call last):
    ...
-   ComponentLookupError: zope.component.tests.test_doctests.interface.IGI
+   ComponentLookupError: zope.component.tests.examples.interface.IGI
    >>> provideInterface('', IGI, ITestType)
    >>> ITestType.providedBy(IGI)
    True
    >>> iface = getInterface(None,
-   ...                      'zope.component.tests.test_doctests.IGI')
+   ...                      'zope.component.tests.examples.IGI')
    >>> iface.__name__
    'IGI'
 
@@ -106,20 +106,20 @@ We can register ``IDemo`` as providing more than one interface:
    >>> from zope.interface import Interface
    >>> from zope.interface.interfaces import IInterface
    >>> from zope.component.interface import queryInterface
-   >>> from zope.component.tests.test_doctests import ITestType
-   >>> from zope.component.tests.test_doctests import IQI
+   >>> from zope.component.tests.examples import ITestType
+   >>> from zope.component.tests.examples import IQI
 
    >>> IInterface.providedBy(IQI)
    True
    >>> ITestType.providedBy(IQI)
    False
-   >>> queryInterface('zope.component.tests.test_doctests.IQI') is None
+   >>> queryInterface('zope.component.tests.examples.IQI') is None
    True
    
    >>> provideInterface('', IQI, ITestType)
    >>> ITestType.providedBy(IQI)
    True
-   >>> iface = queryInterface('zope.component.tests.test_doctests.IQI')
+   >>> iface = queryInterface('zope.component.tests.examples.IQI')
    >>> iface.__name__
    'IQI'
 
@@ -136,19 +136,19 @@ We can register ``IDemo`` as providing more than one interface:
     >>> from zope.interface import Interface
     >>> from zope.interface.interfaces import IInterface
     >>> from zope.component.interface import searchInterface
-    >>> from zope.component.tests.test_doctests import ITestType
-    >>> from zope.component.tests.test_doctests import ISI
+    >>> from zope.component.tests.examples import ITestType
+    >>> from zope.component.tests.examples import ISI
 
     >>> IInterface.providedBy(ISI)
     True
     >>> ITestType.providedBy(ISI)
     False
-    >>> searchInterface(None, 'zope.component.tests.test_doctests.ISI')
+    >>> searchInterface(None, 'zope.component.tests.examples.ISI')
     []
     >>> provideInterface('', ISI, ITestType)
     >>> ITestType.providedBy(ISI)
     True
-    >>> searchInterface(None, 'zope.component.tests.test_doctests.ISI') == [ISI]
+    >>> searchInterface(None, 'zope.component.tests.examples.ISI') == [ISI]
     True
 
 .. testcleanup::
@@ -163,20 +163,20 @@ We can register ``IDemo`` as providing more than one interface:
    >>> from zope.interface import Interface
    >>> from zope.interface.interfaces import IInterface
    >>> from zope.component.interface import searchInterfaceIds
-   >>> from zope.component.tests.test_doctests import ITestType
-   >>> from zope.component.tests.test_doctests import ISII
+   >>> from zope.component.tests.examples import ITestType
+   >>> from zope.component.tests.examples import ISII
 
    >>> IInterface.providedBy(ISII)
    True
    >>> ITestType.providedBy(ISII)
    False
-   >>> searchInterfaceIds(None, 'zope.component.tests.test_doctests.ISII')
+   >>> searchInterfaceIds(None, 'zope.component.tests.examples.ISII')
    []
    >>> provideInterface('', ISII, ITestType)
    >>> ITestType.providedBy(ISII)
    True
-   >>> searchInterfaceIds(None, 'zope.component.tests.test_doctests.ISII')
-   [u'zope.component.tests.test_doctests.ISII']
+   >>> searchInterfaceIds(None, 'zope.component.tests.examples.ISII')
+   [u'zope.component.tests.examples.ISII']
 
 .. testcleanup::
 

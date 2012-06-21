@@ -65,8 +65,7 @@ Site Manager APIs
 
    .. doctest::
 
-     >>> from zope.component.tests.test_doctests \
-     ...    import ConformsToIComponentLookup
+     >>> from zope.component.tests.examples import ConformsToIComponentLookup
      >>> context = ConformsToIComponentLookup(sitemanager)
 
    Now make sure that the `getSiteManager()` API call returns the correct

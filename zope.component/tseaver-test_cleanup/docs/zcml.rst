@@ -42,7 +42,7 @@ lookup doesn't work yet:
 
 .. doctest::
 
-   >>> from zope.component.tests.test_doctests import clearZCML
+   >>> from zope.component.tests.examples import clearZCML
    >>> clearZCML()
    >>> from zope.component.testfiles.components import IApp
    >>> IApp(Content(), None) is None
@@ -69,7 +69,7 @@ the <adapter /> directive:
 
 .. doctest::
 
-   >>> from zope.component.tests.test_doctests import clearZCML
+   >>> from zope.component.tests.examples import clearZCML
    >>> clearZCML()
    >>> import zope.component
    >>> zope.component.queryAdapter(Content(), IApp, 'test') is None
@@ -1125,7 +1125,7 @@ It doesn't yet provide ``ITestType``:
 
 .. doctest::
 
-   >>> from zope.component.tests.test_doctests import ITestType
+   >>> from zope.component.tests.examples import ITestType
    >>> ITestType.providedBy(I)
    False
 
@@ -1140,7 +1140,7 @@ However, after calling the directive handler...
      <function provideInterface>,
      ('',
       <InterfaceClass __builtin__.I>,
-      <InterfaceClass zope.component.tests.test_doctests.ITestType>)),)
+      <InterfaceClass zope.component.tests.examples.ITestType>)),)
 
 ...it does provide ``ITestType``:
 

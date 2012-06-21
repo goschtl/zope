@@ -22,12 +22,12 @@ you do not specify a default, you get a `ComponentLookupError`.
 
    >>> from zope.component import getUtility
    >>> from zope.component import queryUtility
-   >>> from zope.component.tests.test_doctests import I1
+   >>> from zope.component.tests.examples import I1
    >>> getUtility(I1) #doctest: +NORMALIZE_WHITESPACE
    Traceback (most recent call last):
    ...
    ComponentLookupError: \
-   (<InterfaceClass zope.component.tests.test_doctests.I1>, '')
+   (<InterfaceClass zope.component.tests.examples.I1>, '')
 
 Otherwise, you get the default:
 
@@ -67,7 +67,7 @@ when looking for the utility with a name:
    Traceback (most recent call last):
    ...
    ComponentLookupError:
-   (<InterfaceClass zope.component.tests.test_doctests.I1>, 'foo')
+   (<InterfaceClass zope.component.tests.examples.I1>, 'foo')
 
    >>> queryUtility(I1, name='foo', default='<default>')
    '<default>'
@@ -113,9 +113,9 @@ providing a derived interface are also listed.
 .. doctest::
 
    >>> from zope.interface import implementer
-   >>> from zope.component.tests.test_doctests import Comp
-   >>> from zope.component.tests.test_doctests import I2
-   >>> from zope.component.tests.test_doctests import Ob
+   >>> from zope.component.tests.examples import Comp
+   >>> from zope.component.tests.examples import I2
+   >>> from zope.component.tests.examples import Ob
    >>> class I11(I1):
    ...     pass
 
@@ -176,8 +176,7 @@ bases. Let's first create a global utility:
    >>> class IMyUtility(Interface):
    ...     pass
 
-   >>> from zope.component.tests.test_doctests \
-   ...    import ConformsToIComponentLookup
+   >>> from zope.component.tests.examples import ConformsToIComponentLookup
    >>> @implementer(IMyUtility)
    ... class MyUtility(ConformsToIComponentLookup):
    ...     def __init__(self, id, sm):
@@ -237,7 +236,7 @@ However, if we ask the global utility for the next one, an error is raised
    Traceback (most recent call last):
    ...
    ComponentLookupError:
-   No more utilities for <InterfaceClass zope.component.tests.test_doctests.IMyUtility>,
+   No more utilities for <InterfaceClass zope.component.tests.examples.IMyUtility>,
    'myutil' have been found.
 
 You can also use `queryNextUtility` and specify a default:
