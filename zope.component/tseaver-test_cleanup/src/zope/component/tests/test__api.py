@@ -616,24 +616,24 @@ class Test_queryAdapter(unittest.TestCase):
         self.assertTrue(adapted.context is bar)
 
 
-class PackageAPITests(unittest.TestCase):
+class Test_Interface_call(unittest.TestCase):
 
     from zope.component.testing import setUp, tearDown
 
-    def test_interface_call_miss(self):
+    def test_miss(self):
         from zope.interface import Interface
         class IFoo(Interface):
             pass
         self.assertRaises(TypeError, IFoo, object())
 
-    def test_interface_call_miss_w_default(self):
+    def test_miss_w_default(self):
         from zope.interface import Interface
         class IFoo(Interface):
             pass
         marker = object()
         self.assertTrue(IFoo(object(), marker) is marker)
 
-    def test_interface_call_hit(self):
+    def test_hit(self):
         from zope.interface import Interface
         from zope.interface import implementer
         from zope.component import getGlobalSiteManager
@@ -654,7 +654,7 @@ class PackageAPITests(unittest.TestCase):
         self.assertTrue(adapted.__class__ is Baz)
         self.assertTrue(adapted.context is bar)
 
-    def test_interface_call_hit_registered_for_None(self):
+    def test_hit_registered_for_None(self):
         from zope.interface import Interface
         from zope.interface import implementer
         from zope.component import getGlobalSiteManager
@@ -669,6 +669,11 @@ class PackageAPITests(unittest.TestCase):
         adapted = IFoo(ctx)
         self.assertTrue(adapted.__class__ is Baz)
         self.assertTrue(adapted.context is ctx)
+
+
+class PackageAPITests(unittest.TestCase):
+
+    from zope.component.testing import setUp, tearDown
 
     def test_getMultiAdapter_anonymous_nonesuch(self):
         from zope.interface import Interface
@@ -955,6 +960,7 @@ def test_suite():
         unittest.makeSuite(Test_queryAdapterInContext),
         unittest.makeSuite(Test_getAdapter),
         unittest.makeSuite(Test_queryAdapter),
+        unittest.makeSuite(Test_Interface_call),
         unittest.makeSuite(PackageAPITests),
     ))
 
