@@ -47,6 +47,16 @@ class Test_adapter(unittest.TestCase):
         class Baz(object):
             pass
         self.assertEqual(Baz.__component_adapts__, (IFoo, IBar))
+
+    def test__call___w_inst_of_decorated_class(self):
+        from zope.interface import Interface
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        @self._makeOne(IFoo, IBar)
+        class Baz(object):
+            pass
         baz = Baz()
         self.assertRaises(AttributeError,
                           getattr, baz, '__component_adapts_')
@@ -62,7 +72,7 @@ class Test_adapter(unittest.TestCase):
         deco = self._makeOne(IFoo, IBar)
         baz = deco(Baz())
         self.assertEqual(baz.__component_adapts__, (IFoo, IBar))
- 
+
 
 class Test_adapts(unittest.TestCase):
 
@@ -159,8 +169,53 @@ class Test_adapts(unittest.TestCase):
             self.assertEqual(list(spec), [IFoo])
 
 
+class Test_adaptedBy(unittest.TestCase):
+
+    def _callFUT(self, obj):
+        from zope.component._declaration import adaptedBy
+        return adaptedBy(obj)
+
+    def test_obj_w_no_attr(self):
+        self.assertEqual(self._callFUT(object()), None)
+
+    def test__call___w_class(self):
+        from zope.interface import Interface
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        class Baz(object):
+            __component_adapts__ = (IFoo, IBar)
+        self.assertEqual(self._callFUT(Baz), (IFoo, IBar))
+
+    def test__call___w_inst_of_decorated_class(self):
+        from zope.interface import Interface
+        from zope.component._declaration import _adapts_descr
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        class Baz(object):
+            __component_adapts__ = _adapts_descr((IFoo, IBar))
+        baz = Baz()
+        self.assertEqual(self._callFUT(baz), None)
+
+    def test__call___w_non_class(self):
+        from zope.interface import Interface
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        class Baz(object):
+            pass
+        baz = Baz()
+        baz.__component_adapts__ = (IFoo, IBar)
+        self.assertEqual(self._callFUT(baz), (IFoo, IBar))
+
+
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(Test_adapter),
         unittest.makeSuite(Test_adapts),
+        unittest.makeSuite(Test_adaptedBy),
     ))
