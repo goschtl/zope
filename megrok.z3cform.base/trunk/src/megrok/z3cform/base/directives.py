@@ -1,5 +1,4 @@
 import martian
-from martian import validateInterfaceOrClass
 from z3c.form import interfaces
 
 

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from zope.interface import Interface
 from z3c.form.interfaces import IButtonForm, IHandlerForm, IButton
 
 
@@ -9,9 +10,17 @@ class IGrokForm(IButtonForm, IHandlerForm):
     """
 
 
+class IGroupForm(IGrokForm):
+    pass
+
+
 class ICancelButton(IButton):
     """A button to cancel a form.
     """
 
 
-__all__ = ("IGrokForm", "ICancelButton")
+class IGroup(Interface):
+    pass
+
+
+__all__ = ("IGrokForm", "ICancelButton", "IGroup", "IGroupForm")

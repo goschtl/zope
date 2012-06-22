@@ -29,7 +29,7 @@ class DecoratedInvariantsValidator(InvariantsValidator):
 
 
 class invariant(object):
-    """Decorator for functions to be registered as validator for invairants
+    """Decorator for functions to be registered as validator for invariants
     """
 
     def __init__(self, **kw):

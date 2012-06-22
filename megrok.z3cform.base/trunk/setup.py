@@ -15,6 +15,7 @@ install_requires = [
     'z3c.form >= 2.1',
     'megrok.layout >= 0.9',
     'megrok.pagetemplate >= 0.3',
+    'rwproperty',
     ]
 
 test_requires = install_requires + ['grok >= 1.0', 'zope.app.testing']

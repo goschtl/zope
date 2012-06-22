@@ -1,12 +1,17 @@
 Changelog
 =========
 
-0.4 (unreleased)
+0.4 (2012-06-22)
 ----------------
 
 * Added decorators for validator, invariant and default_value.
-  The idea of these decoraters is from plone.directives.form.
+  The idea of these decorators is from plone.directives.form.
 
+* Added support for Groups (z3c.form.group) [danilobotelho]
+
+* Fixed WidgetTemplateGrokker [danilobotelho]
+
+* Added HIDDEN_MODE to __init__.py [danilobotelho]
 
 0.3 (2010-02-11)
 ----------------

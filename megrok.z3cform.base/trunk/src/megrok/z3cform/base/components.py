@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 
-import megrok.layout
-import grokcore.view as grok
+from operator import itemgetter
+from rwproperty import getproperty, setproperty
 
 from zope import interface
 from zope import component
 from zope.publisher.publish import mapply
 from zope.pagetemplate.interfaces import IPageTemplate
+from z3c.form import form, group
 
-from z3c.form import form
-from z3c.form.interfaces import IFormLayer
+import megrok.layout
+import grokcore.view as grok
 
 from megrok.z3cform.base import Fields
-from megrok.z3cform.base.interfaces import IGrokForm
+from megrok.z3cform.base.interfaces import IGrokForm, IGroup, IGroupForm
 from grokcore.view.interfaces import ITemplate as IGrokTemplate
 
 
@@ -38,7 +39,7 @@ class GrokForm(object):
         self.__name__ = self.__view_name__
         self.static = component.queryAdapter(
             self.request, interface.Interface,
-            name = self.module_info.package_dotted_name)
+            name=self.module_info.package_dotted_name)
 
     def update(self):
         """Subclasses can override this method just like on regular
@@ -70,7 +71,6 @@ class GrokForm(object):
             self.template = component.getMultiAdapter(
                             (self, self.request), IPageTemplate)
         return self._render_template()
-
 
     def __call__(self):
         mapply(self.update, (), self.request)
@@ -130,6 +130,48 @@ class DisplayForm(GrokForm, form.DisplayForm, grok.View):
     grok.baseclass()
 
 
+class BaseGroupForm(group.GroupForm):
+    grok.implements(IGroupForm)
+    grok.baseclass()
+
+    _groups = None
+
+    @getproperty
+    def groups(self):
+        if self._groups is not None:
+            return self._groups
+        return list(map(itemgetter(1), component.getAdapters(
+            (self.context, self.request, self), IGroup)))
+
+    @setproperty
+    def groups(self, value):
+        self._groups = value
+
+
+class GroupForm(GrokForm, BaseGroupForm, form.Form, grok.View):
+    """Normal z3c form with grouping capabilities
+    """
+    grok.baseclass()
+
+
+class AddGroupForm(GrokForm, BaseGroupForm, form.AddForm, grok.View):
+    """z3c add form.
+    """
+    grok.baseclass()
+
+
+class EditGroupForm(GrokForm, BaseGroupForm, form.EditForm, grok.View):
+    """z3c edit form.
+    """
+    grok.baseclass()
+
+
+class DisplayGroupForm(GrokForm, BaseGroupForm, form.DisplayForm, grok.View):
+    """z3c display form.
+    """
+    grok.baseclass()
+
+
 class PageForm(PageGrokForm, form.Form, megrok.layout.Page):
     """Normal z3c form with megrok.layout support.
     """
@@ -163,10 +205,53 @@ class PageDisplayForm(PageGrokForm, form.DisplayForm, megrok.layout.Page):
     grok.baseclass()
 
 
+class PageGroupForm(PageGrokForm, BaseGroupForm, form.Form,
+                    megrok.layout.Page):
+    """Normal z3c form with megrok.layout support.
+    """
+    grok.baseclass()
+
+
+class PageAddGroupForm(PageGrokForm, BaseGroupForm,
+                       form.AddForm, megrok.layout.Page):
+    """z3c add form with megrok.layout support.
+    """
+    grok.baseclass()
+
+    def _render_template(self):
+        assert not (self.template is None)
+        if self._finishedAdd:
+            self.request.response.redirect(self.nextURL())
+            return ""
+        if IGrokTemplate.providedBy(self.template):
+            return super(GrokForm, self)._render_template()
+        return self.template(self)
+
+
+class PageEditGroupForm(PageGrokForm, BaseGroupForm,
+                   form.EditForm, megrok.layout.Page):
+    """z3c edit form with megrok.layout support.
+    """
+    grok.baseclass()
+
+
+class PageDisplayGroupForm(PageGrokForm, BaseGroupForm,
+                           form.DisplayForm, megrok.layout.Page):
+    """z3c display form with megrok.layout support.
+    """
+    grok.baseclass()
+
+
 class WidgetTemplate(object):
     pass
 
 
+class Group(group.Group):
+    grok.implements(IGroup)
+
+
 __all__ = ("Form", "AddForm", "EditForm", "DisplayForm",
-           "WidgetTemplate", "PageForm", "PageAddForm",
-           "PageEditForm", "PageDisplayForm")
+           "GroupForm", "AddGroupForm", "EditGroupForm", "DisplayGroupForm",
+           "PageForm", "PageAddForm", "PageEditForm", "PageDisplayForm",
+           "PageGroupForm", "PageAddGroupForm", "PageEditGroupForm",
+           "PageDisplayGroupForm", "Group", "WidgetTemplate", )

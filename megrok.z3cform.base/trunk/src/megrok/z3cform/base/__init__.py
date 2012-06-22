@@ -5,7 +5,7 @@ from z3c.form import widget, button, action, validator, converter
 from z3c.form.form import extends, applyChanges
 from z3c.form.widget import FieldWidget
 from z3c.form.field import Field, Fields, FieldWidgets
-from z3c.form.interfaces import DISPLAY_MODE, INPUT_MODE, NOVALUE
+from z3c.form.interfaces import DISPLAY_MODE, INPUT_MODE, HIDDEN_MODE, NOVALUE
 from z3c.form.interfaces import IFieldWidget, IFormLayer, IDataManager
 
 # Public interface

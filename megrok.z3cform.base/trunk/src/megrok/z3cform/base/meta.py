@@ -1,20 +1,23 @@
-import martian
 import os.path
+
+from zope.interface import Interface
+from zope.interface.interfaces import IInterface
+from zope import component
+from zope.component.zcml import adapter
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from z3c.form import field
+from z3c.form.zcml import widgetTemplateDirective
+
+import martian
 import grokcore.view
 import grokcore.component
 import grokcore.viewlet
-
-from z3c.form import field
-from martian.error import GrokError
-from zope.interface import Interface
-from zope.component.zcml import adapter
-from megrok.z3cform.base import directives
-from megrok.z3cform.base import components
-from zope.interface.interfaces import IInterface
 from grokcore.view.meta.views import ViewGrokker, default_view_name
-from z3c.form.zcml import widgetTemplateDirective
 from grokcore.formlib.formlib import most_specialized_interfaces
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+
+from megrok.z3cform.base import directives, components
+from megrok.z3cform.base.interfaces import IGroup
+
 
 def get_auto_fields(context):
     """Get the form fields for context.
@@ -45,7 +48,6 @@ class FormGrokker(martian.ClassGrokker):
         if isinstance(form.fields, components.DefaultFields):
             form.fields = get_auto_fields(context)
 
-
         return True
 
 
@@ -68,14 +70,14 @@ class WidgetTemplateGrokker(martian.ClassGrokker):
     def execute(self, factory, config, context, layer,
                 template, view, field, widget, mode, **kw):
         template_path = os.path.split(factory.module_info.path)[0]
-        template = os.path.join(template_path, template)
+        template = os.path.join(template_path, template[1])
         widgetTemplateDirective(config, template, context, layer,
                     view=view, field=field, widget=widget, mode=mode)
         return True
 
 
 class ValidatorAdapterGrokker(martian.GlobalGrokker):
-    
+
     def grok(self, name, module, module_info, config, **kw):
         # context = grokcore.component.context.bind().get(module=module)
         adapters = module_info.getAnnotation('form.validator_adapters', [])
@@ -84,8 +86,9 @@ class ValidatorAdapterGrokker(martian.GlobalGrokker):
             )
         return True
 
+
 class ValueAdapterGrokker(martian.GlobalGrokker):
-    
+
     def grok(self, name, module, module_info, config, **kw):
         # context = grokcore.component.context.bind().get(module=module)
         adapters = module_info.getAnnotation('form.value_adapters', [])
@@ -96,3 +99,22 @@ class ValueAdapterGrokker(martian.GlobalGrokker):
             )
         return True
 
+
+class GroupGrokker(martian.ClassGrokker):
+    martian.priority(990)
+    martian.component(components.Group)
+    martian.directive(grokcore.component.context)
+    martian.directive(grokcore.component.name, get_default=default_view_name)
+    martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
+    martian.directive(grokcore.viewlet.view)
+
+    def execute(self, factory, config, layer, context, view, name):
+        for_ = (context, layer, view)
+        provides = IGroup
+
+        config.action(
+            discriminator=('adapter', for_, provides, name),
+            callable=component.provideAdapter,
+            args=(factory, for_, provides, name),
+            )
+        return True
