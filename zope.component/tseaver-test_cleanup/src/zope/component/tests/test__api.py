@@ -109,64 +109,61 @@ class Test_getUtility(unittest.TestCase):
         self.assertTrue(self._callFUT(IFoo, context=context) is obj2)
 
 
-class PackageAPITests(unittest.TestCase):
+class Test_queryUtility(unittest.TestCase):
 
     from zope.component.testing import setUp, tearDown
 
+    def _callFUT(self, *args, **kw):
+        from zope.component._api import queryUtility
+        return queryUtility(*args, **kw)
+
     def test_queryUtility_anonymous_nonesuch(self):
         from zope.interface import Interface
-        from zope.component import queryUtility
         class IFoo(Interface):
             pass
-        self.assertEqual(queryUtility(IFoo), None)
+        self.assertEqual(self._callFUT(IFoo), None)
 
     def test_queryUtility_anonymous_nonesuch_w_default(self):
         from zope.interface import Interface
-        from zope.component import queryUtility
         class IFoo(Interface):
             pass
         obj = object()
-        self.assertTrue(queryUtility(IFoo, default=obj) is obj)
+        self.assertTrue(self._callFUT(IFoo, default=obj) is obj)
 
     def test_queryUtility_named_nonesuch(self):
         from zope.interface import Interface
-        from zope.component import queryUtility
         class IFoo(Interface):
             pass
-        self.assertEqual(queryUtility(IFoo, name='bar'), None)
+        self.assertEqual(self._callFUT(IFoo, name='bar'), None)
 
     def test_queryUtility_named_nonesuch_w_default(self):
         from zope.interface import Interface
-        from zope.component import queryUtility
         class IFoo(Interface):
             pass
         obj = object()
-        self.assertTrue(queryUtility(IFoo, name='bar', default=obj) is obj)
+        self.assertTrue(self._callFUT(IFoo, name='bar', default=obj) is obj)
 
     def test_queryUtility_anonymous_hit(self):
         from zope.interface import Interface
         from zope.component import getGlobalSiteManager
-        from zope.component import queryUtility
         class IFoo(Interface):
             pass
         obj = object()
         getGlobalSiteManager().registerUtility(obj, IFoo)
-        self.assertTrue(queryUtility(IFoo) is obj)
+        self.assertTrue(self._callFUT(IFoo) is obj)
 
     def test_queryUtility_named_hit(self):
         from zope.interface import Interface
-        from zope.component import queryUtility
         from zope.component import getGlobalSiteManager
         class IFoo(Interface):
             pass
         obj = object()
         getGlobalSiteManager().registerUtility(obj, IFoo, name='bar')
-        self.assertTrue(queryUtility(IFoo, name='bar') is obj)
+        self.assertTrue(self._callFUT(IFoo, name='bar') is obj)
 
     def test_queryUtility_w_conforming_context(self):
         from zope.interface import Interface
         from zope.component import getGlobalSiteManager
-        from zope.component import queryUtility
         from zope.component.tests.examples import ConformsToIComponentLookup
         class SM(object):
             def __init__(self, obj):
@@ -180,7 +177,12 @@ class PackageAPITests(unittest.TestCase):
         sm = SM(obj2)
         context = ConformsToIComponentLookup(sm)
         getGlobalSiteManager().registerUtility(obj1, IFoo)
-        self.assertTrue(queryUtility(IFoo, context=context) is obj2)
+        self.assertTrue(self._callFUT(IFoo, context=context) is obj2)
+
+
+class PackageAPITests(unittest.TestCase):
+
+    from zope.component.testing import setUp, tearDown
 
     def test_getUtilitiesFor_nonesuch(self):
         from zope.interface import Interface
@@ -893,6 +895,7 @@ def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(Test_getSiteManager),
         unittest.makeSuite(Test_getUtility),
+        unittest.makeSuite(Test_queryUtility),
         unittest.makeSuite(PackageAPITests),
     ))
 
