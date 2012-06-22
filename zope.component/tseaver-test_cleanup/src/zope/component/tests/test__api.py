@@ -710,6 +710,43 @@ class Test_subscribers(unittest.TestCase):
         self.assertEqual(subscribers, [])
 
 
+class Test_handle(unittest.TestCase):
+
+    from zope.component.testing import setUp, tearDown
+
+    def _callFUT(self, *args, **kw):
+        from zope.component import handle
+        return handle(*args, **kw)
+
+    def test_nonesuch(self):
+        from zope.interface import Interface
+        class IFoo(Interface):
+            pass
+        subscribers = self._callFUT((object,), IFoo) #doesn't raise
+
+    def test_hit(self):
+        from zope.component import getGlobalSiteManager
+        from zope.interface import Interface
+        from zope.interface import implementer
+        class IFoo(Interface):
+            pass
+        @implementer(IFoo)
+        class Foo(object):
+            pass
+        _called = []
+        def _bar(context):
+                _called.append('_bar')
+        def _baz(context):
+                _called.append('_baz')
+        gsm = getGlobalSiteManager()
+        gsm.registerHandler(_bar, (IFoo,))
+        gsm.registerHandler(_baz, (IFoo,))
+        self._callFUT(Foo())
+        self.assertEqual(len(_called), 2, _called)
+        self.assertTrue('_bar' in _called)
+        self.assertTrue('_baz' in _called)
+
+
 class Test_getUtility(unittest.TestCase):
 
     from zope.component.testing import setUp, tearDown
@@ -1008,6 +1045,7 @@ def test_suite():
         unittest.makeSuite(Test_queryMultiAdapter),
         unittest.makeSuite(Test_getAdapters),
         unittest.makeSuite(Test_subscribers),
+        unittest.makeSuite(Test_handle),
         unittest.makeSuite(Test_getUtility),
         unittest.makeSuite(Test_queryUtility),
         unittest.makeSuite(Test_getUtilitiesFor),

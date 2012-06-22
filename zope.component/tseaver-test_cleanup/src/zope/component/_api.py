@@ -138,10 +138,7 @@ def subscribers(objects, interface, context=None):
     return sitemanager.subscribers(objects, interface)
 
 def handle(*objects):
-    sitemanager = getSiteManager(None)
-    # iterating over subscribers assures they get executed
-    for ignored in sitemanager.subscribers(objects, None):
-        pass
+    getSiteManager(None).subscribers(objects, None)
 
 #############################################################################
 # Register the component architectures adapter hook, with the adapter hook
