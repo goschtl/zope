@@ -49,50 +49,50 @@ class Test_getSiteManager(unittest.TestCase):
         self.assertRaises(ComponentLookupError, self._callFUT, object())
 
 
-class PackageAPITests(unittest.TestCase):
+class Test_getUtility(unittest.TestCase):
 
     from zope.component.testing import setUp, tearDown
 
-    def test_getUtility_anonymous_nonesuch(self):
+    def _callFUT(self, *args, **kw):
+        from zope.component._api import getUtility
+        return getUtility(*args, **kw)
+
+    def test_anonymous_nonesuch(self):
         from zope.interface import Interface
-        from zope.component import getUtility
         from zope.component.interfaces import ComponentLookupError
         class IFoo(Interface):
             pass
-        self.assertRaises(ComponentLookupError, getUtility, IFoo)
+        self.assertRaises(ComponentLookupError, self._callFUT, IFoo)
 
-    def test_getUtility_named_nonesuch(self):
+    def test_named_nonesuch(self):
         from zope.interface import Interface
-        from zope.component import getUtility
         from zope.component.interfaces import ComponentLookupError
         class IFoo(Interface):
             pass
-        self.assertRaises(ComponentLookupError, getUtility, IFoo, name='bar')
+        self.assertRaises(ComponentLookupError,
+                          self._callFUT, IFoo, name='bar')
 
-    def test_getUtility_anonymous_hit(self):
+    def test_anonymous_hit(self):
         from zope.interface import Interface
         from zope.component import getGlobalSiteManager
-        from zope.component import getUtility
         class IFoo(Interface):
             pass
         obj = object()
         getGlobalSiteManager().registerUtility(obj, IFoo)
-        self.assertTrue(getUtility(IFoo) is obj)
+        self.assertTrue(self._callFUT(IFoo) is obj)
 
-    def test_getUtility_named_hit(self):
+    def test_named_hit(self):
         from zope.interface import Interface
-        from zope.component import getUtility
         from zope.component import getGlobalSiteManager
         class IFoo(Interface):
             pass
         obj = object()
         getGlobalSiteManager().registerUtility(obj, IFoo, name='bar')
-        self.assertTrue(getUtility(IFoo, name='bar') is obj)
+        self.assertTrue(self._callFUT(IFoo, name='bar') is obj)
 
-    def test_getUtility_w_conforming_context(self):
+    def test_w_conforming_context(self):
         from zope.interface import Interface
         from zope.component import getGlobalSiteManager
-        from zope.component import getUtility
         from zope.component.tests.examples import ConformsToIComponentLookup
         class SM(object):
             def __init__(self, obj):
@@ -106,7 +106,12 @@ class PackageAPITests(unittest.TestCase):
         sm = SM(obj2)
         context = ConformsToIComponentLookup(sm)
         getGlobalSiteManager().registerUtility(obj1, IFoo)
-        self.assertTrue(getUtility(IFoo, context=context) is obj2)
+        self.assertTrue(self._callFUT(IFoo, context=context) is obj2)
+
+
+class PackageAPITests(unittest.TestCase):
+
+    from zope.component.testing import setUp, tearDown
 
     def test_queryUtility_anonymous_nonesuch(self):
         from zope.interface import Interface
@@ -887,6 +892,7 @@ def _makeMyUtility(name, sm):
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(Test_getSiteManager),
+        unittest.makeSuite(Test_getUtility),
         unittest.makeSuite(PackageAPITests),
     ))
 
