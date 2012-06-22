@@ -180,31 +180,38 @@ class Test_queryUtility(unittest.TestCase):
         self.assertTrue(self._callFUT(IFoo, context=context) is obj2)
 
 
-class PackageAPITests(unittest.TestCase):
+class Test_getUtilitiesFor(unittest.TestCase):
 
     from zope.component.testing import setUp, tearDown
 
+    def _callFUT(self, *args, **kw):
+        from zope.component._api import getUtilitiesFor
+        return getUtilitiesFor(*args, **kw)
+
     def test_getUtilitiesFor_nonesuch(self):
         from zope.interface import Interface
-        from zope.component import getUtilitiesFor
         class IFoo(Interface):
             pass
-        self.assertEqual(list(getUtilitiesFor(IFoo)), [])
+        self.assertEqual(list(self._callFUT(IFoo)), [])
 
     def test_getUtilitiesFor_hit(self):
         from zope.interface import Interface
         from zope.component import getGlobalSiteManager
-        from zope.component import getUtilitiesFor
         class IFoo(Interface):
             pass
         obj = object()
         obj1 = object()
         getGlobalSiteManager().registerUtility(obj, IFoo)
         getGlobalSiteManager().registerUtility(obj1, IFoo, name='bar')
-        tuples = list(getUtilitiesFor(IFoo))
+        tuples = list(self._callFUT(IFoo))
         self.assertEqual(len(tuples), 2)
         self.assertTrue(('', obj) in tuples)
         self.assertTrue(('bar', obj1) in tuples)
+
+
+class PackageAPITests(unittest.TestCase):
+
+    from zope.component.testing import setUp, tearDown
 
     def test_getAllUtilitiesRegisteredFor_nonesuch(self):
         from zope.interface import Interface
@@ -896,6 +903,7 @@ def test_suite():
         unittest.makeSuite(Test_getSiteManager),
         unittest.makeSuite(Test_getUtility),
         unittest.makeSuite(Test_queryUtility),
+        unittest.makeSuite(Test_getUtilitiesFor),
         unittest.makeSuite(PackageAPITests),
     ))
 
