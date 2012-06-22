@@ -847,21 +847,23 @@ class Test_queryMultiAdapter(unittest.TestCase):
         self.assertTrue(adapted.second is baz)
 
 
-class PackageAPITests(unittest.TestCase):
+class Test_getAdapters(unittest.TestCase):
 
     from zope.component.testing import setUp, tearDown
 
-    def test_getAdapters_nonesuch(self):
-        from zope.interface import Interface
+    def _callFUT(self, *args, **kw):
         from zope.component import getAdapters
+        return getAdapters(*args, **kw)
+
+    def test_nonesuch(self):
+        from zope.interface import Interface
         class IFoo(Interface):
             pass
-        self.assertEqual(list(getAdapters((object(),), IFoo)), [])
+        self.assertEqual(list(self._callFUT((object(),), IFoo)), [])
 
-    def test_getAdapters_hit(self):
+    def test_hit(self):
         from zope.interface import Interface
         from zope.component import getGlobalSiteManager
-        from zope.component import getAdapters
         class IFoo(Interface):
             pass
         class BarAdapter(object):
@@ -873,7 +875,7 @@ class PackageAPITests(unittest.TestCase):
         gsm = getGlobalSiteManager()
         gsm.registerAdapter(BarAdapter, (None,), IFoo)
         gsm.registerAdapter(BazAdapter, (None,), IFoo, name='bar')
-        tuples = list(getAdapters((object(),), IFoo))
+        tuples = list(self._callFUT((object(),), IFoo))
         self.assertEqual(len(tuples), 2)
         names = [(x, y.__class__.__name__) for x, y in tuples]
         self.assertTrue(('', 'BarAdapter') in names)
@@ -915,6 +917,6 @@ def test_suite():
         unittest.makeSuite(Test_queryAdapter),
         unittest.makeSuite(Test_getMultiAdapter),
         unittest.makeSuite(Test_queryMultiAdapter),
-        unittest.makeSuite(PackageAPITests),
+        unittest.makeSuite(Test_getAdapters),
     ))
 
