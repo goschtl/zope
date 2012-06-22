@@ -616,33 +616,34 @@ class Test_queryAdapter(unittest.TestCase):
         self.assertTrue(adapted.context is bar)
 
 
-class PackageAPITests(unittest.TestCase):
+class Test_getMultiAdapter(unittest.TestCase):
 
     from zope.component.testing import setUp, tearDown
 
-    def test_getMultiAdapter_anonymous_nonesuch(self):
-        from zope.interface import Interface
+    def _callFUT(self, *args, **kw):
         from zope.component import getMultiAdapter
+        return getMultiAdapter(*args, **kw)
+
+    def test_anonymous_nonesuch(self):
+        from zope.interface import Interface
         from zope.component.interfaces import ComponentLookupError
         class IFoo(Interface):
             pass
         self.assertRaises(ComponentLookupError,
-                          getMultiAdapter, (object(), object()), IFoo, '')
+                          self._callFUT, (object(), object()), IFoo, '')
 
-    def test_getMultiAdapter_named_nonesuch(self):
+    def test_named_nonesuch(self):
         from zope.interface import Interface
-        from zope.component import getMultiAdapter
         from zope.component.interfaces import ComponentLookupError
         class IFoo(Interface):
             pass
         self.assertRaises(ComponentLookupError,
-                          getMultiAdapter, (object(), object()), IFoo, 'bar')
+                          self._callFUT, (object(), object()), IFoo, 'bar')
 
-    def test_getMultiAdapter_anonymous_hit(self):
+    def test_anonymous_hit(self):
         from zope.interface import Interface
         from zope.interface import implementer
         from zope.component import getGlobalSiteManager
-        from zope.component import getMultiAdapter
         class IFoo(Interface):
             pass
         class IBar(Interface):
@@ -663,16 +664,15 @@ class PackageAPITests(unittest.TestCase):
                                 FooAdapter, (IBar, IBaz), IFoo, '')
         bar = Bar()
         baz = Baz()
-        adapted = getMultiAdapter((bar, baz), IFoo, '')
+        adapted = self._callFUT((bar, baz), IFoo, '')
         self.assertTrue(adapted.__class__ is FooAdapter)
         self.assertTrue(adapted.first is bar)
         self.assertTrue(adapted.second is baz)
 
-    def test_getMultiAdapter_anonymous_hit_registered_for_None(self):
+    def test_anonymous_hit_registered_for_None(self):
         from zope.interface import Interface
         from zope.interface import implementer
         from zope.component import getGlobalSiteManager
-        from zope.component import getMultiAdapter
         class IFoo(Interface):
             pass
         class IBar(Interface):
@@ -690,15 +690,14 @@ class PackageAPITests(unittest.TestCase):
                                 FooAdapter, (IBar, None), IFoo, '')
         bar = Bar()
         baz = object()
-        adapted = getMultiAdapter((bar, baz), IFoo, '')
+        adapted = self._callFUT((bar, baz), IFoo, '')
         self.assertTrue(adapted.__class__ is FooAdapter)
         self.assertTrue(adapted.first is bar)
         self.assertTrue(adapted.second is baz)
 
-    def test_getMultiAdapter_named_hit(self):
+    def test_named_hit(self):
         from zope.interface import Interface
         from zope.interface import implementer
-        from zope.component import getMultiAdapter
         from zope.component import getGlobalSiteManager
         class IFoo(Interface):
             pass
@@ -720,33 +719,39 @@ class PackageAPITests(unittest.TestCase):
                                     FooAdapter, (IBar, IBaz), IFoo, 'named')
         bar = Bar()
         baz = Baz()
-        adapted = getMultiAdapter((bar, baz), IFoo, 'named')
+        adapted = self._callFUT((bar, baz), IFoo, 'named')
         self.assertTrue(adapted.__class__ is FooAdapter)
         self.assertTrue(adapted.first is bar)
         self.assertTrue(adapted.second is baz)
 
-    def test_queryMultiAdapter_anonymous_nonesuch(self):
-        from zope.interface import Interface
+
+class Test_queryMultiAdapter(unittest.TestCase):
+
+    from zope.component.testing import setUp, tearDown
+
+    def _callFUT(self, *args, **kw):
         from zope.component import queryMultiAdapter
+        return queryMultiAdapter(*args, **kw)
+
+    def test_anonymous_nonesuch(self):
+        from zope.interface import Interface
         class IFoo(Interface):
             pass
-        self.assertEqual(queryMultiAdapter((object(), object()), IFoo, '',
+        self.assertEqual(self._callFUT((object(), object()), IFoo, '',
                                             '<default>'),
                          '<default>')
 
-    def test_queryMultiAdapter_named_nonesuch(self):
+    def test_named_nonesuch(self):
         from zope.interface import Interface
-        from zope.component import queryMultiAdapter
         class IFoo(Interface):
             pass
-        self.assertEqual(queryMultiAdapter((object(), object()), IFoo, 'bar'),
+        self.assertEqual(self._callFUT((object(), object()), IFoo, 'bar'),
                          None)
 
-    def test_queryMultiAdapter_anonymous_hit(self):
+    def test_anonymous_hit(self):
         from zope.interface import Interface
         from zope.interface import implementer
         from zope.component import getGlobalSiteManager
-        from zope.component import queryMultiAdapter
         class IFoo(Interface):
             pass
         class IBar(Interface):
@@ -767,16 +772,15 @@ class PackageAPITests(unittest.TestCase):
                                     FooAdapter, (IBar, IBaz), IFoo, '')
         bar = Bar()
         baz = Baz()
-        adapted = queryMultiAdapter((bar, baz), IFoo, '')
+        adapted = self._callFUT((bar, baz), IFoo, '')
         self.assertTrue(adapted.__class__ is FooAdapter)
         self.assertTrue(adapted.first is bar)
         self.assertTrue(adapted.second is baz)
 
-    def test_queryMultiAdapter_named_hit(self):
+    def test_named_hit(self):
         from zope.interface import Interface
         from zope.interface import implementer
         from zope.component import getGlobalSiteManager
-        from zope.component import queryMultiAdapter
         class IFoo(Interface):
             pass
         class IBar(Interface):
@@ -797,17 +801,16 @@ class PackageAPITests(unittest.TestCase):
                                     FooAdapter, (IBar, IBaz), IFoo, 'named')
         bar = Bar()
         baz = Baz()
-        adapted = queryMultiAdapter((bar, baz), IFoo, 'named')
+        adapted = self._callFUT((bar, baz), IFoo, 'named')
         self.assertTrue(adapted.__class__ is FooAdapter)
         self.assertTrue(adapted.first is bar)
         self.assertTrue(adapted.second is baz)
 
-    def test_queryMultiAdapter_nested(self):
+    def test_nested(self):
         from zope.interface import Interface
         from zope.interface import implementer
         from zope.interface.registry import Components
         from zope.component import getGlobalSiteManager
-        from zope.component import queryMultiAdapter
         from zope.component.tests.examples import ConformsToIComponentLookup
         class IFoo(Interface):
             pass
@@ -838,10 +841,15 @@ class PackageAPITests(unittest.TestCase):
         sm1.registerAdapter(Local, (IBar, IBaz), IFoo, '')
         bar = Bar()
         baz = Baz()
-        adapted = queryMultiAdapter((bar, baz), IFoo, '', context=Context(sm1))
+        adapted = self._callFUT((bar, baz), IFoo, '', context=Context(sm1))
         self.assertTrue(adapted.__class__ is Local)
         self.assertTrue(adapted.first is bar)
         self.assertTrue(adapted.second is baz)
+
+
+class PackageAPITests(unittest.TestCase):
+
+    from zope.component.testing import setUp, tearDown
 
     def test_getAdapters_nonesuch(self):
         from zope.interface import Interface
@@ -905,6 +913,8 @@ def test_suite():
         unittest.makeSuite(Test_queryAdapterInContext),
         unittest.makeSuite(Test_getAdapter),
         unittest.makeSuite(Test_queryAdapter),
+        unittest.makeSuite(Test_getMultiAdapter),
+        unittest.makeSuite(Test_queryMultiAdapter),
         unittest.makeSuite(PackageAPITests),
     ))
 
