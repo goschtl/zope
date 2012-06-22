@@ -366,11 +366,15 @@ class Test_getAdapterInContext(unittest.TestCase):
         self.assertTrue(adapted.context is bar)
 
 
-class PackageAPITests(unittest.TestCase):
+class Test_queryAdapterInContext(unittest.TestCase):
 
     from zope.component.testing import setUp, tearDown
 
-    def test_queryAdapterInContext_miss(self):
+    def _callFUT(self, *args, **kw):
+        from zope.component import queryAdapterInContext
+        return queryAdapterInContext(*args, **kw)
+
+    def test_miss(self):
         from zope.interface import Interface
         from zope.component import queryAdapterInContext
         class IFoo(Interface):
@@ -378,7 +382,7 @@ class PackageAPITests(unittest.TestCase):
         self.assertEqual(
             queryAdapterInContext(object(), IFoo, context=None), None)
 
-    def test_queryAdapterInContext_w_object_conforming(self):
+    def test_w_object_conforming(self):
         from zope.interface import Interface
         from zope.component import queryAdapterInContext
         class IFoo(Interface):
@@ -392,7 +396,7 @@ class PackageAPITests(unittest.TestCase):
         self.assertTrue(
                 queryAdapterInContext(Foo(), IFoo, context=None) is _adapted)
 
-    def test_queryAdapterInContext___conform___raises_TypeError_via_class(self):
+    def test___conform___raises_TypeError_via_class(self):
         from zope.interface import Interface
         from zope.component import queryAdapterInContext
         class IFoo(Interface):
@@ -406,7 +410,7 @@ class PackageAPITests(unittest.TestCase):
         # call via class, triggering TypeError
         self.assertEqual(queryAdapterInContext(Foo, IFoo, context=None), None)
 
-    def test_queryAdapterInContext___conform___raises_TypeError_via_inst(self):
+    def test___conform___raises_TypeError_via_inst(self):
         from zope.interface import Interface
         from zope.component import queryAdapterInContext
         class IFoo(Interface):
@@ -418,7 +422,7 @@ class PackageAPITests(unittest.TestCase):
         self.assertRaises(TypeError,
                          queryAdapterInContext, Foo(), IFoo, context=None)
 
-    def test_queryAdapterInContext_w_object_implementing(self):
+    def test_w_object_implementing(self):
         from zope.interface import Interface
         from zope.interface import implementer
         from zope.component import queryAdapterInContext
@@ -431,29 +435,35 @@ class PackageAPITests(unittest.TestCase):
         self.assertTrue(
                 queryAdapterInContext(foo, IFoo, context=None) is foo)
 
+
+class Test_getAdapter(unittest.TestCase):
+
+    from zope.component.testing import setUp, tearDown
+
+    def _callFUT(self, *args, **kw):
+        from zope.component import getAdapter
+        return getAdapter(*args, **kw)
+
     def test_getAdapter_anonymous_nonesuch(self):
         from zope.interface import Interface
-        from zope.component import getAdapter
         from zope.component.interfaces import ComponentLookupError
         class IFoo(Interface):
             pass
         self.assertRaises(ComponentLookupError,
-                          getAdapter, object(), IFoo, '')
+                          self._callFUT, object(), IFoo, '')
 
     def test_getAdapter_named_nonesuch(self):
         from zope.interface import Interface
-        from zope.component import getAdapter
         from zope.component.interfaces import ComponentLookupError
         class IFoo(Interface):
             pass
         self.assertRaises(ComponentLookupError,
-                          getAdapter, object(), IFoo, 'bar')
+                          self._callFUT, object(), IFoo, 'bar')
 
     def test_getAdapter_anonymous_hit(self):
         from zope.interface import Interface
         from zope.interface import implementer
         from zope.component import getGlobalSiteManager
-        from zope.component import getAdapter
         class IFoo(Interface):
             pass
         class IBar(Interface):
@@ -467,7 +477,7 @@ class PackageAPITests(unittest.TestCase):
                 self.context = context
         getGlobalSiteManager().registerAdapter(Baz, (IBar,), IFoo, '')
         bar = Bar()
-        adapted = getAdapter(bar, IFoo, '')
+        adapted = self._callFUT(bar, IFoo, '')
         self.assertTrue(adapted.__class__ is Baz)
         self.assertTrue(adapted.context is bar)
 
@@ -475,7 +485,6 @@ class PackageAPITests(unittest.TestCase):
         from zope.interface import Interface
         from zope.interface import implementer
         from zope.component import getGlobalSiteManager
-        from zope.component import getAdapter
         class IFoo(Interface):
             pass
         @implementer(IFoo)
@@ -484,14 +493,13 @@ class PackageAPITests(unittest.TestCase):
                 self.context = context
         getGlobalSiteManager().registerAdapter(Baz, (None,), IFoo, '')
         ctx = object()
-        adapted = getAdapter(ctx, IFoo, '')
+        adapted = self._callFUT(ctx, IFoo, '')
         self.assertTrue(adapted.__class__ is Baz)
         self.assertTrue(adapted.context is ctx)
 
     def test_getAdapter_named_hit(self):
         from zope.interface import Interface
         from zope.interface import implementer
-        from zope.component import getAdapter
         from zope.component import getGlobalSiteManager
         class IFoo(Interface):
             pass
@@ -506,9 +514,14 @@ class PackageAPITests(unittest.TestCase):
                 self.context = context
         getGlobalSiteManager().registerAdapter(Baz, (IBar,), IFoo, 'named')
         bar = Bar()
-        adapted = getAdapter(bar, IFoo, 'named')
+        adapted = self._callFUT(bar, IFoo, 'named')
         self.assertTrue(adapted.__class__ is Baz)
         self.assertTrue(adapted.context is bar)
+
+
+class PackageAPITests(unittest.TestCase):
+
+    from zope.component.testing import setUp, tearDown
 
     def test_queryAdapter_anonymous_nonesuch(self):
         from zope.interface import Interface
@@ -935,6 +948,8 @@ def test_suite():
         unittest.makeSuite(Test_getNextUtility),
         unittest.makeSuite(Test_queryNextUtility),
         unittest.makeSuite(Test_getAdapterInContext),
+        unittest.makeSuite(Test_queryAdapterInContext),
+        unittest.makeSuite(Test_getAdapter),
         unittest.makeSuite(PackageAPITests),
     ))
 
