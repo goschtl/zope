@@ -579,6 +579,30 @@ class Test_queryMultiAdapter(unittest.TestCase):
         self.assertTrue(adapted.first is bar)
         self.assertTrue(adapted.second is baz)
 
+    def test_wo_sitemanager(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.component.interfaces import ComponentLookupError
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        class IBaz(Interface):
+            pass
+        @implementer(IBar)
+        class Bar(object):
+            pass
+        @implementer(IBaz)
+        class Baz(object):
+            pass
+        class Context(object):
+            def __conform__(self, iface):
+                raise ComponentLookupError
+        bar = Bar()
+        baz = Baz()
+        adapted = self._callFUT((bar, baz), IFoo, '', context=Context())
+        self.assertTrue(adapted is None)
+
 
 class Test_getAdapters(unittest.TestCase):
 
@@ -613,6 +637,77 @@ class Test_getAdapters(unittest.TestCase):
         names = [(x, y.__class__.__name__) for x, y in tuples]
         self.assertTrue(('', 'BarAdapter') in names)
         self.assertTrue(('bar', 'BazAdapter') in names)
+
+    def test_wo_sitemanager(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.component.interfaces import ComponentLookupError
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        class IBaz(Interface):
+            pass
+        @implementer(IBar)
+        class Bar(object):
+            pass
+        @implementer(IBaz)
+        class Baz(object):
+            pass
+        class Context(object):
+            def __conform__(self, iface):
+                raise ComponentLookupError
+        bar = Bar()
+        baz = Baz()
+        adapted = self._callFUT((bar, baz), IFoo, context=Context())
+        self.assertEqual(adapted, [])
+
+
+class Test_subscribers(unittest.TestCase):
+
+    from zope.component.testing import setUp, tearDown
+
+    def _callFUT(self, *args, **kw):
+        from zope.component import subscribers
+        return subscribers(*args, **kw)
+
+    def test_nonesuch(self):
+        from zope.interface import Interface
+        class IFoo(Interface):
+            pass
+        subscribers = self._callFUT((object,), IFoo)
+        self.assertEqual(subscribers, [])
+
+    def test_hit(self):
+        from zope.interface import Interface
+        from zope.component import getGlobalSiteManager
+        class IFoo(Interface):
+            pass
+        class BarAdapter(object):
+            def __init__(self, context):
+                self.context = context
+        class BazAdapter(object):
+            def __init__(self, context):
+                self.context = context
+        gsm = getGlobalSiteManager()
+        gsm.registerSubscriptionAdapter(BarAdapter, (None,), IFoo)
+        gsm.registerSubscriptionAdapter(BazAdapter, (None,), IFoo)
+        subscribers = self._callFUT((object(),), IFoo)
+        self.assertEqual(len(subscribers), 2)
+        names = [(x.__class__.__name__) for x in subscribers]
+        self.assertTrue('BarAdapter' in names)
+        self.assertTrue('BazAdapter' in names)
+
+    def test_wo_sitemanager(self):
+        from zope.interface import Interface
+        from zope.component.interfaces import ComponentLookupError
+        class IFoo(Interface):
+            pass
+        class Context(object):
+            def __conform__(self, iface):
+                raise ComponentLookupError
+        subscribers = self._callFUT((object,), IFoo, context=Context())
+        self.assertEqual(subscribers, [])
 
 
 class Test_getUtility(unittest.TestCase):
@@ -912,6 +1007,7 @@ def test_suite():
         unittest.makeSuite(Test_getMultiAdapter),
         unittest.makeSuite(Test_queryMultiAdapter),
         unittest.makeSuite(Test_getAdapters),
+        unittest.makeSuite(Test_subscribers),
         unittest.makeSuite(Test_getUtility),
         unittest.makeSuite(Test_queryUtility),
         unittest.makeSuite(Test_getUtilitiesFor),
