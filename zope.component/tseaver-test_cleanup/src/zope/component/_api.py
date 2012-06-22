@@ -149,7 +149,7 @@ def handle(*objects):
 def adapter_hook(interface, object, name='', default=None):
     try:
         sitemanager = getSiteManager()
-    except ComponentLookupError:
+    except ComponentLookupError: #pragma NO COVER w/o context, cannot test
         # Oh blast, no site manager. This should *never* happen!
         return None
     return sitemanager.queryAdapter(object, interface, name, default)
