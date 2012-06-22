@@ -66,6 +66,27 @@ class Test_adapter(unittest.TestCase):
 
 class Test_adapts(unittest.TestCase):
 
+    def _run_generated_code(self, code, globs, locs,
+                            fails_under_py3k=True,
+                           ):
+        import warnings
+        #from zope.component._compat import PYTHON3
+        PYTHON3 = False
+        with warnings.catch_warnings(record=True) as log:
+            warnings.resetwarnings()
+            if not PYTHON3:
+                exec(code, globs, locs)
+                self.assertEqual(len(log), 0) # no longer warn
+                return True
+            else:
+                try:
+                    exec(code, globs, locs)
+                except TypeError:
+                    return False
+                else:
+                    if fails_under_py3k:
+                        self.fail("Didn't raise TypeError")
+
     def test_instances_not_affected(self):
         from zope.component._declaration import adapts
         class C(object):
@@ -75,6 +96,67 @@ class Test_adapts(unittest.TestCase):
         def _try():
             return C().__component_adapts__
         self.assertRaises(AttributeError, _try)
+
+    def test_called_from_function(self):
+        import warnings
+        from zope.component._declaration import adapts
+        from zope.interface import Interface
+        class IFoo(Interface):
+            pass
+        globs = {'adapts': adapts, 'IFoo': IFoo}
+        locs = {}
+        CODE = "\n".join([
+            'def foo():',
+            '    adapts(IFoo)'
+            ])
+        if self._run_generated_code(CODE, globs, locs, False):
+            foo = locs['foo']
+            with warnings.catch_warnings(record=True) as log:
+                warnings.resetwarnings()
+                self.assertRaises(TypeError, foo)
+                self.assertEqual(len(log), 0) # no longer warn
+
+    def test_called_twice_from_class(self):
+        import warnings
+        from zope.component._declaration import adapts
+        from zope.interface import Interface
+        from zope.interface._compat import PYTHON3
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        globs = {'adapts': adapts, 'IFoo': IFoo, 'IBar': IBar}
+        locs = {}
+        CODE = "\n".join([
+            'class Foo(object):',
+            '    adapts(IFoo)',
+            '    adapts(IBar)',
+            ])
+        with warnings.catch_warnings(record=True) as log:
+            warnings.resetwarnings()
+            try:
+                exec(CODE, globs, locs)
+            except TypeError:
+                if not PYTHON3:
+                    self.assertEqual(len(log), 0) # no longer warn
+            else:
+                self.fail("Didn't raise TypeError")
+
+    def test_called_once_from_class(self):
+        from zope.component._declaration import adapts
+        from zope.interface import Interface
+        class IFoo(Interface):
+            pass
+        globs = {'adapts': adapts, 'IFoo': IFoo}
+        locs = {}
+        CODE = "\n".join([
+            'class Foo(object):',
+            '    adapts(IFoo)',
+            ])
+        if self._run_generated_code(CODE, globs, locs):
+            Foo = locs['Foo']
+            spec = Foo.__component_adapts__
+            self.assertEqual(list(spec), [IFoo])
 
 
 def test_suite():
