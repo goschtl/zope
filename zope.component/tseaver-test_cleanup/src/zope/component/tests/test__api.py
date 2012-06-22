@@ -16,34 +16,42 @@
 import unittest
 
 
-class PackageAPITests(unittest.TestCase):
+class Test_getSiteManager(unittest.TestCase):
 
     from zope.component.testing import setUp, tearDown
 
-    def test_getSiteManager_no_args(self):
-        from zope.component.globalregistry import base
-        from zope.component.interfaces import IComponentLookup
-        from zope.component import getSiteManager
-        sm = getSiteManager()
-        self.assertTrue(sm is base)
-        self.assertTrue(IComponentLookup.providedBy(sm))
-        self.assertTrue(getSiteManager() is sm)
+    def _callFUT(self, *args, **kw):
+        from zope.component._api import getSiteManager
+        return getSiteManager(*args, **kw)
 
-    def test_getSiteManager_w_None(self):
-        from zope.component import getSiteManager
-        self.assertTrue(getSiteManager(None) is getSiteManager())
+    def test_sm_is_IComponentLookup(self):
+        from zope.component.interfaces import IComponentLookup
+        sm = self._callFUT()
+        self.assertTrue(IComponentLookup.providedBy(sm))
+
+    def test_sm_is_singleton(self):
+        from zope.component.globalregistry import base
+        sm = self._callFUT()
+        self.assertTrue(sm is base)
+        self.assertTrue(self._callFUT() is sm)
+
+    def test_w_None(self):
+        self.assertTrue(self._callFUT(None) is self._callFUT())
 
     def test_getSiteManager_w_conforming_context(self):
-        from zope.component import getSiteManager
         from zope.component.tests.examples import ConformsToIComponentLookup
         sitemanager = object()
         context = ConformsToIComponentLookup(sitemanager)
-        self.assertTrue(getSiteManager(context) is sitemanager)
+        self.assertTrue(self._callFUT(context) is sitemanager)
 
     def test_getSiteManager_w_invalid_context(self):
-        from zope.component import getSiteManager
         from zope.component.interfaces import ComponentLookupError
-        self.assertRaises(ComponentLookupError, getSiteManager, object())
+        self.assertRaises(ComponentLookupError, self._callFUT, object())
+
+
+class PackageAPITests(unittest.TestCase):
+
+    from zope.component.testing import setUp, tearDown
 
     def test_getUtility_anonymous_nonesuch(self):
         from zope.interface import Interface
@@ -878,6 +886,7 @@ def _makeMyUtility(name, sm):
 
 def test_suite():
     return unittest.TestSuite((
+        unittest.makeSuite(Test_getSiteManager),
         unittest.makeSuite(PackageAPITests),
     ))
 
