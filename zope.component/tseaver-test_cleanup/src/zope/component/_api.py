@@ -215,13 +215,23 @@ def getNextUtility(context, interface, name=''):
 # Factories
 
 def createObject(__factory_name, *args, **kwargs):
+    """Invoke the named factory and return the result.
+
+    ``__factory_name`` is a positional-only argument.
+    """
     context = kwargs.pop('context', None)
     return getUtility(IFactory, __factory_name, context)(*args, **kwargs)
 
 def getFactoryInterfaces(name, context=None):
+    """Return the interface provided by the named factory's objects
+
+    Result might be a single interface. XXX
+    """
     return getUtility(IFactory, name, context).getInterfaces()
 
 def getFactoriesFor(interface, context=None):
+    """Return info on all factories implementing the given interface.
+    """
     utils = getSiteManager(context)
     for (name, factory) in utils.getUtilitiesFor(IFactory):
         interfaces = factory.getInterfaces()

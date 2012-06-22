@@ -1013,6 +1013,140 @@ class Test_queryNextUtility(unittest.TestCase):
                                             is custom_util)
         self.assertTrue(self._callFUT(sm1, IMyUtility, 'myutil') is gutil)
 
+    def test_wo_sitemanager(self):
+        from zope.interface import Interface
+        from zope.component.interfaces import ComponentLookupError
+        class IFoo(Interface):
+            pass
+        class Context(object):
+            def __conform__(self, iface):
+                raise ComponentLookupError
+        self.assertEqual(self._callFUT(Context(), IFoo, 'myutil'), None)
+
+
+class Test_createObject(unittest.TestCase):
+
+    from zope.component.testing import setUp, tearDown
+
+    def _callFUT(self, *args, **kw):
+        from zope.component import createObject
+        return createObject(*args, **kw)
+
+    def test_miss(self):
+        from zope.component.interfaces import ComponentLookupError
+        self.assertRaises(ComponentLookupError, self._callFUT, 'nonesuch')
+
+    def test_hit(self):
+        from zope.component.interfaces import IFactory
+        _object = object()
+        _factory_called = []
+        def _factory(*args, **kw):
+            _factory_called.append((args, kw))
+            return _object
+        class Context(object):
+            def __conform__(self, iface):
+                return self
+            def queryUtility(self, iface, name, default):
+                if iface is IFactory and name == 'test':
+                    return _factory
+                return default
+        context = Context()
+        self.assertTrue(self._callFUT('test', context=context) is _object)
+        self.assertEqual(_factory_called, [((), {})])
+
+
+class Test_getFactoryInterfaces(unittest.TestCase):
+
+    from zope.component.testing import setUp, tearDown
+
+    def _callFUT(self, *args, **kw):
+        from zope.component import getFactoryInterfaces
+        return getFactoryInterfaces(*args, **kw)
+
+    def test_miss(self):
+        from zope.component.interfaces import ComponentLookupError
+        self.assertRaises(ComponentLookupError, self._callFUT, 'nonesuch')
+
+    def test_hit(self):
+        from zope.component.interfaces import IFactory
+        from zope.interface import Interface
+        class IFoo(Interface):
+            pass
+        class _Factory(object):
+            def getInterfaces(self):
+                return [IFoo]
+        class Context(object):
+            def __conform__(self, iface):
+                return self
+            def queryUtility(self, iface, name, default):
+                if iface is IFactory and name == 'test':
+                    return _Factory()
+                return default
+        context = Context()
+        self.assertEqual(self._callFUT('test', context=context), [IFoo])
+
+
+class Test_getFactoriesFor(unittest.TestCase):
+
+    from zope.component.testing import setUp, tearDown
+
+    def _callFUT(self, *args, **kw):
+        from zope.component import getFactoriesFor
+        return getFactoriesFor(*args, **kw)
+
+    def test_no_factories_registered(self):
+        from zope.interface import Interface
+        class IFoo(Interface):
+            pass
+        self.assertEqual(list(self._callFUT(IFoo)), [])
+
+    def test_w_factory_returning_spec(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.interface import providedBy
+        from zope.component.interfaces import IFactory
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        @implementer(IFoo, IBar)
+        class _Factory(object):
+            def getInterfaces(self):
+                return providedBy(self)
+        _factory = _Factory()
+        class Context(object):
+            def __conform__(self, iface):
+                return self
+            def getUtilitiesFor(self, iface):
+                if iface is IFactory:
+                    return [('test', _factory)]
+        self.assertEqual(list(self._callFUT(IFoo, context=Context())),
+                         [('test', _factory)])
+        self.assertEqual(list(self._callFUT(IBar, context=Context())),
+                         [('test', _factory)])
+
+    def test_w_factory_returning_list_of_interfaces(self):
+        from zope.interface import Interface
+        from zope.component.interfaces import IFactory
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        class _Factory(object):
+            def getInterfaces(self):
+                return [IFoo, IBar]
+        _factory = _Factory()
+        class Context(object):
+            def __conform__(self, iface):
+                return self
+            def getUtilitiesFor(self, iface):
+                if iface is IFactory:
+                    return [('test', _factory)]
+        self.assertEqual(list(self._callFUT(IFoo, context=Context())),
+                         [('test', _factory)])
+        self.assertEqual(list(self._callFUT(IBar, context=Context())),
+                         [('test', _factory)])
+
 
 IMyUtility = None
 def _makeMyUtility(name, sm):
@@ -1052,5 +1186,8 @@ def test_suite():
         unittest.makeSuite(Test_getAllUtilitiesRegisteredFor),
         unittest.makeSuite(Test_getNextUtility),
         unittest.makeSuite(Test_queryNextUtility),
+        unittest.makeSuite(Test_createObject),
+        unittest.makeSuite(Test_getFactoryInterfaces),
+        unittest.makeSuite(Test_getFactoriesFor),
     ))
 
