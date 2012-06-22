@@ -243,31 +243,25 @@ class Test_getAllUtilitiesRegisteredFor(unittest.TestCase):
         self.assertTrue(obj2 in uts)
 
 
-class PackageAPITests(unittest.TestCase):
+class Test_getNextUtility(unittest.TestCase):
 
     from zope.component.testing import setUp, tearDown
 
-    def test_getNextUtility_global(self):
-        from zope.component import getGlobalSiteManager
+    def _callFUT(self, *args, **kw):
         from zope.component import getNextUtility
+        return getNextUtility(*args, **kw)
+
+    def test_global(self):
+        from zope.component import getGlobalSiteManager
         from zope.component.interface import ComponentLookupError
         gsm = getGlobalSiteManager()
         gutil = _makeMyUtility('global', gsm)
         gsm.registerUtility(gutil, IMyUtility, 'myutil')
         self.assertRaises(ComponentLookupError,
-                          getNextUtility, gutil, IMyUtility, 'myutil')
+                          self._callFUT, gutil, IMyUtility, 'myutil')
 
-    def test_queryNextUtility_global(self):
+    def test_nested(self):
         from zope.component import getGlobalSiteManager
-        from zope.component import queryNextUtility
-        gsm = getGlobalSiteManager()
-        gutil = _makeMyUtility('global', gsm)
-        gsm.registerUtility(gutil, IMyUtility, 'myutil')
-        self.assertEqual(queryNextUtility(gutil, IMyUtility, 'myutil'), None)
-
-    def test_getNextUtility_nested(self):
-        from zope.component import getGlobalSiteManager
-        from zope.component import getNextUtility
         from zope.component.interfaces import IComponentLookup
         from zope.interface.registry import Components
         gsm = getGlobalSiteManager()
@@ -278,15 +272,30 @@ class PackageAPITests(unittest.TestCase):
         util1 = _makeMyUtility('one', sm1)
         sm1.registerUtility(util1, IMyUtility, 'myutil')
         self.assertTrue(IComponentLookup(util1) is sm1)
-        self.assertTrue(getNextUtility(util1, IMyUtility, 'myutil') is gutil)
+        self.assertTrue(self._callFUT(util1, IMyUtility, 'myutil') is gutil)
         util1_1 = _makeMyUtility('one-one', sm1_1)
         sm1_1.registerUtility(util1_1, IMyUtility, 'myutil')
         self.assertTrue(IComponentLookup(util1_1) is sm1_1)
-        self.assertTrue(getNextUtility(util1_1, IMyUtility, 'myutil') is util1)
+        self.assertTrue(self._callFUT(util1_1, IMyUtility, 'myutil') is util1)
 
-    def test_queryNextUtility_nested(self):
-        from zope.component import getGlobalSiteManager
+
+class Test_queryNextUtility(unittest.TestCase):
+
+    from zope.component.testing import setUp, tearDown
+
+    def _callFUT(self, *args, **kw):
         from zope.component import queryNextUtility
+        return queryNextUtility(*args, **kw)
+
+    def test_global(self):
+        from zope.component import getGlobalSiteManager
+        gsm = getGlobalSiteManager()
+        gutil = _makeMyUtility('global', gsm)
+        gsm.registerUtility(gutil, IMyUtility, 'myutil')
+        self.assertEqual(self._callFUT(gutil, IMyUtility, 'myutil'), None)
+
+    def test_nested(self):
+        from zope.component import getGlobalSiteManager
         from zope.interface.registry import Components
         gsm = getGlobalSiteManager()
         gutil = _makeMyUtility('global', gsm)
@@ -302,26 +311,32 @@ class PackageAPITests(unittest.TestCase):
         myregistry.registerUtility(custom_util, IMyUtility, 'my_custom_util')
         sm1.__bases__ = (myregistry,) + sm1.__bases__
         # Both the ``myregistry`` and global utilities should be available:
-        self.assertTrue(queryNextUtility(sm1, IMyUtility, 'my_custom_util')
+        self.assertTrue(self._callFUT(sm1, IMyUtility, 'my_custom_util')
                                             is custom_util)
-        self.assertTrue(queryNextUtility(sm1, IMyUtility, 'myutil')
-                                            is gutil)
+        self.assertTrue(self._callFUT(sm1, IMyUtility, 'myutil') is gutil)
 
-    def test_getAdapterInContext_miss(self):
-        from zope.interface import Interface
+
+class Test_getAdapterInContext(unittest.TestCase):
+
+    from zope.component.testing import setUp, tearDown
+
+    def _callFUT(self, *args, **kw):
         from zope.component import getAdapterInContext
+        return getAdapterInContext(*args, **kw)
+
+    def test_miss(self):
+        from zope.interface import Interface
         from zope.component.interfaces import ComponentLookupError
         class IFoo(Interface):
             pass
         self.assertRaises(ComponentLookupError,
-                          getAdapterInContext, object(), IFoo, context=None)
+                          self._callFUT, object(), IFoo, context=None)
 
-    def test_getAdapterInContext_hit_via_sm(self):
+    def test_hit_via_sm(self):
         from zope.interface import Interface
         from zope.interface import implementer
         from zope.interface.registry import Components
         from zope.component import getGlobalSiteManager
-        from zope.component import getAdapterInContext
         from zope.component.tests.examples import ConformsToIComponentLookup
         class IFoo(Interface):
             pass
@@ -346,9 +361,14 @@ class PackageAPITests(unittest.TestCase):
         sm1 = Components('sm1', bases=(gsm, ))
         sm1.registerAdapter(Local, (IBar,), IFoo, '')
         bar = Bar()
-        adapted = getAdapterInContext(bar, IFoo, context=Context(sm1))
+        adapted = self._callFUT(bar, IFoo, context=Context(sm1))
         self.assertTrue(adapted.__class__ is Local)
         self.assertTrue(adapted.context is bar)
+
+
+class PackageAPITests(unittest.TestCase):
+
+    from zope.component.testing import setUp, tearDown
 
     def test_queryAdapterInContext_miss(self):
         from zope.interface import Interface
@@ -912,6 +932,9 @@ def test_suite():
         unittest.makeSuite(Test_queryUtility),
         unittest.makeSuite(Test_getUtilitiesFor),
         unittest.makeSuite(Test_getAllUtilitiesRegisteredFor),
+        unittest.makeSuite(Test_getNextUtility),
+        unittest.makeSuite(Test_queryNextUtility),
+        unittest.makeSuite(Test_getAdapterInContext),
         unittest.makeSuite(PackageAPITests),
     ))
 
