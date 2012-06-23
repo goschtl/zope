@@ -4,6 +4,12 @@ Changes
 0.4 (unreleased)
 ================
 
+* Fixed (unnoticed?) bug when using the deprecated ``path`` option. In
+  that case the default path (``parts/<sectionname>``) was created
+  instead of the given one.
+
+* Shortened main code.
+
 * Updated tests to run with `zc.buildout` 1.5, thus requiring at least this
   version.
 

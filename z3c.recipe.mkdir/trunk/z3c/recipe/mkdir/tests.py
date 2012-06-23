@@ -43,7 +43,7 @@ checker = renormalizing.RENormalizing([
 
 def test_suite():
     return unittest.TestSuite(
-        doctest.DocFileSuite('README.txt',
+        doctest.DocFileSuite('README.txt', 'regression.txt',
             setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
             optionflags=doctest.ELLIPSIS, checker=checker),
         )

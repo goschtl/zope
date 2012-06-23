@@ -11,27 +11,18 @@ class Recipe:
         self.remove_on_update = string_to_bool(
             options.get('remove-on-update', 'no'))
 
-        paths = None
-        
         if 'path' in options.keys():
             self.logger.warn(
                 "Use of 'path' option is deprectated. Use 'paths' instead.")
-            paths = options['path']
 
-        if "paths" in options:
-            paths = options["paths"]
-        else:
-            paths = os.path.join(
-                buildout['buildout']['parts-directory'], name)
-        paths = [x.strip() for x in paths.split('\n')]
-        paths = [os.path.abspath(x) for x in paths]
-        paths = [os.path.normpath(x) for x in paths]
-        self.paths = paths
+        paths = options.get(
+            'paths', options.get('path', os.path.join(
+                buildout['buildout']['parts-directory'], name)))
+        self.paths = [os.path.normpath(os.path.abspath(
+            x.strip())) for x in paths.split('\n')]
 
         # Update options to be referencable...
-        paths_strings = '\n'.join(paths)
-        options['path'] = paths_strings
-        options['paths'] = paths_strings
+        options['path'] = options['paths'] = '\n'.join(self.paths)
 
     def install(self):
         for path in self.paths:
