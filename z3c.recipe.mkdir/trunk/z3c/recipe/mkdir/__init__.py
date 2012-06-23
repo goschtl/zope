@@ -21,14 +21,49 @@ class Recipe:
         self.paths = [os.path.normpath(os.path.abspath(
             x.strip())) for x in paths.split('\n')]
 
+        self.mode = options.get('mode', None)
+        if self.mode is not None:
+            try:
+                self.mode = int(self.mode, 8)
+            except ValueError:
+                raise zc.buildout.UserError(
+                    "'mode' must be an octal number: " % self.mode)
+
+        # determine user id
+        self.user = options.get('user', None)
+        self.uid = -1
+        if self.user:
+            try:
+                import pwd
+                self.uid = pwd.getpwnam(options['user'])[2]
+            except ImportError:
+                self.logger.warn(
+                    "System does not support `pwd`. Using default user")
+
+        # determine group id
+        self.group = options.get('group', None)
+        self.gid = -1
+        if self.group:
+            try:
+                import grp
+                self.gid = grp.getgrnam(options['group'])[2]
+            except ImportError:
+                self.logger.warn(
+                    "System does not support `grp`. Using default group")
+
         # Update options to be referencable...
         options['path'] = options['paths'] = '\n'.join(self.paths)
+        if self.mode:
+            options['mode'] = oct(self.mode)
+        if self.user:
+            options['user'] = self.user
+        if self.group:
+            options['group'] = self.group
 
     def install(self):
         for path in self.paths:
             self.createIntermediatePaths(path)
         return self.options.created()
-
 
     def update(self):
         return self.install()
@@ -38,13 +73,29 @@ class Recipe:
         if os.path.exists(path) and not os.path.isdir(path):
             raise zc.buildout.UserError(
                 "Cannot create directory: %s. It's a file." % path)
-        if os.path.exists(path) or parent == path:
+        if parent == path or os.path.exists(path):
             return
         self.createIntermediatePaths(parent)
         os.mkdir(path)
         self.logger.info('created path: %s' % path)
+        self.setPermissions(path)
         if self.remove_on_update:
             self.options.created(path)
+
+    def setPermissions(self, path):
+        additional_msgs = []
+        if self.mode is not None:
+            os.chmod(path, self.mode)
+            additional_msgs.append('mode 0%o' % self.mode)
+        if self.uid != -1 or self.gid != -1:
+            os.chown(path, self.uid, self.gid)
+            if self.uid != -1:
+                additional_msgs.append("user %r" % self.user)
+            if self.gid != -1:
+                additional_msgs.append("group %r" % self.group)
+        if additional_msgs:
+            self.logger.info('  ' + ', '.join(additional_msgs))
+
 
 def string_to_bool(value):
     if value is True or value is False:

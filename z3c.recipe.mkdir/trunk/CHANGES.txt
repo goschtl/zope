@@ -4,6 +4,8 @@ Changes
 0.4 (unreleased)
 ================
 
+* Added support for ``mode``, ``user``, and ``group`` options.
+
 * Fixed (unnoticed?) bug when using the deprecated ``path`` option. In
   that case the default path (``parts/<sectionname>``) was created
   instead of the given one.

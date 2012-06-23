@@ -163,6 +163,50 @@ Now ``newdir/`` has vanished and ``newdir2`` exists:
 Note, that the created directory will be removed on next modification
 of `buildout.cfg`.
 
+Setting user, group, and permissions
+====================================
+
+You can optionally set ``user``, ``group``, or ``mode`` option for the
+dirs to be created.
+
+While ``user`` and ``group`` give the user/group that should own the
+created directory, ``mode`` is expected to be an octal number to
+represent the directory permissions in Unix style.
+
+Of course, setting all these permissions and ownerships only works if
+the system supports it and the running user has the permissions to do
+so.
+
+  >>> write('buildout.cfg',
+  ... '''
+  ... [buildout]
+  ... parts = mydir
+  ... offline = true
+  ...
+  ... [mydir]
+  ... recipe = z3c.recipe.mkdir
+  ... paths = my/newdir
+  ... remove-on-update = true
+  ... mode = 700
+  ... user = %s
+  ... group = %s
+  ... ''' % (user, group))
+
+  >>> print system(join('bin', 'buildout')),
+  Uninstalling mydir.
+  Installing mydir.
+  mydir: created path: /sample-buildout/my
+  mydir:   mode 0700, user 'USER', group 'GROUP'
+  mydir: created path: /sample-buildout/my/newdir
+  mydir:   mode 0700, user 'USER', group 'GROUP'
+
+  >>> lls('my')
+  drwx------ USER GROUP my/newdir
+
+
+These options are optional, so you can leave any of them out and the system
+defaults will be used instead.
+
 
 Creating relative paths
 =======================
