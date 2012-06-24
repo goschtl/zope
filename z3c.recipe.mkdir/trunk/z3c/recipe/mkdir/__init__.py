@@ -74,6 +74,9 @@ class Recipe:
             raise zc.buildout.UserError(
                 "Cannot create directory: %s. It's a file." % path)
         if parent == path or os.path.exists(path):
+            if path in self.paths:
+                self.logger.info('set permissions for %s' % path)
+                self.setPermissions(path)
             return
         self.createIntermediatePaths(parent)
         os.mkdir(path)
