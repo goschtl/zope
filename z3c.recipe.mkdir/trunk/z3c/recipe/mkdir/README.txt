@@ -29,6 +29,37 @@ Recipe Options
      You can, however, enforce automatic removing on updates by
      setting this option to ``on``, ``yes`` or ``true``.
 
+* ``user``
+     Default: system-dependent
+
+     You can optionally set a username that should own created
+     directories. The username must be valid name (not an uid) and the
+     system must support setting a user ownership for files. Of
+     course, the running process must have the permission to set the
+     requested user.
+
+* ``group``
+     Default: system-dependent
+
+     You can optionally set a usergroup that should own created
+     directories.The group name must be a valid name (not a gid) and
+     the system must support setting a group ownership for files. Of
+     course, the running process must have the permission to set the
+     requested group.
+
+* ``mode``
+     Default: system-dependent
+
+     You can optionally set file permissions for created directories
+     as octal numbers as usually used on Unix systems. These file
+     permissions will be set for each created directory if the running
+     process is allowed to do so.
+
+     Normally, a value of ``0700`` will give rwx permissions to the
+     owner and no permissions to group members or others.
+
+     If you don't specify a mode, the system default will be used.
+
 
 Simple creation of directories via buildout
 ===========================================
@@ -163,15 +194,16 @@ Now ``newdir/`` has vanished and ``newdir2`` exists:
 Note, that the created directory will be removed on next modification
 of `buildout.cfg`.
 
-Setting user, group, and permissions
+Setting User, Group, and Permissions
 ====================================
 
 You can optionally set ``user``, ``group``, or ``mode`` option for the
 dirs to be created.
 
 While ``user`` and ``group`` give the user/group that should own the
-created directory, ``mode`` is expected to be an octal number to
-represent the directory permissions in Unix style.
+created directory (and all not existing intermediate directories),
+``mode`` is expected to be an octal number to represent the directory
+permissions in Unix style.
 
 Of course, setting all these permissions and ownerships only works if
 the system supports it and the running user has the permissions to do
@@ -185,8 +217,7 @@ so.
   ...
   ... [mydir]
   ... recipe = z3c.recipe.mkdir
-  ... paths = my/newdir
-  ... remove-on-update = true
+  ... paths = my/new/dir
   ... mode = 700
   ... user = %s
   ... group = %s
@@ -197,16 +228,68 @@ so.
   Installing mydir.
   mydir: created path: /sample-buildout/my
   mydir:   mode 0700, user 'USER', group 'GROUP'
-  mydir: created path: /sample-buildout/my/newdir
+  mydir: created path: /sample-buildout/my/new
+  mydir:   mode 0700, user 'USER', group 'GROUP'
+  mydir: created path: /sample-buildout/my/new/dir
   mydir:   mode 0700, user 'USER', group 'GROUP'
 
   >>> lls('my')
-  drwx------ USER GROUP my/newdir
+  drwx------ USER GROUP my/new
+
+  >>> lls('my/new')
+  drwx------ USER GROUP my/new/dir
 
 
 These options are optional, so you can leave any of them out and the system
 defaults will be used instead.
 
+.. note:: Please note, that the permissions will only be set on newly
+          created directories. On updates only the permissions of the
+          leaf directory will be updated, not any intermediate
+          directories (except you set remove-on-update, which will
+          recreate also intermediate paths and set permissions
+          accordingly).
+
+On updates only the leaf directories are changed
+permission-wise. E.g. if we change the mode from the original buildout
+from ``0700`` to ``0750``:
+
+  >>> write('buildout.cfg',
+  ... '''
+  ... [buildout]
+  ... parts = mydir
+  ... offline = true
+  ...
+  ... [mydir]
+  ... recipe = z3c.recipe.mkdir
+  ... paths = my/new/dir
+  ... remove-on-update = true
+  ... mode = 750
+  ... user = %s
+  ... group = %s
+  ... ''' % (user, group))
+
+  >>> print system(join('bin', 'buildout')),
+  Uninstalling mydir.
+  Installing mydir.
+  mydir: set permissions for /sample-buildout/my/new/dir
+  mydir:   mode 0750, user 'USER', group 'GROUP'
+
+the permissions of the leaf directory were updated:
+
+  >>> lls('my/new')
+  drwxr-x--- USER GROUP my/new/dir
+
+while its parent's permissions are the same as before:
+
+  >>> lls('my')
+  drwx------ USER GROUP my/new
+
+
+Clean up:
+
+  >>> import shutil
+  >>> shutil.rmtree('my')
 
 Creating relative paths
 =======================
@@ -498,6 +581,7 @@ Starting with version 0.3 the ``path`` option is deprecated. Use
   >>> print system(join('bin', 'buildout')),
   mydir: Use of 'path' option is deprectated. Use 'paths' instead.
   Installing mydir.
+  mydir: set permissions for /sample-buildout/myrootdir
 
 The ``path`` option will be supported only for a limited time!
 
@@ -512,6 +596,9 @@ From other buildout recipe components you can reference the options of
 
 where ``<sectionname>`` is the name of the `buildout.cfg` section
 wherein you set the paths.
+
+Options `mode`, `user`, and `group` are only referencable if they are
+explicitly set.
 
 Referencing without giving a path
 ---------------------------------
