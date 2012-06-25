@@ -48,7 +48,204 @@ class Test_getGlobalSiteManager(unittest.TestCase):
         self.assertTrue(loaded_adapters is gsm.adapters)
 
 
+class Test_provideUtility(unittest.TestCase):
+
+    from zope.component.testing import setUp, tearDown
+
+    def _callFUT(self, *args, **kw):
+        from zope.component.globalregistry import provideUtility
+        return provideUtility(*args, **kw)
+
+    def test_anonymous_no_provides(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.component.globalregistry import getGlobalSiteManager
+        class IFoo(Interface):
+            pass
+        @implementer(IFoo)
+        class Foo(object):
+            pass
+        foo = Foo()
+        self._callFUT(foo)
+        gsm = getGlobalSiteManager()
+        self.assertTrue(gsm.getUtility(IFoo, '') is foo)
+
+    def test_named_w_provides(self):
+        from zope.interface import Interface
+        from zope.component.globalregistry import getGlobalSiteManager
+        class IFoo(Interface):
+            pass
+        class Foo(object):
+            pass
+        foo = Foo()
+        self._callFUT(foo, IFoo, 'named')
+        gsm = getGlobalSiteManager()
+        self.assertTrue(gsm.getUtility(IFoo, 'named') is foo)
+
+
+class Test_provideAdapter(unittest.TestCase):
+
+    from zope.component.testing import setUp, tearDown
+
+    def _callFUT(self, *args, **kw):
+        from zope.component.globalregistry import provideAdapter
+        return provideAdapter(*args, **kw)
+
+    def test_anonymous_no_provides_no_adapts(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.component.globalregistry import getGlobalSiteManager
+        from zope.component._api import adapter
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        @implementer(IFoo)
+        class Foo(object):
+            pass
+        @adapter(IFoo)
+        @implementer(IBar)
+        class Bar(object):
+            def __init__(self, context):
+                self.context = context
+        self._callFUT(Bar)
+        gsm = getGlobalSiteManager()
+        foo = Foo()
+        adapted = gsm.getAdapter(foo, IBar)
+        self.assertTrue(isinstance(adapted, Bar))
+        self.assertTrue(adapted.context is foo)
+
+    def test_named_w_provides_w_adapts(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.component.globalregistry import getGlobalSiteManager
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        @implementer(IFoo)
+        class Foo(object):
+            pass
+        class Bar(object):
+            def __init__(self, context):
+                self.context = context
+        self._callFUT(Bar, (IFoo,), IBar, 'test')
+        gsm = getGlobalSiteManager()
+        foo = Foo()
+        adapted = gsm.getAdapter(foo, IBar, name='test')
+        self.assertTrue(isinstance(adapted, Bar))
+        self.assertTrue(adapted.context is foo)
+
+
+class Test_provideSubscriptionAdapter(unittest.TestCase):
+
+    from zope.component.testing import setUp, tearDown
+
+    def _callFUT(self, *args, **kw):
+        from zope.component.globalregistry import provideSubscriptionAdapter
+        return provideSubscriptionAdapter(*args, **kw)
+
+    def test_no_provides_no_adapts(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.component.globalregistry import getGlobalSiteManager
+        from zope.component._api import adapter
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        @implementer(IFoo)
+        class Foo(object):
+            pass
+        @adapter(IFoo)
+        @implementer(IBar)
+        class Bar(object):
+            def __init__(self, context):
+                self.context = context
+        self._callFUT(Bar)
+        gsm = getGlobalSiteManager()
+        foo = Foo()
+        adapted = gsm.subscribers((foo,), IBar)
+        self.assertEqual(len(adapted), 1)
+        self.assertTrue(isinstance(adapted[0], Bar))
+        self.assertTrue(adapted[0].context is foo)
+
+    def test_w_provides_w_adapts(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.component.globalregistry import getGlobalSiteManager
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        @implementer(IFoo)
+        class Foo(object):
+            pass
+        class Bar(object):
+            def __init__(self, context):
+                self.context = context
+        self._callFUT(Bar, (IFoo,), IBar)
+        gsm = getGlobalSiteManager()
+        foo = Foo()
+        adapted = gsm.subscribers((foo,), IBar)
+        self.assertEqual(len(adapted), 1)
+        self.assertTrue(isinstance(adapted[0], Bar))
+        self.assertTrue(adapted[0].context is foo)
+
+
+class Test_provideHandler(unittest.TestCase):
+
+    from zope.component.testing import setUp, tearDown
+
+    def _callFUT(self, *args, **kw):
+        from zope.component.globalregistry import provideHandler
+        return provideHandler(*args, **kw)
+
+    def test_no_adapts(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.interface import providedBy
+        from zope.component.globalregistry import getGlobalSiteManager
+        from zope.component._api import adapter
+        class IFoo(Interface):
+            pass
+        @implementer(IFoo)
+        class Foo(object):
+            pass
+        @adapter(IFoo)
+        def _handler(context):
+            assert 0, "DON'T GO HERE"
+        self._callFUT(_handler)
+        gsm = getGlobalSiteManager()
+        regs = list(gsm.registeredHandlers())
+        self.assertEqual(len(regs), 1)
+        hr = regs[0]
+        self.assertEqual(list(hr.required), list(providedBy(Foo())))
+        self.assertEqual(hr.name, '')
+        self.assertTrue(hr.factory is _handler)
+
+    def test_w_adapts(self):
+        from zope.interface import Interface
+        from zope.component.globalregistry import getGlobalSiteManager
+        class IFoo(Interface):
+            pass
+        def _handler(context):
+            assert 0, "DON'T GO HERE"
+        self._callFUT(_handler, (IFoo,))
+        gsm = getGlobalSiteManager()
+        regs = list(gsm.registeredHandlers())
+        self.assertEqual(len(regs), 1)
+        hr = regs[0]
+        self.assertEqual(list(hr.required), [IFoo])
+        self.assertEqual(hr.name, '')
+        self.assertTrue(hr.factory is _handler)
+
+
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(Test_getGlobalSiteManager),
+        unittest.makeSuite(Test_provideUtility),
+        unittest.makeSuite(Test_provideAdapter),
+        unittest.makeSuite(Test_provideSubscriptionAdapter),
+        unittest.makeSuite(Test_provideHandler),
     ))

@@ -50,7 +50,7 @@ base = BaseGlobalComponents('base')
 
 try:
     from zope.testing.cleanup import addCleanUp
-except ImportError:
+except ImportError: #pragma NO COVER
     pass
 else:
     addCleanUp(lambda: base.__init__('base'))
