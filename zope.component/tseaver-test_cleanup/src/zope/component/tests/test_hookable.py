@@ -125,6 +125,15 @@ class HookableTests(unittest.TestCase):
         else:
             self.fail('Deleted implementation')
 
+    def test_ctor___call__(self):
+        from zope.component.hookable import hookable
+        _called = []
+        def foo(*args, **kw):
+            _called.append((args, kw))
+        hooked = hookable(foo)
+        hooked('one', 'two', bar='baz')
+        self.assertEqual(_called, [(('one', 'two'), {'bar': 'baz'})])
+
 
 def test_suite():
     return unittest.TestSuite((
