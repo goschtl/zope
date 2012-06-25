@@ -212,6 +212,55 @@ class Test_getSiteManager(unittest.TestCase):
         self.assertTrue(sm.context is context)
 
 
+class Test_adapter_hook(unittest.TestCase):
+
+    def _callFUT(self, interface, object, name='', default=None):
+        from zope.component.hooks import adapter_hook
+        return adapter_hook(interface, object, name, default)
+
+    def test_success(self):
+        from zope.interface import Interface
+        from zope.component import hooks
+        from zope.component.globalregistry import getGlobalSiteManager
+        class IFoo(Interface):
+            pass
+        gsm = getGlobalSiteManager()
+        _ADAPTER = object()
+        _DEFAULT = object()
+        _CONTEXT = object()
+        _called = []
+        def _adapter_hook(interface, object, name, default):
+            _called.append((interface, object, name, default))
+            return _ADAPTER
+        siteinfo = _DummySiteInfo()
+        siteinfo.adapter_hook = _adapter_hook
+        with _Monkey(hooks, siteinfo=siteinfo):
+            adapter = self._callFUT(IFoo, _CONTEXT, 'bar', _DEFAULT)
+        self.assertTrue(adapter is _ADAPTER)
+        self.assertEqual(_called, [(IFoo, _CONTEXT, 'bar', _DEFAULT)])
+
+    def test_hook_raises(self):
+        from zope.interface import Interface
+        from zope.component import hooks
+        from zope.component.globalregistry import getGlobalSiteManager
+        from zope.component.interfaces import ComponentLookupError
+        class IFoo(Interface):
+            pass
+        gsm = getGlobalSiteManager()
+        _DEFAULT = object()
+        _CONTEXT = object()
+        _called = []
+        def _adapter_hook(interface, object, name, default):
+            _called.append((interface, object, name, default))
+            raise ComponentLookupError('testing')
+        siteinfo = _DummySiteInfo()
+        siteinfo.adapter_hook = _adapter_hook
+        with _Monkey(hooks, siteinfo=siteinfo):
+            adapter = self._callFUT(IFoo, _CONTEXT, 'bar', _DEFAULT)
+        self.assertTrue(adapter is _DEFAULT)
+        self.assertEqual(_called, [(IFoo, _CONTEXT, 'bar', _DEFAULT)])
+
+
 _SM = object()
 class _DummySiteInfo(object):
     sm = _SM
@@ -241,5 +290,6 @@ def test_suite():
         unittest.makeSuite(Test_getSite),
         unittest.makeSuite(Test_site),
         unittest.makeSuite(Test_getSiteManager),
+        unittest.makeSuite(Test_adapter_hook),
     ))
 
