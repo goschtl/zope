@@ -166,6 +166,52 @@ class Test_site(unittest.TestCase):
             self.assertTrue(siteinfo.sm is gsm)
 
 
+class Test_getSiteManager(unittest.TestCase):
+
+    def _callFUT(self, context=None):
+        from zope.component.hooks import getSiteManager
+        return getSiteManager(context)
+
+    def test_default(self):
+        from zope.component import hooks
+        from zope.component.globalregistry import getGlobalSiteManager
+        gsm = getGlobalSiteManager()
+        _SM2 = object()
+        siteinfo = _DummySiteInfo()
+        siteinfo.sm = _SM2
+        with _Monkey(hooks, siteinfo=siteinfo):
+            self.assertTrue(self._callFUT() is _SM2)
+
+    def test_w_explicit_context_no_IComponentLookup(self):
+        from zope.component import hooks
+        from zope.component.globalregistry import getGlobalSiteManager
+        gsm = getGlobalSiteManager()
+        _SM2 = object()
+        siteinfo = _DummySiteInfo()
+        siteinfo.sm = _SM2
+        with _Monkey(hooks, siteinfo=siteinfo):
+            self.assertTrue(self._callFUT(object()) is gsm)
+
+    def test_w_explicit_context_w_IComponentLookup(self):
+        from zope.interface import Interface
+        from zope.component import hooks
+        from zope.component.globalregistry import getGlobalSiteManager
+        from zope.component.interfaces import IComponentLookup
+        class _Lookup(object):
+            def __init__(self, context):
+                self.context = context
+        gsm = getGlobalSiteManager()
+        gsm.registerAdapter(_Lookup, (Interface,), IComponentLookup, '')
+        _SM2 = object()
+        siteinfo = _DummySiteInfo()
+        siteinfo.sm = _SM2
+        context = object()
+        with _Monkey(hooks, siteinfo=siteinfo):
+            sm = self._callFUT(context)
+        self.assertTrue(isinstance(sm, _Lookup))
+        self.assertTrue(sm.context is context)
+
+
 _SM = object()
 class _DummySiteInfo(object):
     sm = _SM
@@ -194,5 +240,6 @@ def test_suite():
         unittest.makeSuite(Test_setSite),
         unittest.makeSuite(Test_getSite),
         unittest.makeSuite(Test_site),
+        unittest.makeSuite(Test_getSiteManager),
     ))
 
