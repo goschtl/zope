@@ -21,13 +21,18 @@ import zope.component
 
 try:
     import zope.security.proxy
-except ImportError:
+except ImportError: #pragma NO COVER
     SECURITY_SUPPORT = False
 else:
     SECURITY_SUPPORT = True
 
 
 class read_property(object):
+    """Descriptor for property-like computed attributes.
+
+    Unlike the standard 'property', this descriptor allows assigning a
+    value to the instance, shadowing the property getter function.
+    """
     def __init__(self, func):
         self.func = func
 
@@ -41,12 +46,11 @@ class SiteInfo(threading.local):
     site = None
     sm = zope.component.getGlobalSiteManager()
 
+    @read_property
     def adapter_hook(self):
         adapter_hook = self.sm.adapters.adapter_hook
         self.adapter_hook = adapter_hook
         return adapter_hook
-
-    adapter_hook = read_property(adapter_hook)
 
 siteinfo = SiteInfo()
 
