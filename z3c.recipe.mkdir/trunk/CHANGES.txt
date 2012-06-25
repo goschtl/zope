@@ -4,7 +4,9 @@ Changes
 0.4.1 (unreleased)
 ==================
 
-* No changes yet.
+* Added support for ``create-intermediate`` option (``yes`` by default).
+
+* Fixed bug: empty directory names were not excluded from ``paths``.
 
 0.4 (2012-06-24)
 ================
