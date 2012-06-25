@@ -10,6 +10,8 @@ class Recipe:
         self.logger=logging.getLogger(self.name)
         self.remove_on_update = string_to_bool(
             options.get('remove-on-update', 'no'))
+        self.create_intermediate = string_to_bool(
+            options.get('create-intermediate', 'yes'))
 
         if 'path' in options.keys():
             self.logger.warn(
@@ -18,8 +20,14 @@ class Recipe:
         paths = options.get(
             'paths', options.get('path', os.path.join(
                 buildout['buildout']['parts-directory'], name)))
-        self.paths = [os.path.normpath(os.path.abspath(
-            x.strip())) for x in paths.split('\n')]
+        self.paths = []
+        for path in paths.split('\n'):
+            path = path.strip()
+            if not path:
+                # don't consider empty dirs
+                continue
+            self.paths.append(os.path.normpath(os.path.abspath(path)))
+        self.paths = sorted(self.paths)
 
         self.mode = options.get('mode', None)
         if self.mode is not None:
@@ -53,6 +61,8 @@ class Recipe:
 
         # Update options to be referencable...
         options['path'] = options['paths'] = '\n'.join(self.paths)
+        options['create-intermediate'] = '%s' % self.create_intermediate
+        options['remove-on-update'] = '%s' % self.remove_on_update
         if self.mode:
             options['mode'] = oct(self.mode)
         if self.user:
@@ -70,6 +80,11 @@ class Recipe:
 
     def createIntermediatePaths(self, path):
         parent = os.path.dirname(path)
+        if self.create_intermediate is False:
+            if path in self.paths and not os.path.isdir(parent):
+                raise zc.buildout.UserError(
+                    "Cannot create: %s\n"
+                    "       Parent does not exist or not a directory." % path)
         if os.path.exists(path) and not os.path.isdir(path):
             raise zc.buildout.UserError(
                 "Cannot create directory: %s. It's a file." % path)
@@ -78,7 +93,8 @@ class Recipe:
                 self.logger.info('set permissions for %s' % path)
                 self.setPermissions(path)
             return
-        self.createIntermediatePaths(parent)
+        if not os.path.isdir(parent):
+            self.createIntermediatePaths(parent)
         os.mkdir(path)
         self.logger.info('created path: %s' % path)
         self.setPermissions(path)

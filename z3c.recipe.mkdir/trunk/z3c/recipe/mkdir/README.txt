@@ -60,6 +60,20 @@ Recipe Options
 
      If you don't specify a mode, the system default will be used.
 
+* ``create-intermediate``
+     Default: ``yes``
+
+     If set to `no`, the parent directory of the path to create _must_
+     already exist when running the recipe (and an error occurs if not).
+
+     If set to `yes`, any missing intermediate directories will be
+     created. E.g. if creating a relative dir
+
+     ``a/b/c/``
+
+     with ``create-intermediate`` set to ``no``, the relative path
+     ``a/b/`` must exist already.
+
 
 Simple creation of directories via buildout
 ===========================================
@@ -335,7 +349,7 @@ Creating intermediate paths
 ===========================
 
 If we specify several levels of directories, the intermediate parts
-will be created for us as well:
+will be created for us as well by default:
 
   >>> write('buildout.cfg',
   ... '''
@@ -357,6 +371,66 @@ will be created for us as well:
 
   >>> ls('myrootdir', 'other', 'dir')
   d  finaldir
+
+If we set the ``create-intermediate`` option to ``no`` (default is
+``yes``), the resulting dir will only be create if the parent
+directory exists already:
+
+  >>> write('buildout.cfg',
+  ... '''
+  ... [buildout]
+  ... parts = mydir
+  ... offline = true
+  ...
+  ... [mydir]
+  ... recipe = z3c.recipe.mkdir
+  ... paths = leaf/dir/without/existing/parent
+  ... create-intermediate = no
+  ... ''')
+
+  >>> print system(join('bin', 'buildout')),
+  Uninstalling mydir.
+  Installing mydir.
+  While:
+    Installing mydir.
+  Error: Cannot create: /sample-buildout/leaf/dir/without/existing/parent
+         Parent does not exist or not a directory.
+
+If you want to be explicit about the paths to be created (and which
+not), you can set ``create-intermediate`` to ``no`` and simply list
+each part of the path in ``paths`` option. This has the nice
+sideeffect of setting permissions correctly also for intermediate
+paths:
+
+  >>> write('buildout.cfg',
+  ... '''
+  ... [buildout]
+  ... parts = mydir
+  ... offline = true
+  ...
+  ... [mydir]
+  ... recipe = z3c.recipe.mkdir
+  ... paths = mydir
+  ...         mydir/with
+  ...         mydir/with/existing
+  ...         mydir/with/existing/parent
+  ... create-intermediate = no
+  ... mode = 750
+  ... ''')
+
+  >>> print system(join('bin', 'buildout')),
+  Installing mydir.
+  mydir: created path: /sample-buildout/mydir
+  mydir:   mode 0750
+  mydir: created path: /sample-buildout/mydir/with
+  mydir:   mode 0750
+  mydir: created path: /sample-buildout/mydir/with/existing
+  mydir:   mode 0750
+  mydir: created path: /sample-buildout/mydir/with/existing/parent
+  mydir:   mode 0750
+
+This is more to write down, but you can be sure that only explicitly
+named dirs are created and permissions set accordingly.
 
 
 Paths are normalized
