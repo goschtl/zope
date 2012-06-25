@@ -261,6 +261,53 @@ class Test_adapter_hook(unittest.TestCase):
         self.assertEqual(_called, [(IFoo, _CONTEXT, 'bar', _DEFAULT)])
 
 
+class Test_setHooks(unittest.TestCase):
+
+    def _callFUT(self):
+        from zope.component.hooks import setHooks
+        return setHooks()
+
+    def test_it(self):
+        import zope.component
+        from zope.component import hooks
+        class _Hook(object):
+            def __init__(self):
+                self._hooked = None
+            def sethook(self, value):
+                self._hooked = value
+        adapter_hook = _Hook()
+        getSiteManager = _Hook()
+        with _Monkey(zope.component,
+                     adapter_hook=adapter_hook,
+                     getSiteManager=getSiteManager):
+            self._callFUT()
+        self.assertEqual(adapter_hook._hooked, hooks.adapter_hook)
+        self.assertEqual(getSiteManager._hooked, hooks.getSiteManager)
+
+
+class Test_resetHooks(unittest.TestCase):
+
+    def _callFUT(self):
+        from zope.component.hooks import resetHooks
+        return resetHooks()
+
+    def test_it(self):
+        import zope.component
+        class _Hook(object):
+            def __init__(self):
+                self._reset = False
+            def reset(self):
+                self._reset = True
+        adapter_hook = _Hook()
+        getSiteManager = _Hook()
+        with _Monkey(zope.component,
+                     adapter_hook=adapter_hook,
+                     getSiteManager=getSiteManager):
+            self._callFUT()
+        self.assertTrue(adapter_hook._reset)
+        self.assertTrue(getSiteManager._reset)
+
+
 _SM = object()
 class _DummySiteInfo(object):
     sm = _SM
@@ -291,5 +338,7 @@ def test_suite():
         unittest.makeSuite(Test_site),
         unittest.makeSuite(Test_getSiteManager),
         unittest.makeSuite(Test_adapter_hook),
+        unittest.makeSuite(Test_setHooks),
+        unittest.makeSuite(Test_resetHooks),
     ))
 

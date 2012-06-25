@@ -134,7 +134,7 @@ def resetHooks():
 clearSite = setSite
 try:
     from zope.testing.cleanup import addCleanUp
-except ImportError:
+except ImportError: #pragma NO COVER
     pass
 else:
     addCleanUp(resetHooks)
