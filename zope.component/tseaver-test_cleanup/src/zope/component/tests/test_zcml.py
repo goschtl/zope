@@ -694,6 +694,43 @@ class Test_utility(unittest.TestCase):
         self.assertEqual(action['args'], ('', IFoo))
 
 
+class Test_interface(unittest.TestCase):
+
+    def _callFUT(self, *args, **kw):
+        from zope.component.zcml import interface
+        return interface(*args, **kw)
+
+    def test_wo_name_wo_type(self):
+        from zope.interface import Interface
+        from zope.component.interface import provideInterface
+        class IFoo(Interface):
+            pass
+        _cfg_ctx = _makeConfigContext()
+        self._callFUT(_cfg_ctx, IFoo)
+        self.assertEqual(len(_cfg_ctx._actions), 1)
+        self.assertEqual(_cfg_ctx._actions[0][0], ())
+        action =_cfg_ctx._actions[0][1]
+        self.assertEqual(action['callable'], provideInterface)
+        self.assertEqual(action['discriminator'], None)
+        self.assertEqual(action['args'], ('', IFoo, None))
+
+    def test_w_name_w_type(self):
+        from zope.interface import Interface
+        from zope.component.interface import provideInterface
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        _cfg_ctx = _makeConfigContext()
+        self._callFUT(_cfg_ctx, IFoo, name='foo', type=IBar)
+        self.assertEqual(len(_cfg_ctx._actions), 1)
+        self.assertEqual(_cfg_ctx._actions[0][0], ())
+        action =_cfg_ctx._actions[0][1]
+        self.assertEqual(action['callable'], provideInterface)
+        self.assertEqual(action['discriminator'], None)
+        self.assertEqual(action['args'], ('foo', IFoo, IBar))
+
+
 class ResourceViewTests(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
@@ -1155,5 +1192,6 @@ def test_suite():
         unittest.makeSuite(Test_adapter),
         unittest.makeSuite(Test_subscriber),
         unittest.makeSuite(Test_utility),
+        unittest.makeSuite(Test_interface),
         unittest.makeSuite(ResourceViewTests),
     ))
