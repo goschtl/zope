@@ -733,6 +733,75 @@ class Test_interface(unittest.TestCase):
         self.assertEqual(action['args'], ('foo', IFoo, IBar))
 
 
+class Test_view(unittest.TestCase):
+
+    def _callFUT(self, *args, **kw):
+        from zope.component.zcml import view
+        return view(*args, **kw)
+
+    def test_w_allowed_interface_wo_permission(self):
+        from zope.interface import Interface
+        from zope.component.zcml import ComponentConfigurationError
+        class IViewType(Interface):
+            pass
+        class IView(Interface):
+            def foo():
+                pass
+            def bar():
+                pass
+        class _View(object):
+            def foo():
+                pass
+            def bar():
+                pass
+        _cfg_ctx = _makeConfigContext()
+        self.assertRaises(ComponentConfigurationError,
+                          self._callFUT, _cfg_ctx, _View, IViewType, 'test',
+                                         for_=(Interface, Interface),
+                                         allowed_interface=IView)
+
+    def test_w_allowed_attributes_wo_permission(self):
+        from zope.interface import Interface
+        from zope.component.zcml import ComponentConfigurationError
+        class IViewType(Interface):
+            pass
+        class _View(object):
+            def foo():
+                pass
+            def bar():
+                pass
+        _cfg_ctx = _makeConfigContext()
+        self.assertRaises(ComponentConfigurationError,
+                          self._callFUT, _cfg_ctx, _View, IViewType, 'test',
+                                         for_=(Interface, Interface),
+                                         allowed_attributes=('foo', 'bar'))
+
+    def test_w_factory_as_None(self):
+        from zope.interface import Interface
+        from zope.component.zcml import ComponentConfigurationError
+        class IViewType(Interface):
+            pass
+        _cfg_ctx = _makeConfigContext()
+        self.assertRaises(ComponentConfigurationError,
+                          self._callFUT, _cfg_ctx, None, IViewType, 'test',
+                                         for_=(Interface, Interface))
+
+    def test_w_for__as_empty(self):
+        from zope.interface import Interface
+        from zope.component.zcml import ComponentConfigurationError
+        class IViewType(Interface):
+            pass
+        class _View(object):
+            def foo():
+                pass
+            def bar():
+                pass
+        _cfg_ctx = _makeConfigContext()
+        self.assertRaises(ComponentConfigurationError,
+                          self._callFUT, _cfg_ctx, _View, IViewType, 'test',
+                                         for_=())
+
+
 class ResourceViewTests(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
@@ -1199,5 +1268,6 @@ def test_suite():
         unittest.makeSuite(Test_subscriber),
         unittest.makeSuite(Test_utility),
         unittest.makeSuite(Test_interface),
+        unittest.makeSuite(Test_view),
         unittest.makeSuite(ResourceViewTests),
     ))

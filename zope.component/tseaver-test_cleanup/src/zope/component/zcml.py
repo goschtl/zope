@@ -13,8 +13,6 @@
 ##############################################################################
 """Component Architecture configuration handlers
 """
-import warnings
-
 from zope.configuration.exceptions import ConfigurationError
 from zope.configuration.fields import Bool
 from zope.configuration.fields import GlobalInterface
@@ -448,15 +446,6 @@ class IBasicViewInformation(Interface):
         required=False,
         )
 
-    layer = GlobalInterface(
-        title=_("The layer the view is in."),
-        description=_("""
-        A skin is composed of layers. It is common to put skin
-        specific views in a layer named after the skin. If the 'layer'
-        attribute is not supplied, it defaults to 'default'."""),
-        required=False,
-        )
-
     allowed_interface = Tokens(
         title=_("Interface that is also allowed if user has permission."),
         description=_("""
@@ -520,7 +509,6 @@ class IViewDirective(IBasicViewInformation, IBasicResourceInformation):
         )
 
 def view(_context, factory, type, name, for_,
-         layer=None,
          permission=None,
          allowed_interface=None,
          allowed_attributes=None,
@@ -574,18 +562,7 @@ def view(_context, factory, type, name, for_,
                 ob = f(ob)
             return factories[-1](ob, request)
 
-    # BBB 2006/02/18, to be removed after 12 months
-    if layer is not None:
-        for_ = for_ + (layer,)
-        warnings.warn_explicit(
-            "The 'layer' argument of the 'view' directive has been "
-            "deprecated.  Use the 'type' argument instead. If you have "
-            "an existing 'type' argument IBrowserRequest, replace it with the "
-            "'layer' argument (the layer subclasses IBrowserRequest). "
-            "which subclasses BrowserRequest.",
-            DeprecationWarning, _context.info.file, _context.info.line)
-    else:
-        for_ = for_ + (type,)
+    for_ = for_ + (type,)
 
     _context.action(
         discriminator = ('view', for_, name, provides),
@@ -620,11 +597,6 @@ class IResourceDirective(IBasicComponentInformation,
                          IBasicResourceInformation):
     """Register a resource"""
 
-    layer = GlobalInterface(
-        title=_("The layer the resource is in."),
-        required=False,
-        )
-
     allowed_interface = Tokens(
         title=_("Interface that is also allowed if user has permission."),
         required=False,
@@ -638,7 +610,7 @@ class IResourceDirective(IBasicComponentInformation,
         value_type=PythonIdentifier(),
         )
 
-def resource(_context, factory, type, name, layer=None,
+def resource(_context, factory, type, name,
              permission=None,
              allowed_interface=None, allowed_attributes=None,
              provides=Interface):
@@ -659,13 +631,6 @@ def resource(_context, factory, type, name, layer=None,
             return proxify(factory(request), checker)
 
         factory = proxyResource
-
-    if layer is not None:
-        warnings.warn_explicit(
-            "The 'layer' argument of the 'resource' directive has been "
-            "deprecated.  Use the 'type' argument instead.",
-            DeprecationWarning, _context.info.file, _context.info.line)
-        type = layer
 
     _context.action(
         discriminator = ('resource', name, type, provides),
