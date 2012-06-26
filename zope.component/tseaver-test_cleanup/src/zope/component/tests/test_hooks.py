@@ -268,7 +268,7 @@ class Test_setHooks(unittest.TestCase):
         return setHooks()
 
     def test_it(self):
-        import zope.component
+        import zope.component._api
         from zope.component import hooks
         class _Hook(object):
             def __init__(self):
@@ -277,7 +277,7 @@ class Test_setHooks(unittest.TestCase):
                 self._hooked = value
         adapter_hook = _Hook()
         getSiteManager = _Hook()
-        with _Monkey(zope.component,
+        with _Monkey(zope.component._api,
                      adapter_hook=adapter_hook,
                      getSiteManager=getSiteManager):
             self._callFUT()
@@ -292,7 +292,7 @@ class Test_resetHooks(unittest.TestCase):
         return resetHooks()
 
     def test_it(self):
-        import zope.component
+        import zope.component._api
         class _Hook(object):
             def __init__(self):
                 self._reset = False
@@ -300,7 +300,7 @@ class Test_resetHooks(unittest.TestCase):
                 self._reset = True
         adapter_hook = _Hook()
         getSiteManager = _Hook()
-        with _Monkey(zope.component,
+        with _Monkey(zope.component._api,
                      adapter_hook=adapter_hook,
                      getSiteManager=getSiteManager):
             self._callFUT()

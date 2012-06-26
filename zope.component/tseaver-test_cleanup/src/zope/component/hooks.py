@@ -17,14 +17,16 @@ __docformat__ = 'restructuredtext'
 
 import contextlib
 import threading
-import zope.component
 
 try:
-    import zope.security.proxy
+    from zope.security.proxy import removeSecurityProxy
 except ImportError: #pragma NO COVER
-    SECURITY_SUPPORT = False
-else:
-    SECURITY_SUPPORT = True
+    def removeSecurityProxy(x):
+        return x
+
+from zope.component.globalregistry import getGlobalSiteManager
+from zope.component.interfaces import ComponentLookupError
+from zope.component.interfaces import IComponentLookup
 
 
 class read_property(object):
@@ -44,7 +46,7 @@ class read_property(object):
 
 class SiteInfo(threading.local):
     site = None
-    sm = zope.component.getGlobalSiteManager()
+    sm = getGlobalSiteManager()
 
     @read_property
     def adapter_hook(self):
@@ -56,7 +58,7 @@ siteinfo = SiteInfo()
 
 def setSite(site=None):
     if site is None:
-        sm = zope.component.getGlobalSiteManager()
+        sm = getGlobalSiteManager()
     else:
 
         # We remove the security proxy because there's no way for
@@ -66,8 +68,7 @@ def setSite(site=None):
         # once site managers do less.  There's probably no good reason why
         # they can't be proxied.  Well, except maybe for performance.
 
-        if SECURITY_SUPPORT:
-            site = zope.security.proxy.removeSecurityProxy(site)
+        site = removeSecurityProxy(site)
         # The getSiteManager method is defined by IPossibleSite.
         sm = site.getSiteManager()
 
@@ -107,28 +108,29 @@ def getSiteManager(context=None):
     # We should really look look at this again though, especially
     # once site managers do less.  There's probably no good reason why
     # they can't be proxied.  Well, except maybe for performance.
-    sm = zope.component.interfaces.IComponentLookup(
-        context, zope.component.getGlobalSiteManager())
-    if SECURITY_SUPPORT:
-        sm = zope.security.proxy.removeSecurityProxy(sm)
+    sm = IComponentLookup(
+        context, getGlobalSiteManager())
+    sm = removeSecurityProxy(sm)
     return sm
 
 
 def adapter_hook(interface, object, name='', default=None):
     try:
         return siteinfo.adapter_hook(interface, object, name, default)
-    except zope.component.interfaces.ComponentLookupError:
+    except ComponentLookupError:
         return default
 
 
 def setHooks():
-    zope.component.adapter_hook.sethook(adapter_hook)
-    zope.component.getSiteManager.sethook(getSiteManager)
+    from zope.component import _api
+    _api.adapter_hook.sethook(adapter_hook)
+    _api.getSiteManager.sethook(getSiteManager)
 
 def resetHooks():
     # Reset hookable functions to original implementation.
-    zope.component.adapter_hook.reset()
-    zope.component.getSiteManager.reset()
+    from zope.component import _api
+    _api.adapter_hook.reset()
+    _api.getSiteManager.reset()
 
 # Clear the site thread global
 clearSite = setSite
