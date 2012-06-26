@@ -80,14 +80,16 @@ class Test_adapter(unittest.TestCase):
  
     def test_empty_factory(self):
         from zope.interface import Interface
+        from zope.component.zcml import ComponentConfigurationError
         class IFoo(Interface):
             pass
         _cfg_ctx = _makeConfigContext()
-        self.assertRaises(ValueError,
+        self.assertRaises(ComponentConfigurationError,
                           self._callFUT, _cfg_ctx, [], [Interface], IFoo)
  
     def test_multiple_factory_multiple_for_(self):
         from zope.interface import Interface
+        from zope.component.zcml import ComponentConfigurationError
         class IFoo(Interface):
             pass
         class IBar(Interface):
@@ -97,7 +99,7 @@ class Test_adapter(unittest.TestCase):
         class Bar(object):
             pass
         _cfg_ctx = _makeConfigContext()
-        self.assertRaises(ValueError,
+        self.assertRaises(ComponentConfigurationError,
                           self._callFUT, _cfg_ctx, [Foo, Bar],
                                          [Interface, IBar], IFoo)
 
@@ -796,8 +798,8 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
 
 
     def testMultiView_fails_w_multiple_factories(self):
-        from zope.configuration.exceptions import ConfigurationError
-        self.assertRaises(ConfigurationError,
+        from zope.component.zcml import ComponentConfigurationError
+        self.assertRaises(ComponentConfigurationError,
             self._config,
             '''
               <view name="test"
@@ -807,7 +809,9 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
                          zope.component.testfiles.adapter.I1
                          zope.component.testfiles.adapter.I2"
                     type="zope.component.testfiles.views.IV"/>
-            ''')
+            ''',
+            testing=1,
+           )
 
     def testView_w_multiple_factories(self):
         from zope.component import queryMultiAdapter
@@ -844,15 +848,17 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
         self.assertEqual(a1.context[0], ob)
 
     def testView_fails_w_no_factories(self):
-        from zope.configuration.exceptions import ConfigurationError
-        self.assertRaises(ConfigurationError,
+        from zope.component.zcml import ComponentConfigurationError
+        self.assertRaises(ComponentConfigurationError,
             self._config,
             '''
                           <view name="test"
                                    factory=""
                                    for="zope.component.testfiles.views.IC"
                                    type="zope.component.testfiles.views.IV"/>
-            ''')
+            ''',
+            testing=1,
+            )
 
 
     def testViewThatProvidesAnInterface(self):
@@ -1039,9 +1045,8 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
         self.assertEqual(v.action(), 'done')
 
     def testIncompleteProtectedViewNoPermission(self):
-        from zope.configuration.exceptions import ConfigurationError
-        self.assertRaises(
-            ConfigurationError,
+        from zope.component.zcml import ComponentConfigurationError
+        self.assertRaises(ComponentConfigurationError,
             self._config,
             '''
             <view name="test"
@@ -1051,10 +1056,11 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
                   allowed_attributes="action index"
                   />
             ''',
+            testing=1,
             )
 
     def testViewUndefinedPermission(self):
-        self.assertRaises(ValueError,
+        self.assertRaises(ValueError,  #raised from zope.security
             self._config,
             '''
             <view name="test"
@@ -1158,7 +1164,7 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
         self.assertEqual(v.__class__, R1)
 
     def testResourceUndefinedPermission(self):
-        self.assertRaises(ValueError,
+        self.assertRaises(ValueError,  #raised from zope.security
             self._config,
             '''
             <resource name="test"

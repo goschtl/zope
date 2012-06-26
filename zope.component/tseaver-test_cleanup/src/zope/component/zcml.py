@@ -47,6 +47,9 @@ else:
 
 _ = MessageFactory('zope')
 
+class ComponentConfigurationError(ValueError, ConfigurationError):
+    pass
+
 def handler(methodName, *args, **kwargs):
     method = getattr(getSiteManager(), methodName)
     method(*args, **kwargs)
@@ -185,9 +188,10 @@ def adapter(_context, factory, provides=None, for_=None, permission=None,
     if len(factories) == 1:
         factory = factories[0]
     elif len(factories) < 1:
-        raise ValueError("No factory specified")
+        raise ComponentConfigurationError("No factory specified")
     elif len(factories) > 1 and len(for_) != 1:
-        raise ValueError("Can't use multiple factories and multiple for")
+        raise ComponentConfigurationError(
+            "Can't use multiple factories and multiple for")
     else:
         factory = _rolledUpFactory(factories)
 
@@ -515,19 +519,23 @@ class IViewDirective(IBasicViewInformation, IBasicResourceInformation):
         value_type=GlobalObject(),
         )
 
-def view(_context, factory, type, name, for_, layer=None,
-         permission=None, allowed_interface=None, allowed_attributes=None,
-         provides=Interface):
+def view(_context, factory, type, name, for_,
+         layer=None,
+         permission=None,
+         allowed_interface=None,
+         allowed_attributes=None,
+         provides=Interface,
+        ):
 
     if ((allowed_attributes or allowed_interface)
         and (not permission)):
-        raise ConfigurationError(
+        raise ComponentConfigurationError(
             "Must use name attribute with allowed_interface or "
             "allowed_attributes"
             )
 
     if not factory:
-        raise ConfigurationError("No view factory specified.")
+        raise ComponentConfigurationError("No view factory specified.")
 
     if permission is not None:
 
@@ -548,7 +556,7 @@ def view(_context, factory, type, name, for_, layer=None,
 
 
     if not for_:
-        raise ValueError("No for interfaces specified");
+        raise ComponentConfigurationError("No for interfaces specified");
     for_ = tuple(for_)
 
     # Generate a single factory from multiple factories:
@@ -556,9 +564,10 @@ def view(_context, factory, type, name, for_, layer=None,
     if len(factories) == 1:
         factory = factories[0]
     elif len(factories) < 1:
-        raise ValueError("No factory specified")
+        raise ComponentConfigurationError("No factory specified")
     elif len(factories) > 1 and len(for_) > 1:
-        raise ValueError("Can't use multiple factories and multiple for")
+        raise ComponentConfigurationError(
+            "Can't use multiple factories and multiple for")
     else:
         def factory(ob, request):
             for f in factories[:-1]:
@@ -636,7 +645,7 @@ def resource(_context, factory, type, name, layer=None,
 
     if ((allowed_attributes or allowed_interface)
         and (not permission)):
-        raise ConfigurationError(
+        raise ComponentConfigurationError(
             "Must use name attribute with allowed_interface or "
             "allowed_attributes"
             )
