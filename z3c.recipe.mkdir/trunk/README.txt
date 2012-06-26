@@ -24,7 +24,8 @@ option::
 
 which will create 'foo/bar/' in the buildout root directory (not the
 ``parts/`` directory). Also intermediate directories are created (if
-they do not exist).
+they do not exist) except you set ``create-intermediate`` option
+(``yes`` by default) to ``no``.
 
 Starting with version 0.4 you can also set user, group, and mode if
 your system supports that::

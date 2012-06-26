@@ -429,8 +429,55 @@ paths:
   mydir: created path: /sample-buildout/mydir/with/existing/parent
   mydir:   mode 0750
 
-This is more to write down, but you can be sure that only explicitly
-named dirs are created and permissions set accordingly.
+This is more text to write down, but you can be sure that only
+explicitly named dirs are created and permissions set accordingly.
+
+For instance you can require a certain path to exist already and
+create only the trailing path parts. Say, we expect a local `etc/` to
+exist and want to create `etc/myapp/conf.d`. The following config
+would do the trick:
+
+  >>> write('buildout.cfg',
+  ... '''
+  ... [buildout]
+  ... parts = mydir
+  ... offline = true
+  ...
+  ... [mydir]
+  ... recipe = z3c.recipe.mkdir
+  ... paths = etc/myapp
+  ...         etc/myapp/conf.d
+  ... create-intermediate = no
+  ... mode = 750
+  ... ''')
+
+If the local `etc/` dir does not exist, we fail:
+
+  >>> print system(join('bin', 'buildout')),
+  Uninstalling mydir.
+  Installing mydir.
+  While:
+    Installing mydir.
+  Error: Cannot create: /sample-buildout/etc/myapp
+         Parent does not exist or not a directory.
+
+But if this dir exists:
+
+  >>> mkdir('etc')
+  >>> print system(join('bin', 'buildout')),
+  Installing mydir.
+  mydir: created path: /sample-buildout/etc/myapp
+  mydir:   mode 0750
+  mydir: created path: /sample-buildout/etc/myapp/conf.d
+  mydir:   mode 0750
+
+the subdirectories are created as expected.
+
+It does, by the way, not matter, in which order you put the partial
+parts into ``paths`` as this list is sorted before being
+processed. So, any path `a/b/` will be processed before `a/b/c/`
+regardless of the order in which both parts appear in the
+configuration file.
 
 
 Paths are normalized
