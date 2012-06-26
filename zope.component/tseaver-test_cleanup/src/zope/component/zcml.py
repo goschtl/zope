@@ -13,42 +13,47 @@
 ##############################################################################
 """Component Architecture configuration handlers
 """
-__docformat__ = "reStructuredText"
-
 import warnings
-import zope.component
-import zope.configuration.fields
-import zope.interface
-import zope.schema
 
-from zope.component.interface import provideInterface
 from zope.configuration.exceptions import ConfigurationError
+from zope.configuration.fields import Bool
+from zope.configuration.fields import GlobalInterface
+from zope.configuration.fields import GlobalObject
+from zope.configuration.fields import PythonIdentifier
+from zope.configuration.fields import Tokens
 from zope.i18nmessageid import MessageFactory
+from zope.interface import Interface
+from zope.interface import implementedBy
+from zope.interface import providedBy
+from zope.schema import TextLine
+
+from zope.component._api import getSiteManager
+from zope.component._declaration import adaptedBy
+from zope.component.interface import provideInterface
 
 try:
-    from zope.component.security import _checker, proxify, protectedFactory, \
-        securityAdapterFactory
     from zope.security.zcml import Permission
 except ImportError:
-    SECURITY_SUPPORT = False
-    from zope.schema import TextLine as Permission
+    def _no_security(*args, **kw):
+        raise ConfigurationError("security proxied components are not "
+            "supported because zope.security is not available")
+    _checker = proxify = protectedFactory = security =_no_security
+    Permission = TextLine
 else:
-    SECURITY_SUPPORT = True
+    from zope.component.security import _checker
+    from zope.component.security import proxify
+    from zope.component.security import protectedFactory
+    from zope.component.security import securityAdapterFactory
 
 _ = MessageFactory('zope')
 
-def check_security_support():
-    if not SECURITY_SUPPORT:
-        raise ConfigurationError("security proxied components are not "
-            "supported because zope.security is not available")
-
 def handler(methodName, *args, **kwargs):
-    method = getattr(zope.component.getSiteManager(), methodName)
+    method = getattr(getSiteManager(), methodName)
     method(*args, **kwargs)
 
-class IBasicComponentInformation(zope.interface.Interface):
+class IBasicComponentInformation(Interface):
 
-    component = zope.configuration.fields.GlobalObject(
+    component = GlobalObject(
         title=_("Component to use"),
         description=_("Python name of the implementation object.  This"
                       " must identify an object in a module using the"
@@ -63,7 +68,7 @@ class IBasicComponentInformation(zope.interface.Interface):
         required=False,
         )
 
-    factory = zope.configuration.fields.GlobalObject(
+    factory = GlobalObject(
         title=_("Factory"),
         description=_("Python name of a factory which can create the"
                       " implementation object.  This must identify an"
@@ -73,31 +78,31 @@ class IBasicComponentInformation(zope.interface.Interface):
         required=False,
         )
 
-class IAdapterDirective(zope.interface.Interface):
+class IAdapterDirective(Interface):
     """
     Register an adapter
     """
 
-    factory = zope.configuration.fields.Tokens(
+    factory = Tokens(
         title=_("Adapter factory/factories"),
         description=_("A list of factories (usually just one) that create"
                       " the adapter instance."),
         required=True,
-        value_type=zope.configuration.fields.GlobalObject()
+        value_type=GlobalObject()
         )
 
-    provides = zope.configuration.fields.GlobalInterface(
+    provides = GlobalInterface(
         title=_("Interface the component provides"),
         description=_("This attribute specifies the interface the adapter"
                       " instance must provide."),
         required=False,
         )
 
-    for_ = zope.configuration.fields.Tokens(
+    for_ = Tokens(
         title=_("Specifications to be adapted"),
         description=_("This should be a list of interfaces or classes"),
         required=False,
-        value_type=zope.configuration.fields.GlobalObject(
+        value_type=GlobalObject(
           missing_value=object(),
           ),
         )
@@ -109,7 +114,7 @@ class IAdapterDirective(zope.interface.Interface):
         required=False,
         )
 
-    name = zope.schema.TextLine(
+    name = TextLine(
         title=_("Name"),
         description=_("Adapters can have names.\n\n"
                       "This attribute allows you to specify the name for"
@@ -117,7 +122,7 @@ class IAdapterDirective(zope.interface.Interface):
         required=False,
         )
 
-    trusted = zope.configuration.fields.Bool(
+    trusted = Bool(
         title=_("Trusted"),
         description=_("""Make the adapter a trusted adapter
 
@@ -131,7 +136,7 @@ class IAdapterDirective(zope.interface.Interface):
         default=False,
         )
 
-    locate = zope.configuration.fields.Bool(
+    locate = Bool(
         title=_("Locate"),
         description=_("""Make the adapter a locatable adapter
 
@@ -158,7 +163,7 @@ def adapter(_context, factory, provides=None, for_=None, permission=None,
 
     if for_ is None:
         if len(factory) == 1:
-            for_ = zope.component.adaptedBy(factory[0])
+            for_ = adaptedBy(factory[0])
 
         if for_ is None:
             raise TypeError("No for attribute was provided and can't "
@@ -168,7 +173,7 @@ def adapter(_context, factory, provides=None, for_=None, permission=None,
 
     if provides is None:
         if len(factory) == 1:
-            p = list(zope.interface.implementedBy(factory[0]))
+            p = list(implementedBy(factory[0]))
             if len(p) == 1:
                 provides = p[0]
 
@@ -187,12 +192,10 @@ def adapter(_context, factory, provides=None, for_=None, permission=None,
         factory = _rolledUpFactory(factories)
 
     if permission is not None:
-        check_security_support()
         factory = protectedFactory(factory, provides, permission)
 
     # invoke custom adapter factories
     if locate or permission is not None or trusted:
-        check_security_support()
         factory = securityAdapterFactory(factory, permission, locate, trusted)
 
     _context.action(
@@ -215,35 +218,35 @@ def adapter(_context, factory, provides=None, for_=None, permission=None,
                     args = ('', iface)
                     )
 
-class ISubscriberDirective(zope.interface.Interface):
+class ISubscriberDirective(Interface):
     """
     Register a subscriber
     """
 
-    factory = zope.configuration.fields.GlobalObject(
+    factory = GlobalObject(
         title=_("Subscriber factory"),
         description=_("A factory used to create the subscriber instance."),
         required=False,
         )
 
-    handler = zope.configuration.fields.GlobalObject(
+    handler = GlobalObject(
         title=_("Handler"),
         description=_("A callable object that handles events."),
         required=False,
         )
 
-    provides = zope.configuration.fields.GlobalInterface(
+    provides = GlobalInterface(
         title=_("Interface the component provides"),
         description=_("This attribute specifies the interface the adapter"
                       " instance must provide."),
         required=False,
         )
 
-    for_ = zope.configuration.fields.Tokens(
+    for_ = Tokens(
         title=_("Interfaces or classes that this subscriber depends on"),
         description=_("This should be a list of interfaces or classes"),
         required=False,
-        value_type=zope.configuration.fields.GlobalObject(
+        value_type=GlobalObject(
           missing_value = object(),
           ),
         )
@@ -255,7 +258,7 @@ class ISubscriberDirective(zope.interface.Interface):
         required=False,
         )
 
-    trusted = zope.configuration.fields.Bool(
+    trusted = Bool(
         title=_("Trusted"),
         description=_("""Make the subscriber a trusted subscriber
 
@@ -269,7 +272,7 @@ class ISubscriberDirective(zope.interface.Interface):
         default=False,
         )
 
-    locate = zope.configuration.fields.Bool(
+    locate = Bool(
         title=_("Locate"),
         description=_("""Make the subscriber a locatable subscriber
 
@@ -298,20 +301,18 @@ def subscriber(_context, for_=None, factory=None, handler=None, provides=None,
                 "a factory")
 
     if for_ is None:
-        for_ = zope.component.adaptedBy(factory)
+        for_ = adaptedBy(factory)
         if for_ is None:
             raise TypeError("No for attribute was provided and can't "
                             "determine what the factory (or handler) adapts.")
 
     if permission is not None:
-        check_security_support()
         factory = protectedFactory(factory, provides, permission)
 
     for_ = tuple(for_)
 
     # invoke custom adapter factories
     if locate or permission is not None or trusted:
-        check_security_support()
         factory = securityAdapterFactory(factory, permission, locate, trusted)
 
     if handler is not None:
@@ -348,13 +349,13 @@ def subscriber(_context, for_=None, factory=None, handler=None, provides=None,
 class IUtilityDirective(IBasicComponentInformation):
     """Register a utility."""
 
-    provides = zope.configuration.fields.GlobalInterface(
+    provides = GlobalInterface(
         title=_("Provided interface"),
         description=_("Interface provided by the utility."),
         required=False,
         )
 
-    name = zope.schema.TextLine(
+    name = TextLine(
         title=_("Name"),
         description=_("Name of the registration.  This is used by"
                       " application code when locating a utility."),
@@ -368,16 +369,15 @@ def utility(_context, provides=None, component=None, factory=None,
 
     if provides is None:
         if factory:
-            provides = list(zope.interface.implementedBy(factory))
+            provides = list(implementedBy(factory))
         else:
-            provides = list(zope.interface.providedBy(component))
+            provides = list(providedBy(component))
         if len(provides) == 1:
             provides = provides[0]
         else:
             raise TypeError("Missing 'provides' attribute")
 
     if permission is not None:
-        check_security_support()
         component = proxify(component, provides=provides, permission=permission)
 
     _context.action(
@@ -392,22 +392,22 @@ def utility(_context, provides=None, component=None, factory=None,
         args = (provides.__module__ + '.' + provides.getName(), provides)
         )
 
-class IInterfaceDirective(zope.interface.Interface):
+class IInterfaceDirective(Interface):
     """
     Define an interface
     """
 
-    interface = zope.configuration.fields.GlobalInterface(
+    interface = GlobalInterface(
         title=_("Interface"),
         required=True,
         )
 
-    type = zope.configuration.fields.GlobalInterface(
+    type = GlobalInterface(
         title=_("Interface type"),
         required=False,
         )
 
-    name = zope.schema.TextLine(
+    name = TextLine(
         title=_("Name"),
         required=False,
         )
@@ -419,15 +419,15 @@ def interface(_context, interface, type=None, name=''):
         args = (name, interface, type)
         )
 
-class IBasicViewInformation(zope.interface.Interface):
+class IBasicViewInformation(Interface):
     """This is the basic information for all views."""
 
-    for_ = zope.configuration.fields.Tokens(
+    for_ = Tokens(
         title=_("Specifications of the objects to be viewed"),
         description=_("""This should be a list of interfaces or classes
         """),
         required=True,
-        value_type=zope.configuration.fields.GlobalObject(
+        value_type=GlobalObject(
           missing_value=object(),
           ),
         )
@@ -438,13 +438,13 @@ class IBasicViewInformation(zope.interface.Interface):
         required=False,
         )
 
-    class_ = zope.configuration.fields.GlobalObject(
+    class_ = GlobalObject(
         title=_("Class"),
         description=_("A class that provides attributes used by the view."),
         required=False,
         )
 
-    layer = zope.configuration.fields.GlobalInterface(
+    layer = GlobalInterface(
         title=_("The layer the view is in."),
         description=_("""
         A skin is composed of layers. It is common to put skin
@@ -453,7 +453,7 @@ class IBasicViewInformation(zope.interface.Interface):
         required=False,
         )
 
-    allowed_interface = zope.configuration.fields.Tokens(
+    allowed_interface = Tokens(
         title=_("Interface that is also allowed if user has permission."),
         description=_("""
         By default, 'permission' only applies to viewing the view and
@@ -464,10 +464,10 @@ class IBasicViewInformation(zope.interface.Interface):
         Multiple interfaces can be provided, separated by
         whitespace."""),
         required=False,
-        value_type=zope.configuration.fields.GlobalInterface(),
+        value_type=GlobalInterface(),
         )
 
-    allowed_attributes = zope.configuration.fields.Tokens(
+    allowed_attributes = Tokens(
         title=_("View attributes that are also allowed if the user"
                 " has permission."),
         description=_("""
@@ -476,31 +476,31 @@ class IBasicViewInformation(zope.interface.Interface):
         you can make the permission also apply to the extra attributes
         on the view object."""),
         required=False,
-        value_type=zope.configuration.fields.PythonIdentifier(),
+        value_type=PythonIdentifier(),
         )
 
-class IBasicResourceInformation(zope.interface.Interface):
+class IBasicResourceInformation(Interface):
     """
     Basic information for resources
     """
 
-    name = zope.schema.TextLine(
+    name = TextLine(
         title=_("The name of the resource."),
         description=_("The name shows up in URLs/paths. For example 'foo'."),
         required=True,
         default=u'',
         )
 
-    provides = zope.configuration.fields.GlobalInterface(
+    provides = GlobalInterface(
         title=_("The interface this component provides."),
         description=_("""
         A view can provide an interface.  This would be used for
         views that support other views."""),
         required=False,
-        default=zope.interface.Interface,
+        default=Interface,
         )
 
-    type = zope.configuration.fields.GlobalInterface(
+    type = GlobalInterface(
         title=_("Request type"),
         required=True
         )
@@ -509,15 +509,15 @@ class IBasicResourceInformation(zope.interface.Interface):
 class IViewDirective(IBasicViewInformation, IBasicResourceInformation):
     """Register a view for a component"""
 
-    factory = zope.configuration.fields.Tokens(
+    factory = Tokens(
         title=_("Factory"),
         required=False,
-        value_type=zope.configuration.fields.GlobalObject(),
+        value_type=GlobalObject(),
         )
 
 def view(_context, factory, type, name, for_, layer=None,
          permission=None, allowed_interface=None, allowed_attributes=None,
-         provides=zope.interface.Interface):
+         provides=Interface):
 
     if ((allowed_attributes or allowed_interface)
         and (not permission)):
@@ -530,7 +530,6 @@ def view(_context, factory, type, name, for_, layer=None,
         raise ConfigurationError("No view factory specified.")
 
     if permission is not None:
-        check_security_support()
 
         checker = _checker(_context, permission,
                            allowed_interface, allowed_attributes)
@@ -612,28 +611,28 @@ class IResourceDirective(IBasicComponentInformation,
                          IBasicResourceInformation):
     """Register a resource"""
 
-    layer = zope.configuration.fields.GlobalInterface(
+    layer = GlobalInterface(
         title=_("The layer the resource is in."),
         required=False,
         )
 
-    allowed_interface = zope.configuration.fields.Tokens(
+    allowed_interface = Tokens(
         title=_("Interface that is also allowed if user has permission."),
         required=False,
-        value_type=zope.configuration.fields.GlobalInterface(),
+        value_type=GlobalInterface(),
         )
 
-    allowed_attributes = zope.configuration.fields.Tokens(
+    allowed_attributes = Tokens(
         title=_("View attributes that are also allowed if user"
                 " has permission."),
         required=False,
-        value_type=zope.configuration.fields.PythonIdentifier(),
+        value_type=PythonIdentifier(),
         )
 
 def resource(_context, factory, type, name, layer=None,
              permission=None,
              allowed_interface=None, allowed_attributes=None,
-             provides=zope.interface.Interface):
+             provides=Interface):
 
     if ((allowed_attributes or allowed_interface)
         and (not permission)):
@@ -643,7 +642,6 @@ def resource(_context, factory, type, name, layer=None,
             )
 
     if permission is not None:
-        check_security_support()
 
         checker = _checker(_context, permission,
                            allowed_interface, allowed_attributes)
