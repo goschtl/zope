@@ -41,6 +41,137 @@ class PermissionProxyTests(unittest.TestCase):
         self.assertEqual(providedBy(proxy), providedBy(foo))
 
 
+class Test__checker(unittest.TestCase):
+
+    def _callFUT(self, *args, **kw):
+        from zope.component.security import _checker
+        return _checker(*args, **kw)
+
+    def test_no_allowed_attributes_no_allowed_interfaces(self):
+        from zope.security.checker import CheckerPublic
+        checker = self._callFUT(object(), 'zope.Public', (), ())
+        self.assertEqual(checker.get_permissions, {'__call__': CheckerPublic})
+        self.assertFalse(checker.set_permissions)
+
+    def test_w_allowed_interfaces(self):
+        from zope.interface import Interface
+        class IFoo(Interface):
+            def bar(self):
+                pass
+            def baz(self):
+                pass
+        class ISpam(Interface):
+            def qux(self):
+                pass
+        checker = self._callFUT(object(), 'testing', (IFoo, ISpam), ())
+        self.assertEqual(checker.get_permissions,
+                        {'bar': 'testing', 'baz': 'testing', 'qux': 'testing'})
+        self.assertFalse(checker.set_permissions)
+
+    def test_w_allowed_attributes(self):
+        checker = self._callFUT(object(), 'testing', (), ('foo', 'bar'))
+        self.assertEqual(checker.get_permissions,
+                        {'foo': 'testing', 'bar': 'testing'})
+        self.assertFalse(checker.set_permissions)
+
+
+class Test_proxify(unittest.TestCase):
+
+    def _callFUT(self, *args, **kw):
+        from zope.component.security import proxify
+        return proxify(*args, **kw)
+
+    def _makeContext(self):
+        class _Context(object):
+            def bar(self):
+                pass
+        return _Context()
+
+    def test_no_checker_no_provides(self):
+        ctx = self._makeContext()
+        self.assertRaises(ValueError, self._callFUT, ctx, permission='testing')
+
+    def test_no_checker_no_permission(self):
+        from zope.interface import Interface
+        class IFoo(Interface):
+            def bar(self):
+                pass
+        ctx = self._makeContext()
+        self.assertRaises(ValueError, self._callFUT, ctx, provides=IFoo)
+
+    def test_no_checker_w_provides_and_permission_public(self):
+        from zope.interface import Interface
+        from zope.security.checker import CheckerPublic
+        from zope.proxy import getProxiedObject
+        class IFoo(Interface):
+            def bar(self):
+                pass
+        ctx = self._makeContext()
+        proxy = self._callFUT(ctx, provides=IFoo, permission='zope.Public')
+        self.assertTrue(getProxiedObject(proxy) is ctx)
+        checker = proxy.__Security_checker__
+        self.assertEqual(checker.get_permissions, {'bar': CheckerPublic})
+        self.assertFalse(checker.set_permissions)
+
+    def test_no_checker_w_provides_and_permission_protected(self):
+        from zope.interface import Interface
+        from zope.proxy import getProxiedObject
+        class IFoo(Interface):
+            def bar(self):
+                pass
+        ctx = self._makeContext()
+        proxy = self._callFUT(ctx, provides=IFoo, permission='testing')
+        self.assertTrue(getProxiedObject(proxy) is ctx)
+        checker = proxy.__Security_checker__
+        self.assertEqual(checker.get_permissions, {'bar': 'testing'})
+        self.assertFalse(checker.set_permissions)
+
+    def test_w_checker(self):
+        from zope.proxy import getProxiedObject
+        _CHECKER = object()
+        ctx = self._makeContext()
+        proxy = self._callFUT(ctx, _CHECKER)
+        self.assertTrue(getProxiedObject(proxy) is ctx)
+        self.assertTrue(proxy.__Security_checker__ is _CHECKER)
+
+
+class Test_protectedFactory(unittest.TestCase):
+
+    def _callFUT(self, *args, **kw):
+        from zope.component.security import protectedFactory
+        return protectedFactory(*args, **kw)
+
+    def test_public_not_already_proxied(self):
+        from zope.interface import Interface
+        from zope.security.checker import CheckerPublic
+        class IFoo(Interface):
+            def bar(self):
+                pass
+        class _Factory(object):
+            def bar(self):
+                pass
+        protected = self._callFUT(_Factory, IFoo, 'zope.Public')
+        self.assertTrue(protected.factory is _Factory)
+        foo = protected()
+        self.assertEqual(foo.__Security_checker__.get_permissions,
+                        {'bar': CheckerPublic})
+
+    def test_nonpublic_already_proxied(self):
+        from zope.interface import Interface
+        from zope.security.proxy import getTestProxyItems
+        class IFoo(Interface):
+            def bar(self):
+                pass
+        class _Factory(object):
+            __slots__ = ('one',)
+            def bar(self):
+                pass
+        protected = self._callFUT(_Factory, IFoo, 'testing')
+        self.assertTrue(protected.factory is _Factory)
+        foo = protected()
+        self.assertEqual(getTestProxyItems(foo), [('bar', 'testing')])
+
+
 class ResourceViewTests(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
@@ -489,5 +620,8 @@ _ZCML_TEMPLATE = """<configure
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(PermissionProxyTests),
+        unittest.makeSuite(Test__checker),
+        unittest.makeSuite(Test_proxify),
+        unittest.makeSuite(Test_protectedFactory),
         unittest.makeSuite(ResourceViewTests),
     ))
