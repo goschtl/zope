@@ -44,9 +44,20 @@ class Test_getSiteManager(unittest.TestCase):
         context = ConformsToIComponentLookup(sitemanager)
         self.assertTrue(self._callFUT(context) is sitemanager)
 
-    def test_getSiteManager_w_invalid_context(self):
+    def test_getSiteManager_w_invalid_context_no_adapter(self):
         from zope.component.interfaces import ComponentLookupError
         self.assertRaises(ComponentLookupError, self._callFUT, object())
+
+    def test_getSiteManager_w_invalid_context_w_adapter(self):
+        from zope.interface import Interface
+        from zope.component.globalregistry import getGlobalSiteManager
+        from zope.component.interfaces import IComponentLookup
+        gsm = getGlobalSiteManager()
+        sm = object()
+        def _adapt(x):
+            return sm
+        gsm.registerAdapter(_adapt, (Interface,), IComponentLookup, '')
+        self.assertTrue(self._callFUT(object()) is sm)
 
 
 class Test_getAdapterInContext(unittest.TestCase):
