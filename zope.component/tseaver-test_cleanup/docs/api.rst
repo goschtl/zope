@@ -11,3 +11,4 @@
    api/adapter
    api/factory
    api/interface
+   api/security
