@@ -35,6 +35,18 @@ class Test_provideInterface(unittest.TestCase):
         IBar = InterfaceClass('IBar')
         self.assertRaises(TypeError, self._callFUT, 'xxx', IFoo, IBar)
 
+    def test_w_class(self):
+        from zope.interface.interfaces import IInterface
+        from zope.component.globalregistry import getGlobalSiteManager
+        gsm = getGlobalSiteManager()
+        class IBar(IInterface):
+            pass
+        class Foo(object):
+            pass
+        self._callFUT('', Foo, IBar)
+        self.assertFalse(IBar.providedBy(Foo))
+        self.assertEqual(len(list(gsm.getUtilitiesFor(IBar))), 0)
+
     def test_wo_name_w_iface_type(self):
         from zope.interface import Interface
         from zope.interface.interfaces import IInterface
