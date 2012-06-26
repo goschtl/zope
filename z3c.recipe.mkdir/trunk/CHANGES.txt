@@ -1,7 +1,7 @@
 Changes
 *******
 
-0.4.1 (unreleased)
+0.5 (2012-06-26)
 ==================
 
 * Added support for ``create-intermediate`` option (``yes`` by default).
