@@ -627,15 +627,12 @@ def resource(_context, factory, type, name,
         discriminator = ('resource', name, type, provides),
         callable = handler,
         args = ('registerAdapter',
-                factory, (type,), provides, name, _context.info),
-        )
+                factory, (type,), provides, name, _context.info))
     _context.action(
         discriminator = None,
         callable = provideInterface,
-        args = (type.__module__ + '.' + type.__name__, type)
-               )
+        args = ('', type))
     _context.action(
         discriminator = None,
         callable = provideInterface,
-        args = (provides.__module__ + '.' + provides.__name__, type)
-               )
+        args = ('', provides))
