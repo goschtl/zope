@@ -6,7 +6,7 @@ import doctest
 import sys
 import pickle
 
-if __name__ == "__main__":
+if __name__ == "__main__": #pragma NO COVER (runs in subprocess)
     sys.path = pickle.loads(sys.stdin.read())
 
     from zope.interface import Interface

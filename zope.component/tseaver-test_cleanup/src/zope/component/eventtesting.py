@@ -23,7 +23,7 @@ from zope.component.registry import dispatchHandlerRegistrationEvent
 from zope.testing import cleanup
 
 events = []
-def getEvents(event_type=None, filter=None):
+def getEvents(event_type=None, filter=None): #pragma NO COVER going aaway
     r = []
     for event in events:
         if event_type is not None and not event_type.providedBy(event):
@@ -34,11 +34,11 @@ def getEvents(event_type=None, filter=None):
 
     return r
 
-def clearEvents():
+def clearEvents(): #pragma NO COVER going aaway
     del events[:]
 cleanup.addCleanUp(clearEvents)
 
-class PlacelessSetup:
+class PlacelessSetup: #pragma NO COVER going aaway
 
     def setUp(self):
         provideHandler(objectEventNotify)
@@ -48,5 +48,5 @@ class PlacelessSetup:
         provideHandler(dispatchHandlerRegistrationEvent)
         provideHandler(events.append, (None,))
 
-def setUp(test=None):
+def setUp(test=None): #pragma NO COVER going aaway
     PlacelessSetup().setUp()
