@@ -518,12 +518,8 @@ def view(_context, factory, type, name, for_,
     if ((allowed_attributes or allowed_interface)
         and (not permission)):
         raise ComponentConfigurationError(
-            "Must use name attribute with allowed_interface or "
-            "allowed_attributes"
-            )
-
-    if not factory:
-        raise ComponentConfigurationError("No view factory specified.")
+            "'permission' required with 'allowed_interface' or "
+            "'allowed_attributes'")
 
     if permission is not None:
 
@@ -552,7 +548,7 @@ def view(_context, factory, type, name, for_,
     if len(factories) == 1:
         factory = factories[0]
     elif len(factories) < 1:
-        raise ComponentConfigurationError("No factory specified")
+        raise ComponentConfigurationError("No view factory specified")
     elif len(factories) > 1 and len(for_) > 1:
         raise ComponentConfigurationError(
             "Can't use multiple factories and multiple for")
@@ -561,6 +557,7 @@ def view(_context, factory, type, name, for_,
             for f in factories[:-1]:
                 ob = f(ob)
             return factories[-1](ob, request)
+        factory.factory = factories[0]
 
     for_ = for_ + (type,)
 
@@ -570,12 +567,6 @@ def view(_context, factory, type, name, for_,
         args = ('registerAdapter',
                 factory, for_, provides, name, _context.info),
         )
-    if type is not None:
-        _context.action(
-            discriminator = None,
-            callable = provideInterface,
-            args = ('', type)
-            )
 
     _context.action(
         discriminator = None,
