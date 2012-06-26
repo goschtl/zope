@@ -373,7 +373,7 @@ will be created for us as well by default:
   d  finaldir
 
 If we set the ``create-intermediate`` option to ``no`` (default is
-``yes``), the resulting dir will only be create if the parent
+``yes``), the resulting dir will only be created if the parent
 directory exists already:
 
   >>> write('buildout.cfg',
