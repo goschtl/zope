@@ -60,7 +60,8 @@ def proxify(ob, checker=None, provides=None, permission=None):
 
     if checker is None:
         if provides is None or permission is None:
-            raise ValueError, 'Required arguments: checker or both provides and permissions'
+            raise ValueError('Required arguments: '
+                                'checker or both provides and permissions')
         if permission == PublicPermission:
             permission = CheckerPublic
         checker = InterfaceChecker(provides, permission)
