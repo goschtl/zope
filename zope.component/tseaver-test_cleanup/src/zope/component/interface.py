@@ -84,7 +84,7 @@ def searchInterfaceUtilities(context, search_string=None, base=None):
                                find(search_string) >= 0)]
     if base:
         res = [iface_util for iface_util in iface_utilities
-               if iface_util[1].extends(base)]
+               if iface_util[1].isOrExtends(base)]
     else:
         res = [iface_util for iface_util in iface_utilities]
     return res
@@ -112,6 +112,8 @@ def nameToInterface(context, id):
 def interfaceToName(context, interface):
     if interface is None:
         return 'None'
+    # XXX this search is pointless:  we are always going to return the
+    #     same value whether or not we find anything.
     items = searchInterface(context, base=interface)
     ids = [('%s.%s' %(iface.__module__, iface.__name__))
            for iface in items
