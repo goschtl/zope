@@ -18,6 +18,29 @@ import unittest
 from zope.component.testing import PlacelessSetup
 
 
+class PermissionProxyTests(unittest.TestCase):
+
+    def _getTargetClass(self):
+        from zope.component.security import PermissionProxy
+        return PermissionProxy
+
+    def _makeOne(self, wrapped):
+        return self._getTargetClass()(wrapped)
+
+    def test_proxy_delegates___provided_by__(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.interface import providedBy
+        class IFoo(Interface):
+            pass
+        @implementer(IFoo)
+        class Foo(object):
+            pass
+        foo = Foo()
+        proxy = self._makeOne(foo)
+        self.assertEqual(providedBy(proxy), providedBy(foo))
+
+
 class ResourceViewTests(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
@@ -465,5 +488,6 @@ _ZCML_TEMPLATE = """<configure
 
 def test_suite():
     return unittest.TestSuite((
+        unittest.makeSuite(PermissionProxyTests),
         unittest.makeSuite(ResourceViewTests),
     ))
