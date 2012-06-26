@@ -33,7 +33,7 @@ from zope.component.interface import provideInterface
 
 try:
     from zope.security.zcml import Permission
-except ImportError:
+except ImportError: #pragma NO COVER
     def _no_security(*args, **kw):
         raise ConfigurationError("security proxied components are not "
             "supported because zope.security is not available")
