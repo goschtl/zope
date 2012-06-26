@@ -41,6 +41,241 @@ class Test_handler(unittest.TestCase):
             getSiteManager.reset()
 
 
+class Test__rolledUpFactory(unittest.TestCase):
+
+    def _callFUT(self, *args, **kw):
+        from zope.component.zcml import _rolledUpFactory
+        return _rolledUpFactory(*args, **kw)
+
+    def test_with_one(self):
+        _OBJ = object()
+        _CREATED = object()
+        def _factory(obj):
+            return _CREATED
+        rolled = self._callFUT([_factory])
+        self.assertTrue(rolled.factory is _factory)
+        self.assertTrue(rolled(_OBJ) is _CREATED)
+
+    def test_with_multiple(self):
+        _OBJ = object()
+        _CREATED1 = object()
+        _CREATED2 = object()
+        _CREATED3 = object()
+        def _factory1(obj):
+            return _CREATED1
+        def _factory2(obj):
+            return _CREATED2
+        def _factory3(obj):
+            return _CREATED3
+        rolled = self._callFUT([_factory1, _factory2, _factory3])
+        self.assertTrue(rolled.factory is _factory1)
+        self.assertTrue(rolled(_OBJ) is _CREATED3)
+
+
+class Test_adapter(unittest.TestCase):
+
+    def _callFUT(self, *args, **kw):
+        from zope.component.zcml import adapter
+        return adapter(*args, **kw)
+
+    def _makeConfigContext(self):
+        class _Context(object):
+            info = 'TESTING'
+            def __init__(self):
+                self._actions = []
+            def action(self, *args, **kw):
+                self._actions.append((args, kw))
+        return _Context()
+ 
+    def test_empty_factory(self):
+        from zope.interface import Interface
+        class IFoo(Interface):
+            pass
+        _cfg_ctx = self._makeConfigContext()
+        self.assertRaises(ValueError,
+                          self._callFUT, _cfg_ctx, [], [Interface], IFoo)
+ 
+    def test_multiple_factory_multiple_for_(self):
+        from zope.interface import Interface
+        class IFoo(Interface):
+            pass
+        class IBar(Interface):
+            pass
+        class Foo(object):
+            pass
+        class Bar(object):
+            pass
+        _cfg_ctx = self._makeConfigContext()
+        self.assertRaises(ValueError,
+                          self._callFUT, _cfg_ctx, [Foo, Bar],
+                                         [Interface, IBar], IFoo)
+
+    def test_no_for__factory_not_adapts(self):
+        #@adapter(IFoo)
+        class _Factory(object):
+            def __init__(self, context):
+                self.context = context
+        _cfg_ctx = self._makeConfigContext()
+        self.assertRaises(TypeError, self._callFUT, _cfg_ctx, [_Factory])
+ 
+    def test_no_for__factory_adapts_no_provides_factory_not_implements(self):
+        from zope.interface import Interface
+        from zope.component._declaration import adapter
+        @adapter(Interface)
+        class _Factory(object):
+            def __init__(self, context):
+                self.context = context
+        _cfg_ctx = self._makeConfigContext()
+        self.assertRaises(TypeError, self._callFUT, _cfg_ctx, [_Factory])
+ 
+    def test_multiple_factory_single_for_(self):
+        from zope.interface import Interface
+        from zope.component.interface import provideInterface
+        from zope.component.zcml import handler
+        class IFoo(Interface):
+            pass
+        class Foo(object):
+            pass
+        class Bar(object):
+            pass
+        _cfg_ctx = self._makeConfigContext()
+        self._callFUT(_cfg_ctx, [Foo, Bar], IFoo, [Interface])
+        self.assertEqual(len(_cfg_ctx._actions), 3)
+        self.assertEqual(_cfg_ctx._actions[0][0], ())
+        # Register the adapter
+        action =_cfg_ctx._actions[0][1]
+        self.assertEqual(action['callable'], handler)
+        self.assertEqual(action['discriminator'],
+                         ('adapter', (Interface,), IFoo, ''))
+        self.assertEqual(action['args'][0], 'registerAdapter')
+        self.assertEqual(action['args'][1].factory, Foo) #rolled up
+        self.assertEqual(action['args'][2], (Interface,))
+        self.assertEqual(action['args'][3], IFoo)
+        self.assertEqual(action['args'][4], '')
+        self.assertEqual(action['args'][5], 'TESTING')
+        # Register the provided interface
+        self.assertEqual(_cfg_ctx._actions[1][0], ())
+        action =_cfg_ctx._actions[1][1]
+        self.assertEqual(action['callable'], provideInterface)
+        self.assertEqual(action['discriminator'], None)
+        self.assertEqual(action['args'], ('', IFoo))
+        # Register the required interface(s)
+        self.assertEqual(_cfg_ctx._actions[2][0], ())
+        action =_cfg_ctx._actions[2][1]
+        self.assertEqual(action['callable'], provideInterface)
+        self.assertEqual(action['discriminator'], None)
+        self.assertEqual(action['args'], ('', Interface))
+ 
+    def test_single_factory_single_for_w_permission(self):
+        from zope.interface import Interface
+        from zope.security.adapter import LocatingUntrustedAdapterFactory
+        from zope.component.zcml import handler
+        class IFoo(Interface):
+            pass
+        class Foo(object):
+            pass
+        _cfg_ctx = self._makeConfigContext()
+        self._callFUT(_cfg_ctx, [Foo], IFoo, [Interface], permission='testing')
+        self.assertEqual(len(_cfg_ctx._actions), 3)
+        self.assertEqual(_cfg_ctx._actions[0][0], ())
+        # Register the adapter
+        action =_cfg_ctx._actions[0][1]
+        self.assertEqual(action['callable'], handler)
+        self.assertEqual(action['discriminator'],
+                         ('adapter', (Interface,), IFoo, ''))
+        self.assertEqual(action['args'][0], 'registerAdapter')
+        factory_proxy = action['args'][1]
+        # Foo wraped by 'protected_factory' plus
+        # 'LocatingUntrustedAdapterFactory'
+        self.assertTrue(isinstance(factory_proxy,
+                        LocatingUntrustedAdapterFactory))
+        self.assertTrue(factory_proxy.factory.factory is Foo)
+        self.assertEqual(action['args'][2], (Interface,))
+        self.assertEqual(action['args'][3], IFoo)
+        self.assertEqual(action['args'][4], '')
+        self.assertEqual(action['args'][5], 'TESTING')
+ 
+    def test_single_factory_single_for_w_locate_no_permission(self):
+        from zope.interface import Interface
+        from zope.security.adapter import LocatingUntrustedAdapterFactory
+        from zope.component.zcml import handler
+        class IFoo(Interface):
+            pass
+        class Foo(object):
+            pass
+        _cfg_ctx = self._makeConfigContext()
+        self._callFUT(_cfg_ctx, [Foo], IFoo, [Interface], locate=True)
+        self.assertEqual(len(_cfg_ctx._actions), 3)
+        self.assertEqual(_cfg_ctx._actions[0][0], ())
+        # Register the adapter
+        action =_cfg_ctx._actions[0][1]
+        self.assertEqual(action['callable'], handler)
+        self.assertEqual(action['discriminator'],
+                         ('adapter', (Interface,), IFoo, ''))
+        self.assertEqual(action['args'][0], 'registerAdapter')
+        factory_proxy = action['args'][1]
+        # Foo wraped by 'LocatingUntrustedAdapterFactory'
+        self.assertTrue(isinstance(factory_proxy,
+                        LocatingUntrustedAdapterFactory))
+        self.assertTrue(factory_proxy.factory is Foo)
+        self.assertEqual(action['args'][2], (Interface,))
+        self.assertEqual(action['args'][3], IFoo)
+        self.assertEqual(action['args'][4], '')
+        self.assertEqual(action['args'][5], 'TESTING')
+ 
+    def test_single_factory_single_for_w_trusted_no_permission(self):
+        from zope.interface import Interface
+        from zope.security.adapter import TrustedAdapterFactory
+        from zope.component.zcml import handler
+        class IFoo(Interface):
+            pass
+        class Foo(object):
+            pass
+        _cfg_ctx = self._makeConfigContext()
+        self._callFUT(_cfg_ctx, [Foo], IFoo, [Interface], trusted=True)
+        self.assertEqual(len(_cfg_ctx._actions), 3)
+        self.assertEqual(_cfg_ctx._actions[0][0], ())
+        # Register the adapter
+        action =_cfg_ctx._actions[0][1]
+        self.assertEqual(action['callable'], handler)
+        self.assertEqual(action['discriminator'],
+                         ('adapter', (Interface,), IFoo, ''))
+        self.assertEqual(action['args'][0], 'registerAdapter')
+        factory_proxy = action['args'][1]
+        # Foo wraped by 'LocatingUntrustedAdapterFactory'
+        self.assertTrue(isinstance(factory_proxy, TrustedAdapterFactory))
+        self.assertTrue(factory_proxy.factory is Foo)
+        self.assertEqual(action['args'][2], (Interface,))
+        self.assertEqual(action['args'][3], IFoo)
+        self.assertEqual(action['args'][4], '')
+        self.assertEqual(action['args'][5], 'TESTING')
+ 
+    def test_no_for__no_provides_factory_adapts_factory_implements(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.component._declaration import adapter
+        from zope.component.zcml import handler
+        class IFoo(Interface):
+            pass
+        @adapter(Interface)
+        @implementer(IFoo)
+        class _Factory(object):
+            def __init__(self, context):
+                self.context = context
+        _cfg_ctx = self._makeConfigContext()
+        self._callFUT(_cfg_ctx, [_Factory])
+        self.assertEqual(len(_cfg_ctx._actions), 3)
+        self.assertEqual(_cfg_ctx._actions[0][0], ())
+        # Register the adapter
+        action =_cfg_ctx._actions[0][1]
+        self.assertEqual(action['callable'], handler)
+        self.assertEqual(action['discriminator'],
+                         ('adapter', (Interface,), IFoo, ''))
+        self.assertEqual(action['args'],
+                         ('registerAdapter', _Factory, (Interface,), IFoo,
+                          '', 'TESTING'))
+
+
 class ResourceViewTests(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
@@ -489,5 +724,7 @@ _ZCML_TEMPLATE = """<configure
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(Test_handler),
+        unittest.makeSuite(Test__rolledUpFactory),
+        unittest.makeSuite(Test_adapter),
         unittest.makeSuite(ResourceViewTests),
     ))
