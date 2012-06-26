@@ -508,6 +508,191 @@ class Test_subscriber(unittest.TestCase):
         self.assertEqual(action['args'], ('', Interface))
 
 
+class Test_utility(unittest.TestCase):
+
+    def _callFUT(self, *args, **kw):
+        from zope.component.zcml import utility
+        return utility(*args, **kw)
+
+    def test_w_factory_w_component(self):
+        class _Factory(object):
+            pass
+        _COMPONENT = object
+        _cfg_ctx = _makeConfigContext()
+        self.assertRaises(TypeError, self._callFUT, _cfg_ctx,
+                                         factory=_Factory,
+                                         component=_COMPONENT)
+
+    def test_w_factory_wo_provides_factory_no_implements(self):
+        class _Factory(object):
+            pass
+        _cfg_ctx = _makeConfigContext()
+        self.assertRaises(TypeError,
+                          self._callFUT, _cfg_ctx, factory=_Factory)
+
+    def test_w_component_wo_provides_component_no_provides(self):
+        _COMPONENT = object
+        _cfg_ctx = _makeConfigContext()
+        self.assertRaises(TypeError,
+                          self._callFUT, _cfg_ctx, component=_COMPONENT)
+
+    def test_w_factory_w_provides(self):
+        from zope.interface import Interface
+        from zope.component.interface import provideInterface
+        from zope.component.zcml import handler
+        class IFoo(Interface):
+            pass
+        class Foo(object):
+            pass
+        _cfg_ctx = _makeConfigContext()
+        self._callFUT(_cfg_ctx, factory=Foo, provides=IFoo)
+        self.assertEqual(len(_cfg_ctx._actions), 2)
+        self.assertEqual(_cfg_ctx._actions[0][0], ())
+        # Register the utility
+        action =_cfg_ctx._actions[0][1]
+        self.assertEqual(action['callable'], handler)
+        self.assertEqual(action['discriminator'], ('utility', IFoo, ''))
+        self.assertEqual(action['args'][0], 'registerUtility')
+        self.assertEqual(action['args'][1], None)
+        self.assertEqual(action['args'][2], IFoo)
+        self.assertEqual(action['args'][3], '')
+        self.assertEqual(action['args'][4], 'TESTING')
+        self.assertEqual(action['kw'], {'factory': Foo})
+        # Register the provided interface
+        self.assertEqual(_cfg_ctx._actions[1][0], ())
+        action =_cfg_ctx._actions[1][1]
+        self.assertEqual(action['callable'], provideInterface)
+        self.assertEqual(action['discriminator'], None)
+        self.assertEqual(action['args'], ('', IFoo))
+
+    def test_w_factory_wo_provides_factory_implements(self):
+        from zope.interface import Interface
+        from zope.interface import implementer
+        from zope.component.interface import provideInterface
+        from zope.component.zcml import handler
+        class IFoo(Interface):
+            pass
+        @implementer(IFoo)
+        class Foo(object):
+            pass
+        _cfg_ctx = _makeConfigContext()
+        self._callFUT(_cfg_ctx, factory=Foo)
+        self.assertEqual(len(_cfg_ctx._actions), 2)
+        self.assertEqual(_cfg_ctx._actions[0][0], ())
+        # Register the utility
+        action =_cfg_ctx._actions[0][1]
+        self.assertEqual(action['callable'], handler)
+        self.assertEqual(action['discriminator'], ('utility', IFoo, ''))
+        self.assertEqual(action['args'][0], 'registerUtility')
+        self.assertEqual(action['args'][1], None)
+        self.assertEqual(action['args'][2], IFoo)
+        self.assertEqual(action['args'][3], '')
+        self.assertEqual(action['args'][4], 'TESTING')
+        self.assertEqual(action['kw'], {'factory': Foo})
+        # Register the provided interface
+        self.assertEqual(_cfg_ctx._actions[1][0], ())
+        action =_cfg_ctx._actions[1][1]
+        self.assertEqual(action['callable'], provideInterface)
+        self.assertEqual(action['discriminator'], None)
+        self.assertEqual(action['args'], ('', IFoo))
+
+    def test_w_component_w_provides(self):
+        from zope.interface import Interface
+        from zope.component.interface import provideInterface
+        from zope.component.zcml import handler
+        class IFoo(Interface):
+            pass
+        _COMPONENT = object()
+        _cfg_ctx = _makeConfigContext()
+        self._callFUT(_cfg_ctx, component=_COMPONENT, provides=IFoo)
+        self.assertEqual(len(_cfg_ctx._actions), 2)
+        self.assertEqual(_cfg_ctx._actions[0][0], ())
+        # Register the utility
+        action =_cfg_ctx._actions[0][1]
+        self.assertEqual(action['callable'], handler)
+        self.assertEqual(action['discriminator'], ('utility', IFoo, ''))
+        self.assertEqual(action['args'][0], 'registerUtility')
+        self.assertEqual(action['args'][1], _COMPONENT)
+        self.assertEqual(action['args'][2], IFoo)
+        self.assertEqual(action['args'][3], '')
+        self.assertEqual(action['args'][4], 'TESTING')
+        # Register the provided interface
+        self.assertEqual(_cfg_ctx._actions[1][0], ())
+        action =_cfg_ctx._actions[1][1]
+        self.assertEqual(action['callable'], provideInterface)
+        self.assertEqual(action['discriminator'], None)
+        self.assertEqual(action['args'], ('', IFoo))
+
+    def test_w_component_wo_provides_component_provides(self):
+        from zope.interface import Interface
+        from zope.interface import directlyProvides
+        from zope.component.interface import provideInterface
+        from zope.component.zcml import handler
+        class IFoo(Interface):
+            pass
+        class Foo(object):
+            pass
+        _COMPONENT = Foo()
+        directlyProvides(_COMPONENT, IFoo)
+        _cfg_ctx = _makeConfigContext()
+        self._callFUT(_cfg_ctx, component=_COMPONENT)
+        self.assertEqual(len(_cfg_ctx._actions), 2)
+        self.assertEqual(_cfg_ctx._actions[0][0], ())
+        # Register the utility
+        action =_cfg_ctx._actions[0][1]
+        self.assertEqual(action['callable'], handler)
+        self.assertEqual(action['discriminator'], ('utility', IFoo, ''))
+        self.assertEqual(action['args'][0], 'registerUtility')
+        self.assertEqual(action['args'][1], _COMPONENT)
+        self.assertEqual(action['args'][2], IFoo)
+        self.assertEqual(action['args'][3], '')
+        self.assertEqual(action['args'][4], 'TESTING')
+        # Register the provided interface
+        self.assertEqual(_cfg_ctx._actions[1][0], ())
+        action =_cfg_ctx._actions[1][1]
+        self.assertEqual(action['callable'], provideInterface)
+        self.assertEqual(action['discriminator'], None)
+        self.assertEqual(action['args'], ('', IFoo))
+
+    def test_w_component_w_provides_w_permission(self):
+        from zope.interface import Interface
+        from zope.proxy import removeAllProxies
+        from zope.component.interface import provideInterface
+        from zope.component.security import PermissionProxy
+        from zope.component.zcml import handler
+        class IFoo(Interface):
+            def bar(self):
+                pass
+        class Foo(object):
+            def bar(self):
+                pass
+        _COMPONENT = Foo()
+        _cfg_ctx = _makeConfigContext()
+        self._callFUT(_cfg_ctx, component=_COMPONENT,
+                                provides=IFoo, permission='testing')
+        self.assertEqual(len(_cfg_ctx._actions), 2)
+        self.assertEqual(_cfg_ctx._actions[0][0], ())
+        # Register the utility
+        action =_cfg_ctx._actions[0][1]
+        self.assertEqual(action['callable'], handler)
+        self.assertEqual(action['discriminator'], ('utility', IFoo, ''))
+        self.assertEqual(action['args'][0], 'registerUtility')
+        component_proxy = action['args'][1]
+        self.assertTrue(isinstance(component_proxy, PermissionProxy))
+        self.assertTrue(removeAllProxies(component_proxy) is _COMPONENT)
+        self.assertEqual(component_proxy.__Security_checker__.get_permissions,
+                         {'bar': 'testing'})
+        self.assertEqual(action['args'][2], IFoo)
+        self.assertEqual(action['args'][3], '')
+        self.assertEqual(action['args'][4], 'TESTING')
+        # Register the provided interface
+        self.assertEqual(_cfg_ctx._actions[1][0], ())
+        action =_cfg_ctx._actions[1][1]
+        self.assertEqual(action['callable'], provideInterface)
+        self.assertEqual(action['discriminator'], None)
+        self.assertEqual(action['args'], ('', IFoo))
+
+
 class ResourceViewTests(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
@@ -968,5 +1153,6 @@ def test_suite():
         unittest.makeSuite(Test__rolledUpFactory),
         unittest.makeSuite(Test_adapter),
         unittest.makeSuite(Test_subscriber),
+        unittest.makeSuite(Test_utility),
         unittest.makeSuite(ResourceViewTests),
     ))
