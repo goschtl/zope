@@ -4,6 +4,8 @@ CHANGES
 4.0.0 (unreleased)
 ==================
 
+- 100% unit test coverage.
+
 - Removed the long-deprecated ``layer`` argument to the
   ``zope.component.zcml.view`` and ``zope.component.zcml.resource``
   ZCML directives.
