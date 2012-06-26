@@ -8,8 +8,7 @@ provides support for SFTP.  To use it, simply provide the option::
   extensions = zc.buildoutsftp
 
 in your buildout section. Then you can use sftp URLs for find-links or
-index URLs. (Note that zc.buildout >=1.0.0b5 is needed for this to
-work properly.)
+index URLs.
 
 An SFTP URL is similar to an FTP URL and is of the form::
 
