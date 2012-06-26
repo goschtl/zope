@@ -17,20 +17,6 @@ import unittest
 
 from zope.component.testing import PlacelessSetup
 
-from zope.component.testfiles.views import IV
-from zope.component.testfiles.views import V1
-from zope.component.testfiles.views import R1
-from zope.component.testfiles.views import IR
-
-from zope.component.tests.examples import Ob3 #XXX
-
-
-_ZCML_TEMPLATE = """<configure
-   xmlns='http://namespaces.zope.org/zope'
-   i18n_domain='zope'>
-   %s
-   </configure>"""
-
 
 class ResourceViewTests(PlacelessSetup, unittest.TestCase):
 
@@ -49,7 +35,10 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
 
     def testView(self):
         from zope.component import queryMultiAdapter
+        from zope.component.tests.examples import Ob3
+        from zope.component.testfiles.views import IV
         from zope.component.testfiles.views import Request
+        from zope.component.testfiles.views import V1
         ob = Ob3()
         request = Request(IV)
         self.assertEqual(queryMultiAdapter((ob, request), name=u'test'), None)
@@ -67,9 +56,11 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
 
     def testMultiView(self):
         from zope.component import queryMultiAdapter
+        from zope.component.tests.examples import Ob3
         from zope.component.testfiles.adapter import A1
         from zope.component.testfiles.adapter import A2
         from zope.component.testfiles.adapter import A3
+        from zope.component.testfiles.views import IV
         from zope.component.testfiles.views import Request
         self._config(
             '''
@@ -107,10 +98,13 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
 
     def testView_w_multiple_factories(self):
         from zope.component import queryMultiAdapter
+        from zope.component.tests.examples import Ob3
         from zope.component.testfiles.adapter import A1
         from zope.component.testfiles.adapter import A2
         from zope.component.testfiles.adapter import A3
+        from zope.component.testfiles.views import IV
         from zope.component.testfiles.views import Request
+        from zope.component.testfiles.views import V1
         self._config(
             '''
             <view name="test"
@@ -150,7 +144,11 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
 
     def testViewThatProvidesAnInterface(self):
         from zope.component import queryMultiAdapter
+        from zope.component.tests.examples import Ob3
+        from zope.component.testfiles.views import IR
+        from zope.component.testfiles.views import IV
         from zope.component.testfiles.views import Request
+        from zope.component.testfiles.views import V1
         ob = Ob3()
         self.assertEqual(queryMultiAdapter((ob, Request(IR)), IV, u'test'),
                          None)
@@ -183,7 +181,11 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
 
     def testUnnamedViewThatProvidesAnInterface(self):
         from zope.component import queryMultiAdapter
+        from zope.component.tests.examples import Ob3
+        from zope.component.testfiles.views import IR
+        from zope.component.testfiles.views import IV
         from zope.component.testfiles.views import Request
+        from zope.component.testfiles.views import V1
         ob = Ob3()
         self.assertEqual(queryMultiAdapter((ob, Request(IR)), IV), None)
 
@@ -217,6 +219,7 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
         from zope.component.testfiles.adapter import A1
         from zope.component.testfiles.components import Content
         from zope.component.testfiles.components import IContent
+        from zope.component.testfiles.views import IR
         from zope.component.testfiles.views import Request
         self._config(
             '''
@@ -239,9 +242,11 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
                           getMultiAdapter, (MyContent(), Request(IR)))
 
     def testInterfaceProtectedView(self):
-        from zope.component import getMultiAdapter
-        from zope.component.testfiles.views import Request
         from zope.security.checker import ProxyFactory
+        from zope.component import getMultiAdapter
+        from zope.component.tests.examples import Ob3
+        from zope.component.testfiles.views import IV
+        from zope.component.testfiles.views import Request
         self._config(
             '''
             <view name="test"
@@ -259,6 +264,8 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
 
     def testAttributeProtectedView(self):
         from zope.component import getMultiAdapter
+        from zope.component.tests.examples import Ob3
+        from zope.component.testfiles.views import IV
         from zope.component.testfiles.views import Request
         from zope.security.checker import ProxyFactory
         self._config(
@@ -278,6 +285,8 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
 
     def testInterfaceAndAttributeProtectedView(self):
         from zope.component import getMultiAdapter
+        from zope.component.tests.examples import Ob3
+        from zope.component.testfiles.views import IV
         from zope.component.testfiles.views import Request
         self._config(
             '''
@@ -297,6 +306,8 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
 
     def testDuplicatedInterfaceAndAttributeProtectedView(self):
         from zope.component import getMultiAdapter
+        from zope.component.tests.examples import Ob3
+        from zope.component.testfiles.views import IV
         from zope.component.testfiles.views import Request
         self._config(
             '''
@@ -346,7 +357,10 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
 
     def testResource(self):
         from zope.component import queryAdapter
+        from zope.component.tests.examples import Ob3
+        from zope.component.testfiles.views import IV
         from zope.component.testfiles.views import Request
+        from zope.component.testfiles.views import R1
         ob = Ob3()
         self.assertEqual(
             queryAdapter(Request(IV), name=u'test'), None)
@@ -363,7 +377,11 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
 
     def testResourceThatProvidesAnInterface(self):
         from zope.component import queryAdapter
+        from zope.component.tests.examples import Ob3
+        from zope.component.testfiles.views import IR
+        from zope.component.testfiles.views import IV
         from zope.component.testfiles.views import Request
+        from zope.component.testfiles.views import R1
         ob = Ob3()
         self.assertEqual(queryAdapter(Request(IR), IV, u'test'),
                          None)
@@ -395,7 +413,11 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
 
     def testUnnamedResourceThatProvidesAnInterface(self):
         from zope.component import queryAdapter
+        from zope.component.tests.examples import Ob3
+        from zope.component.testfiles.views import IR
+        from zope.component.testfiles.views import IV
         from zope.component.testfiles.views import Request
+        from zope.component.testfiles.views import R1
         ob = Ob3()
         self.assertEqual(queryAdapter(Request(IR), IV), None)
 
@@ -432,6 +454,14 @@ class ResourceViewTests(PlacelessSetup, unittest.TestCase):
                   permission="zope.UndefinedPermission"/>
             ''',
             testing=1)
+
+
+_ZCML_TEMPLATE = """<configure
+   xmlns='http://namespaces.zope.org/zope'
+   i18n_domain='zope'>
+   %s
+   </configure>"""
+
 
 def test_suite():
     return unittest.TestSuite((
