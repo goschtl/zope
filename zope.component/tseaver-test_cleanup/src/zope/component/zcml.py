@@ -383,13 +383,13 @@ def utility(_context, provides=None, component=None, factory=None,
     _context.action(
         discriminator = ('utility', provides, name),
         callable = handler,
-        args = ('registerUtility', component, provides, name),
+        args = ('registerUtility', component, provides, name, _context.info),
         kw = dict(factory=factory),
         )
     _context.action(
         discriminator = None,
         callable = provideInterface,
-        args = (provides.__module__ + '.' + provides.getName(), provides)
+        args = ('', provides),
         )
 
 class IInterfaceDirective(Interface):
