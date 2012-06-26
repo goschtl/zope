@@ -4,7 +4,7 @@ Changes
 0.5.1 (unreleased)
 ==================
 
-* No changes yet.
+* Updated docs and tests.
 
 0.5 (2012-06-26)
 ==================
