@@ -620,6 +620,7 @@ def resource(_context, factory, type, name,
 
         def proxyResource(request, factory=factory, checker=checker):
             return proxify(factory(request), checker)
+        proxyResource.factory = factory
 
         factory = proxyResource
 

@@ -977,6 +977,131 @@ class Test_view(unittest.TestCase):
         checker = factory.checker
         self.assertEqual(checker.get_permissions, {'bar': 'testing'})
 
+
+class Test_resource(unittest.TestCase):
+
+    def _callFUT(self, *args, **kw):
+        from zope.component.zcml import resource
+        return resource(*args, **kw)
+
+    def test_w_allowed_interface_wo_permission(self):
+        from zope.interface import Interface
+        from zope.component.zcml import ComponentConfigurationError
+        class IResourceType(Interface):
+            pass
+        class IView(Interface):
+            def foo():
+                pass
+            def bar():
+                pass
+        class _Resource(object):
+            def __init__(self, context):
+                self.context = context
+            def foo():
+                pass
+            def bar():
+                pass
+        _cfg_ctx = _makeConfigContext()
+        self.assertRaises(ComponentConfigurationError,
+                          self._callFUT,
+                            _cfg_ctx, (_Resource,), IResourceType, '',
+                            allowed_interface=IView)
+
+    def test_w_allowed_attributes_wo_permission(self):
+        from zope.interface import Interface
+        from zope.component.zcml import ComponentConfigurationError
+        class IResourceType(Interface):
+            pass
+        class _Resource(object):
+            def __init__(self, context):
+                self.context = context
+            def foo():
+                pass
+            def bar():
+                pass
+        _cfg_ctx = _makeConfigContext()
+        self.assertRaises(ComponentConfigurationError,
+                          self._callFUT,
+                            _cfg_ctx, (_Resource,), IResourceType, '',
+                            allowed_attributes=('foo', 'bar'))
+
+    def test_wo_permission_w_name(self):
+        from zope.interface import Interface
+        from zope.component.interface import provideInterface
+        from zope.component.zcml import handler
+        class IResourceType(Interface):
+            pass
+        class _Resource(object):
+            def __init__(self, context):
+                self.context = context
+            def foo():
+                pass
+            def bar():
+                pass
+        _cfg_ctx = _makeConfigContext()
+        self._callFUT(_cfg_ctx, _Resource, IResourceType, 'test')
+        self.assertEqual(len(_cfg_ctx._actions), 3)
+        self.assertEqual(_cfg_ctx._actions[0][0], ())
+        # Register the resource
+        action =_cfg_ctx._actions[0][1]
+        self.assertEqual(action['callable'], handler)
+        self.assertEqual(action['discriminator'],
+                         ('resource', 'test', IResourceType, Interface))
+        self.assertEqual(action['args'][0], 'registerAdapter')
+        self.assertEqual(action['args'][1], _Resource)
+        self.assertEqual(action['args'][2], (IResourceType,))
+        self.assertEqual(action['args'][3], Interface)
+        self.assertEqual(action['args'][4], 'test')
+        self.assertEqual(action['args'][5], 'TESTING')
+        # Register the 'type' interface
+        self.assertEqual(_cfg_ctx._actions[1][0], ())
+        action =_cfg_ctx._actions[1][1]
+        self.assertEqual(action['callable'], provideInterface)
+        self.assertEqual(action['discriminator'], None)
+        self.assertEqual(action['args'], ('', IResourceType))
+        # Register the required interface(s)
+        self.assertEqual(_cfg_ctx._actions[2][0], ())
+        action =_cfg_ctx._actions[2][1]
+        self.assertEqual(action['callable'], provideInterface)
+        self.assertEqual(action['discriminator'], None)
+        self.assertEqual(action['args'], ('', Interface))
+
+    def test_w_permission(self):
+        from zope.interface import Interface
+        from zope.component.zcml import handler
+        class IResourceType(Interface):
+            pass
+        class _Resource(object):
+            def __init__(self, context):
+                self.context = context
+            def foo():
+                pass
+            def bar():
+                pass
+        _cfg_ctx = _makeConfigContext()
+        self._callFUT(_cfg_ctx, _Resource, IResourceType, 'test',
+                      permission='testing', allowed_attributes=('foo',))
+        self.assertEqual(len(_cfg_ctx._actions), 3)
+        self.assertEqual(_cfg_ctx._actions[0][0], ())
+        # Register the resource
+        action =_cfg_ctx._actions[0][1]
+        self.assertEqual(action['callable'], handler)
+        self.assertEqual(action['discriminator'],
+                         ('resource', 'test', IResourceType, Interface))
+        self.assertEqual(action['args'][0], 'registerAdapter')
+        factory = action['args'][1]
+        self.assertTrue(factory.factory is _Resource)
+        context = object()
+        resource = factory(context)
+        checker = resource.__Security_checker__
+        self.assertEqual(checker.get_permissions, {'foo': 'testing'})
+        self.assertTrue(resource.context is context)
+        self.assertEqual(action['args'][2], (IResourceType,))
+        self.assertEqual(action['args'][3], Interface)
+        self.assertEqual(action['args'][4], 'test')
+        self.assertEqual(action['args'][5], 'TESTING')
+
+
 if 0: #these tests suck:  get coverage to 100% without them
 
     class ResourceViewTests(PlacelessSetup, unittest.TestCase):
@@ -1446,5 +1571,6 @@ def test_suite():
         unittest.makeSuite(Test_utility),
         unittest.makeSuite(Test_interface),
         unittest.makeSuite(Test_view),
+        unittest.makeSuite(Test_resource),
         #unittest.makeSuite(ResourceViewTests),
     ))
