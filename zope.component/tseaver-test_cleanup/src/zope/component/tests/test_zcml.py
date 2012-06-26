@@ -119,7 +119,7 @@ class Test_adapter(unittest.TestCase):
         _cfg_ctx = _makeConfigContext()
         self.assertRaises(TypeError, self._callFUT, _cfg_ctx, [_Factory])
  
-    def test_multiple_factory_single_for_(self):
+    def test_multiple_factory_single_for__w_name(self):
         from zope.interface import Interface
         from zope.component.interface import provideInterface
         from zope.component.zcml import handler
@@ -130,19 +130,19 @@ class Test_adapter(unittest.TestCase):
         class Bar(object):
             pass
         _cfg_ctx = _makeConfigContext()
-        self._callFUT(_cfg_ctx, [Foo, Bar], IFoo, [Interface])
+        self._callFUT(_cfg_ctx, [Foo, Bar], IFoo, [Interface], name='test')
         self.assertEqual(len(_cfg_ctx._actions), 3)
         self.assertEqual(_cfg_ctx._actions[0][0], ())
         # Register the adapter
         action =_cfg_ctx._actions[0][1]
         self.assertEqual(action['callable'], handler)
         self.assertEqual(action['discriminator'],
-                         ('adapter', (Interface,), IFoo, ''))
+                         ('adapter', (Interface,), IFoo, 'test'))
         self.assertEqual(action['args'][0], 'registerAdapter')
         self.assertEqual(action['args'][1].factory, Foo) #rolled up
         self.assertEqual(action['args'][2], (Interface,))
         self.assertEqual(action['args'][3], IFoo)
-        self.assertEqual(action['args'][4], '')
+        self.assertEqual(action['args'][4], 'test')
         self.assertEqual(action['args'][5], 'TESTING')
         # Register the provided interface
         self.assertEqual(_cfg_ctx._actions[1][0], ())
@@ -596,7 +596,7 @@ class Test_utility(unittest.TestCase):
         self.assertEqual(action['discriminator'], None)
         self.assertEqual(action['args'], ('', IFoo))
 
-    def test_w_component_w_provides(self):
+    def test_w_component_w_provides_w_naem(self):
         from zope.interface import Interface
         from zope.component.interface import provideInterface
         from zope.component.zcml import handler
@@ -604,17 +604,18 @@ class Test_utility(unittest.TestCase):
             pass
         _COMPONENT = object()
         _cfg_ctx = _makeConfigContext()
-        self._callFUT(_cfg_ctx, component=_COMPONENT, provides=IFoo)
+        self._callFUT(_cfg_ctx, component=_COMPONENT,
+                      name='test', provides=IFoo)
         self.assertEqual(len(_cfg_ctx._actions), 2)
         self.assertEqual(_cfg_ctx._actions[0][0], ())
         # Register the utility
         action =_cfg_ctx._actions[0][1]
         self.assertEqual(action['callable'], handler)
-        self.assertEqual(action['discriminator'], ('utility', IFoo, ''))
+        self.assertEqual(action['discriminator'], ('utility', IFoo, 'test'))
         self.assertEqual(action['args'][0], 'registerUtility')
         self.assertEqual(action['args'][1], _COMPONENT)
         self.assertEqual(action['args'][2], IFoo)
-        self.assertEqual(action['args'][3], '')
+        self.assertEqual(action['args'][3], 'test')
         self.assertEqual(action['args'][4], 'TESTING')
         # Register the provided interface
         self.assertEqual(_cfg_ctx._actions[1][0], ())
