@@ -4,6 +4,12 @@ CHANGES
 4.0.0 (unreleased)
 ==================
 
+- Added PyPy support:
+
+  - Security support omitted until ``zope.security`` ported.
+
+  - Persistent registry support omitted until ``ZODB`` / ``persistent`` ported.
+
 - 100% unit test coverage.
 
 - Removed the long-deprecated ``layer`` argument to the
