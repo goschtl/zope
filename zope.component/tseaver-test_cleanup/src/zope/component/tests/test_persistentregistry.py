@@ -111,6 +111,33 @@ class PersistentAdapterRegistryTests(unittest.TestCase):
         self.assertTrue('_v_lookup' in registry.__dict__)
 
 
+class PersistentComponentsTests(unittest.TestCase):
+
+    def _getTargetClass(self):
+        from zope.component.persistentregistry import PersistentComponents
+        return PersistentComponents
+
+    def _makeOne(self, *args, **kw):
+        return self._getTargetClass()(*args, **kw)
+
+    def test_ctor_initializes_registries_and_registrations(self):
+        from persistent.mapping import PersistentMapping
+        from persistent.list import PersistentList
+        from zope.component.persistentregistry import PersistentAdapterRegistry
+        registry = self._makeOne()
+        self.assertTrue(isinstance(registry.adapters,
+                                   PersistentAdapterRegistry))
+        self.assertTrue(isinstance(registry.utilities,
+                                   PersistentAdapterRegistry))
+        self.assertTrue(isinstance(registry._adapter_registrations,
+                                   PersistentMapping))
+        self.assertTrue(isinstance(registry._utility_registrations,
+                                   PersistentMapping))
+        self.assertTrue(isinstance(registry._subscription_registrations,
+                                   PersistentList))
+        self.assertTrue(isinstance(registry._handler_registrations,
+                                   PersistentList))
+
 def _makeOctets(s):
     import sys
     if sys.version_info < (3,):
@@ -120,4 +147,5 @@ def _makeOctets(s):
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(PersistentAdapterRegistryTests),
+        unittest.makeSuite(PersistentComponentsTests),
     ))
