@@ -12,3 +12,4 @@
    api/factory
    api/interface
    api/security
+   api/persistent

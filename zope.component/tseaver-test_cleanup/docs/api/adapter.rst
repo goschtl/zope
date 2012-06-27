@@ -1,13 +1,13 @@
 Adapter Registration APIs
 =========================
 
-Conforming Adapter Lookup
--------------------------
-
 .. testsetup::
 
    from zope.component.testing import setUp
    setUp()
+
+Conforming Adapter Lookup
+-------------------------
 
 .. autofunction:: zope.component.getAdapterInContext
 

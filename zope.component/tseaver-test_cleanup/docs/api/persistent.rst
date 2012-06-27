@@ -1,72 +1,21 @@
-##############################################################################
-#
-# Copyright (c) 2001 - 2012 Zope Foundation and Contributors.
-# All Rights Reserved.
-#
-# This software is subject to the provisions of the Zope Public License,
-# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
-# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
-# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
-# FOR A PARTICULAR PURPOSE.
-#
-##############################################################################
-"""Persistent component registry tests
-"""
-import unittest
+Persistent Registries
+=====================
 
-from zope.interface import Interface
-from zope.interface import implements
-from zope.component import adapter
-from zope.component.testing import setUp
-from zope.component.testing import tearDown
+.. testsetup::
 
+   from zope.component.testing import setUp
+   setUp()
 
-class I1(Interface):
-    pass
-
-class I2(Interface):
-    pass
-
-class U(object):
-
-    def __init__(self, name):
-        self.__name__ = name
-
-    def __repr__(self):
-        return "%s(%s)" % (self.__class__.__name__, self.__name__)
-
-class U1(U):
-    implements(I1)
-
-class U12(U):
-    implements(I1, I2)
-
-@adapter(I1)
-def handle1(x):
-    print 'handle1', x
-
-def handle(*objects):
-    print 'handle', objects
-
-@adapter(I1)
-def handle3(x):
-    print 'handle3', x
-
-@adapter(I1)
-def handle4(x):
-    print 'handle4', x
-
-def test_persistent_component_managers():
-    """
+Conforming Adapter Lookup
+-------------------------
 Here, we'll demonstrate that changes work even when data are stored in
 a database and when accessed from multiple connections.
 
 Start by setting up a database and creating two transaction
 managers and database connections to work with.
 
-    >>> from zope.component.testing import setUp, tearDown
-    >>> setUp()
+.. doctest::
+
     >>> import ZODB.tests.util
     >>> db = ZODB.tests.util.DB()
     >>> import transaction
@@ -80,7 +29,18 @@ managers and database connections to work with.
 Create a set of components registries in the database, alternating
 connections.
 
+.. doctest::
+
     >>> from zope.component.persistentregistry import PersistentComponents
+    >>> from zope.component.tests.examples import I1
+    >>> from zope.component.tests.examples import I2
+    >>> from zope.component.tests.examples import U
+    >>> from zope.component.tests.examples import U1
+    >>> from zope.component.tests.examples import U12
+    >>> from zope.component.tests.examples import handle1
+    >>> from zope.component.tests.examples import handle2
+    >>> from zope.component.tests.examples import handle3
+    >>> from zope.component.tests.examples import handle4
 
     >>> _ = t1.begin()
     >>> r1[1] = PersistentComponents('1')
@@ -137,7 +97,7 @@ connections.
     >>> _ = t1.begin()
 
     >>> r1[1].registerHandler(handle1, info="First handler")
-    >>> r1[2].registerHandler(handle, required=[U])
+    >>> r1[2].registerHandler(handle2, required=[U])
 
     >>> r1[3].registerHandler(handle3)
 
@@ -146,7 +106,7 @@ connections.
     >>> r1[4].handle(U1(1))
     handle1 U1(1)
     handle3 U1(1)
-    handle (U1(1),)
+    handle2 (U1(1),)
     handle4 U1(1)
 
     >>> t1.commit()
@@ -155,18 +115,17 @@ connections.
     >>> r2[4].handle(U1(1))
     handle1 U1(1)
     handle3 U1(1)
-    handle (U1(1),)
+    handle2 (U1(1),)
     handle4 U1(1)
     >>> t2.abort()
 
     >>> db.close()
-    >>> tearDown()
-    """
 
-def persistent_registry_doesnt_scew_up_subsribers():
-    """
-    >>> from zope.component.testing import setUp, tearDown
-    >>> setUp()
+Subscription to Events in Persistent Registries
+-----------------------------------------------
+
+.. doctest::
+
     >>> import ZODB.tests.util
     >>> db = ZODB.tests.util.DB()
     >>> import transaction
@@ -197,24 +156,13 @@ def persistent_registry_doesnt_scew_up_subsribers():
     >>> len(list(r2[1].registeredSubscriptionAdapters()))
     1
     >>> t2.abort()
-    >>> tearDown()
-    """
 
-
-
-class GlobalRegistry:
-    pass
-
-from zope.component.globalregistry import GlobalAdapterRegistry
-base = GlobalAdapterRegistry(GlobalRegistry, 'adapters')
-GlobalRegistry.adapters = base
-def clear_base():
-    base.__init__(GlobalRegistry, 'adapters')
-
-def test_deghostification_of_persistent_adapter_registries():
-    """
+Adapter Registrations after Serialization / Deserialization
+-----------------------------------------------------------
 
 We want to make sure that we see updates corrextly.
+
+.. doctest::
 
     >>> import persistent
     >>> import transaction
@@ -230,8 +178,8 @@ We want to make sure that we see updates corrextly.
     ...     def __repr__(self):
     ...         return 'Foo(%r)' % self.name
 
-    >>> from zope.component.testing import setUp, tearDown
-    >>> setUp()
+    >>> from zope.component.tests.examples import base
+    >>> from zope.component.tests.examples import clear_base
     >>> len(base._v_subregistries)
     0
 
@@ -279,16 +227,10 @@ We want to make sure that we see updates corrextly.
     >>> r2.lookup((), IFoo, '2')
     Foo('2')
 
-Cleanup:
-
     >>> db.close()
     >>> clear_base()
-    >>> tearDown()
-    """
 
+.. testcleanup::
 
-def test_suite():
-    import doctest
-    return unittest.TestSuite((
-        doctest.DocTestSuite(setUp=setUp, tearDown=tearDown),
-        ))
+   from zope.component.testing import tearDown
+   tearDown()

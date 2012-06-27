@@ -17,6 +17,7 @@ from zope.interface import Interface
 from zope.interface import implementer
 from zope.interface.interfaces import IInterface
 
+from zope.component._declaration import adapter
 from zope.component.testfiles.views import IC
 
 class ITestType(IInterface):
@@ -49,6 +50,47 @@ class ISII(Interface):
 
 def noop(*args):
     pass
+
+class U(object):
+
+    def __init__(self, name):
+        self.__name__ = name
+
+    def __repr__(self):
+        return "%s(%s)" % (self.__class__.__name__, self.__name__)
+
+@implementer(I1)
+class U1(U):
+    pass
+
+@implementer(I1, I2)
+class U12(U):
+    pass
+
+@adapter(I1)
+def handle1(x):
+    print 'handle1', x
+
+def handle2(*objects):
+    print 'handle2', objects
+
+@adapter(I1)
+def handle3(x):
+    print 'handle3', x
+
+@adapter(I1)
+def handle4(x):
+    print 'handle4', x
+
+class GlobalRegistry:
+    pass
+
+from zope.component.globalregistry import GlobalAdapterRegistry
+base = GlobalAdapterRegistry(GlobalRegistry, 'adapters')
+GlobalRegistry.adapters = base
+def clear_base():
+    base.__init__(GlobalRegistry, 'adapters')
+
 
 @implementer(I1)
 class Ob(object):
