@@ -15,8 +15,13 @@
 """
 import unittest
 
-from zope.component.testing import PlacelessSetup
 
+def skipIfNoSecurity(testfunc):
+    try:
+        import zope.security
+    except ImportError:
+        return lambda self: None
+    return testfunc
 
 class Test_handler(unittest.TestCase):
 
@@ -159,6 +164,7 @@ class Test_adapter(unittest.TestCase):
         self.assertEqual(action['discriminator'], None)
         self.assertEqual(action['args'], ('', Interface))
  
+    @skipIfNoSecurity
     def test_single_factory_single_for_w_permission(self):
         from zope.interface import Interface
         from zope.security.adapter import LocatingUntrustedAdapterFactory
@@ -188,6 +194,7 @@ class Test_adapter(unittest.TestCase):
         self.assertEqual(action['args'][4], '')
         self.assertEqual(action['args'][5], 'TESTING')
  
+    @skipIfNoSecurity
     def test_single_factory_single_for_w_locate_no_permission(self):
         from zope.interface import Interface
         from zope.security.adapter import LocatingUntrustedAdapterFactory
@@ -216,6 +223,7 @@ class Test_adapter(unittest.TestCase):
         self.assertEqual(action['args'][4], '')
         self.assertEqual(action['args'][5], 'TESTING')
  
+    @skipIfNoSecurity
     def test_single_factory_single_for_w_trusted_no_permission(self):
         from zope.interface import Interface
         from zope.security.adapter import TrustedAdapterFactory
@@ -385,6 +393,7 @@ class Test_subscriber(unittest.TestCase):
         self.assertEqual(action['discriminator'], None)
         self.assertEqual(action['args'], ('', Interface))
 
+    @skipIfNoSecurity
     def test_w_factory_w_provides_w_permission(self):
         from zope.interface import Interface
         from zope.security.adapter import LocatingUntrustedAdapterFactory
@@ -427,6 +436,7 @@ class Test_subscriber(unittest.TestCase):
         self.assertEqual(action['discriminator'], None)
         self.assertEqual(action['args'], ('', Interface))
 
+    @skipIfNoSecurity
     def test_w_factory_w_provides_wo_permission_w_locate(self):
         from zope.interface import Interface
         from zope.security.adapter import LocatingUntrustedAdapterFactory
@@ -468,6 +478,7 @@ class Test_subscriber(unittest.TestCase):
         self.assertEqual(action['discriminator'], None)
         self.assertEqual(action['args'], ('', Interface))
 
+    @skipIfNoSecurity
     def test_w_factory_w_provides_wo_permission_w_trusted(self):
         from zope.interface import Interface
         from zope.security.adapter import TrustedAdapterFactory
@@ -657,6 +668,7 @@ class Test_utility(unittest.TestCase):
         self.assertEqual(action['discriminator'], None)
         self.assertEqual(action['args'], ('', IFoo))
 
+    @skipIfNoSecurity
     def test_w_component_w_provides_w_permission(self):
         from zope.interface import Interface
         from zope.proxy import removeAllProxies
@@ -895,6 +907,7 @@ class Test_view(unittest.TestCase):
         self.assertEqual(action['args'][4], '')
         self.assertEqual(action['args'][5], 'TESTING')
 
+    @skipIfNoSecurity
     def test_w_single_factory_single_for__w_permission(self):
         from zope.interface import Interface
         from zope.component.zcml import handler
@@ -926,6 +939,7 @@ class Test_view(unittest.TestCase):
         self.assertEqual(action['args'][4], '')
         self.assertEqual(action['args'][5], 'TESTING')
 
+    @skipIfNoSecurity
     def test_w_single_factory_single_for__w_permission_and_allowed_attrs(self):
         from zope.interface import Interface
         from zope.component.zcml import handler
@@ -951,6 +965,7 @@ class Test_view(unittest.TestCase):
         checker = factory.checker
         self.assertEqual(checker.get_permissions, {'bar': 'testing'})
 
+    @skipIfNoSecurity
     def test_w_single_factory_single_for__w_permission_and_allowed_iface(self):
         from zope.interface import Interface
         from zope.component.zcml import handler
@@ -1066,6 +1081,7 @@ class Test_resource(unittest.TestCase):
         self.assertEqual(action['discriminator'], None)
         self.assertEqual(action['args'], ('', Interface))
 
+    @skipIfNoSecurity
     def test_w_permission(self):
         from zope.interface import Interface
         from zope.component.zcml import handler
