@@ -1,8 +1,6 @@
 """
 See: https://bugs.launchpad.net/zope3/+bug/98401
 """
-import unittest
-import doctest
 import sys
 import pickle
 
@@ -11,16 +9,6 @@ if __name__ == "__main__": #pragma NO COVER (runs in subprocess)
 
     from zope.interface import Interface
     from zope.interface import implementer
-
-    with open('/tmp/foo.txt', 'w') as f:
-        print >>f, sys.executable
-        print >>f, '-' * 80
-        for p in sys.path:
-            print >>f, p
-        print >>f, '-' * 80
-        import zope
-        for p in zope.__path__:
-            print >>f, p
 
     class I1(Interface):
         pass
@@ -41,6 +29,7 @@ if __name__ == "__main__": #pragma NO COVER (runs in subprocess)
             self.context = context
 
     import zope.component
+
     zope.component.provideAdapter(Comp, (I1,), I2)
     adapter = I2(ob)
     assert adapter.__class__ is Comp
