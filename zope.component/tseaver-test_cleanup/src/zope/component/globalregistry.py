@@ -13,10 +13,12 @@
 ##############################################################################
 """Global components support
 """
-from zope.interface import implements
+from zope.interface import implementer
 from zope.interface.adapter import AdapterRegistry
 from zope.interface.registry import Components
+
 from zope.component.interfaces import IComponentLookup
+from zope.component._compat import _BLANK
 
 def GAR(components, registryName):
     return getattr(components, registryName)
@@ -35,8 +37,8 @@ class GlobalAdapterRegistry(AdapterRegistry):
     def __reduce__(self):
         return GAR, (self.__parent__, self.__name__)
 
+@implementer(IComponentLookup)
 class BaseGlobalComponents(Components):
-    implements(IComponentLookup)
 
     def _init_registries(self):
         self.adapters = GlobalAdapterRegistry(self, 'adapters')
@@ -64,10 +66,10 @@ def getGlobalSiteManager():
 # We eventually want to deprecate these in favor of using the global
 # component registry directly.
 
-def provideUtility(component, provides=None, name=u''):
+def provideUtility(component, provides=None, name=_BLANK):
     base.registerUtility(component, provides, name, event=False)
 
-def provideAdapter(factory, adapts=None, provides=None, name=''):
+def provideAdapter(factory, adapts=None, provides=None, name=_BLANK):
     base.registerAdapter(factory, adapts, provides, name, event=False)
 
 def provideSubscriptionAdapter(factory, adapts=None, provides=None):

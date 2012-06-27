@@ -13,8 +13,9 @@
 ##############################################################################
 """Adapter declarations
 """
-import types
 import sys
+
+from zope.component._compat import CLASS_TYPES
 
 class adapter(object):
 
@@ -22,7 +23,7 @@ class adapter(object):
         self.interfaces = interfaces
 
     def __call__(self, ob):
-        if isinstance(ob, _class_types):
+        if isinstance(ob, CLASS_TYPES):
             ob.__component_adapts__ = _adapts_descr(self.interfaces)
         else:
             ob.__component_adapts__ = self.interfaces
@@ -44,8 +45,6 @@ def adapts(*interfaces):
 
 def adaptedBy(ob):
     return getattr(ob, '__component_adapts__', None)
-
-_class_types = type, types.ClassType
 
 class _adapts_descr(object):
     def __init__(self, interfaces):

@@ -25,6 +25,7 @@ from zope.component.interfaces import IComponentRegistrationConvenience
 from zope.component.interfaces import IFactory
 from zope.component.interfaces import ComponentLookupError
 from zope.component.interfaces import IComponentLookup
+from zope.component._compat import _BLANK
 from zope.component._declaration import adaptedBy
 from zope.component._declaration import adapter
 from zope.component._declaration import adapts
@@ -54,7 +55,7 @@ def getSiteManager(context=None):
         # to avoid the recursion implied by using a local `getAdapter()` call.
         try:
             return IComponentLookup(context)
-        except TypeError, error:
+        except TypeError as error:
             raise ComponentLookupError(*error.args)
 
 # Adapter API
@@ -92,26 +93,26 @@ def queryAdapterInContext(object, interface, context, default=None):
 
     return getSiteManager(context).queryAdapter(object, interface, '', default)
 
-def getAdapter(object, interface=Interface, name=u'', context=None):
+def getAdapter(object, interface=Interface, name=_BLANK, context=None):
     adapter = queryAdapter(object, interface, name, None, context)
     if adapter is None:
         raise ComponentLookupError(object, interface, name)
     return adapter
 
-def queryAdapter(object, interface=Interface, name=u'', default=None,
+def queryAdapter(object, interface=Interface, name=_BLANK, default=None,
                  context=None):
     if context is None:
         return adapter_hook(interface, object, name, default)
     return getSiteManager(context).queryAdapter(object, interface, name,
                                                 default)
 
-def getMultiAdapter(objects, interface=Interface, name=u'', context=None):
+def getMultiAdapter(objects, interface=Interface, name=_BLANK, context=None):
     adapter = queryMultiAdapter(objects, interface, name, context=context)
     if adapter is None:
         raise ComponentLookupError(objects, interface, name)
     return adapter
 
-def queryMultiAdapter(objects, interface=Interface, name=u'', default=None,
+def queryMultiAdapter(objects, interface=Interface, name=_BLANK, default=None,
                       context=None):
     try:
         sitemanager = getSiteManager(context)

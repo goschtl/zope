@@ -13,12 +13,17 @@
 ##############################################################################
 """Examples supporting Sphinx doctest snippets.
 """
+import sys
+
 from zope.interface import Interface
 from zope.interface import implementer
 from zope.interface.interfaces import IInterface
 
 from zope.component._declaration import adapter
 from zope.component.testfiles.views import IC
+
+def write(x):
+    sys.stdout.write('%s\n' % x)
 
 class ITestType(IInterface):
     pass
@@ -69,18 +74,18 @@ class U12(U):
 
 @adapter(I1)
 def handle1(x):
-    print 'handle1', x
+    write('handle1 %s' % x)
 
 def handle2(*objects):
-    print 'handle2', objects
+    write( 'handle2 ' + repr(objects))
 
 @adapter(I1)
 def handle3(x):
-    print 'handle3', x
+    write( 'handle3 %s' % x)
 
 @adapter(I1)
 def handle4(x):
-    print 'handle4', x
+    write( 'handle4 %s' % x)
 
 class GlobalRegistry:
     pass

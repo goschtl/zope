@@ -33,18 +33,18 @@ class Test_getGlobalSiteManager(unittest.TestCase):
         self.assertTrue(self._callFUT() is gsm)
 
     def test_gsm_pickling(self):
-        import cPickle
+        from zope.component._compat import _pickle
         gsm = self._callFUT()
-        dumped = cPickle.dumps(gsm)
-        loaded = cPickle.loads(dumped)
+        dumped = _pickle.dumps(gsm)
+        loaded = _pickle.loads(dumped)
         self.assertTrue(loaded is gsm)
 
-        dumped_utilities = cPickle.dumps(gsm.utilities)
-        loaded_utilities = cPickle.loads(dumped_utilities)
+        dumped_utilities = _pickle.dumps(gsm.utilities)
+        loaded_utilities = _pickle.loads(dumped_utilities)
         self.assertTrue(loaded_utilities is gsm.utilities)
 
-        dumped_adapters = cPickle.dumps(gsm.adapters)
-        loaded_adapters = cPickle.loads(dumped_adapters)
+        dumped_adapters = _pickle.dumps(gsm.adapters)
+        loaded_adapters = _pickle.loads(dumped_adapters)
         self.assertTrue(loaded_adapters is gsm.adapters)
 
 

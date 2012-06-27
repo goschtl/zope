@@ -4,7 +4,7 @@ CHANGES
 4.0.0 (unreleased)
 ==================
 
-- Added PyPy support:
+- Added PyPy and Python 3.2 support:
 
   - Security support omitted until ``zope.security`` ported.
 

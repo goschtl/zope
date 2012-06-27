@@ -13,14 +13,13 @@
 ##############################################################################
 """Interface utility functions
 """
-__docformat__ = 'restructuredtext'
-
-from types import ClassType
-
-import zope.component
-from zope.component.interfaces import ComponentLookupError
 from zope.interface import alsoProvides
 from zope.interface.interfaces import IInterface
+
+from zope.component.globalregistry import getGlobalSiteManager
+from zope.component.interfaces import ComponentLookupError
+from zope.component._api import queryUtility
+from zope.component._compat import CLASS_TYPES
 
 def provideInterface(id, interface, iface_type=None, info=''):
     """ Mark 'interface' as a named utilty providing 'iface_type'.
@@ -29,7 +28,7 @@ def provideInterface(id, interface, iface_type=None, info=''):
         id = "%s.%s" % (interface.__module__, interface.__name__)
 
     if not IInterface.providedBy(interface):
-        if not isinstance(interface, (type, ClassType)):
+        if not isinstance(interface, CLASS_TYPES):
             raise TypeError(id, "is not an interface or class")
         return
 
@@ -40,7 +39,7 @@ def provideInterface(id, interface, iface_type=None, info=''):
     else:
         iface_type = IInterface
 
-    gsm = zope.component.getGlobalSiteManager()
+    gsm = getGlobalSiteManager()
     gsm.registerUtility(interface, iface_type, id, info)
 
 
@@ -56,7 +55,7 @@ def getInterface(context, id):
 def queryInterface(id, default=None):
     """Return an interface or ``None``
     """
-    return zope.component.queryUtility(IInterface, id, default)
+    return queryUtility(IInterface, id, default)
 
 
 def searchInterface(context, search_string=None, base=None):
@@ -74,7 +73,7 @@ def searchInterfaceIds(context, search_string=None, base=None):
 
 
 def searchInterfaceUtilities(context, search_string=None, base=None):
-    gsm = zope.component.getGlobalSiteManager()
+    gsm = getGlobalSiteManager()
     iface_utilities = gsm.getUtilitiesFor(IInterface)
 
     if search_string:

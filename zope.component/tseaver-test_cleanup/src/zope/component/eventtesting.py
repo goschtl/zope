@@ -22,7 +22,7 @@ from zope.component.registry import (
 from zope.component.registry import dispatchHandlerRegistrationEvent
 try:
     from zope.testing.cleanup import addCleanUp
-except ImportError:
+except ImportError: #pragma NO COVER
     def addCleanUp(x):
         pass
 

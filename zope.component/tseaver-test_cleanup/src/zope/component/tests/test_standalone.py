@@ -36,10 +36,15 @@ class StandaloneTests(unittest.TestCase):
 
         try:
             rc = process.wait()
-        except OSError, e:
+        except OSError as e:
             if e.errno != 4: # MacIntel raises apparently unimportant EINTR?
                 raise # TODO verify sanity of a pass on EINTR :-/
-        self.assertEqual(rc, 0)
+        if rc != 0:
+            output = process.stdout.read()
+            sys.stderr.write('#' * 80 + '\n')
+            sys.stdout.write(output)
+            sys.stderr.write('#' * 80 + '\n')
+            self.fail('Output code: %d' % rc)
 
 def test_suite():
     return unittest.TestSuite((

@@ -10,3 +10,4 @@ docs/_build
 .tox
 nosetests.xml
 coverage.xml
+__pycache__
