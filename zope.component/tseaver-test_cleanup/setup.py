@@ -25,7 +25,6 @@ from setuptools import setup, find_packages
 
 TESTS_REQUIRE = [
     'zope.testing',
-    'zope.testrunner',
     'zope.component[hook]',
     'zope.component[persistentregistry]',
     'zope.component[security]',
