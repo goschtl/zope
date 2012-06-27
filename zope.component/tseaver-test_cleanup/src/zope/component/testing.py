@@ -18,7 +18,17 @@
 import zope.component.event
 
 # we really don't need special setup now:
-from zope.testing.cleanup import CleanUp as PlacelessSetup
+try:
+    from zope.testing.cleanup import CleanUp as PlacelessSetup
+except ImportError:
+    class PlacelessSetup(object):
+        def cleanUp(self):
+            from zope.component.globalregistry import base
+            base.__init__('base')
+        def setUp(self):
+            self.cleanUp()
+        def tearDown(self):
+            self.cleanUp()
 
 def setUp(test=None):
     PlacelessSetup().setUp()

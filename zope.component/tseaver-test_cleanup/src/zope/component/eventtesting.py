@@ -20,7 +20,11 @@ from zope.component.registry import dispatchAdapterRegistrationEvent
 from zope.component.registry import (
     dispatchSubscriptionAdapterRegistrationEvent)
 from zope.component.registry import dispatchHandlerRegistrationEvent
-from zope.testing import cleanup
+try:
+    from zope.testing.cleanup import addCleanUp
+except ImportError:
+    def addCleanUp(x):
+        pass
 
 events = []
 def getEvents(event_type=None, filter=None): #pragma NO COVER going aaway
@@ -36,7 +40,7 @@ def getEvents(event_type=None, filter=None): #pragma NO COVER going aaway
 
 def clearEvents(): #pragma NO COVER going aaway
     del events[:]
-cleanup.addCleanUp(clearEvents)
+addCleanUp(clearEvents)
 
 class PlacelessSetup: #pragma NO COVER going aaway
 
