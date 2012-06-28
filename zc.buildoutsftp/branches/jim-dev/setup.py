@@ -17,6 +17,7 @@ setup(
     package_dir = {'':'src'},
     namespace_packages = ['zc'],
     install_requires = ['paramiko', 'setuptools'],
+    extras_require = dict(test=['zope.testing', 'mock']),
     zip_safe=False,
     entry_points = {
         'zc.buildout.extension': ['default = %s.buildoutsftp:install' % name],

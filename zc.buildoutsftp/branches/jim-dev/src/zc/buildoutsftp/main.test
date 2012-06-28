@@ -1,0 +1,49 @@
+Mochiavellian tests
+===================
+
+We're not going to try to test actuall sftp interaction.  Too hard.
+Instead, we'll mock the environmet and back up the mock-based tests
+with integration tests.
+
+The buildoutsftp extension installs an sftp handler in urllib2.
+
+    >>> import zc.buildoutsftp, urllib2
+    >>> zc.buildoutsftp.install(None)
+    >>> urllib2.build_opener.assert_called_with(zc.buildoutsftp.SFTPHandler)
+    >>> urllib2.install_opener.assert_called_with(
+    ...     urllib2.build_opener.return_value)
+
+A buildout object is passed to install, but install ignores it.
+
+    >>> handler = zc.buildoutsftp.SFTPHandler()
+    >>> request = urllib2.Request('sftp://example.com')
+
+Let's start with essentially no ssh support in the user's environment:
+
+    >>> handler.sftp_open(request)
+    Traceback (most recent call last):
+    ...
+    AuthenticationException: ('No stored host key', 'example.com')
+
+There's a early check for the presense of host keys that failed.
+We'll create an empty host key file:
+
+    >>> import os, paramiko
+    >>> host_key = paramiko.RSAKey.generate(1024)
+    >>> host_keys = paramiko.HostKeys()
+    >>> host_keys.add('example.com', 'ssh-rsa', host_key)
+    >>> os.mkdir('.ssh', 0700)
+    >>> host_keys.save(os.path.join('.ssh', 'known_hosts'))
+
+    >>> handler.sftp_open(request)
+    Traceback (most recent call last):
+    ...
+    AuthenticationException: Authentication failed.
+
+Authentication failed because the user has no keys.
+
+Let's give them one:
+
+    >>> ukey = creds[(('example.com', 22), 'testuser')]['user_key']
+    >>> ukey.write_private_key_file(os.path.join('.ssh', 'id_rsa'))
+
