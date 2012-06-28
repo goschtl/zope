@@ -8,7 +8,8 @@ CHANGES
 
   - Security support omitted until ``zope.security`` ported.
 
-  - Persistent registry support omitted until ``ZODB`` / ``persistent`` ported.
+  - Persistent registry support omitted until ``ZODB`` ported (or
+    ``persistent`` factored out).
 
 - 100% unit test coverage.
 
