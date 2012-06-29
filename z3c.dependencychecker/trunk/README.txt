@@ -1,6 +1,14 @@
 z3c.dependencychecker
 =====================
 
+******************************************************************
+******************************************************************
+WARNING: moved to https://github.com/reinout/z3c.dependencychecker
+******************************************************************
+******************************************************************
+
+
+
 Checks which imports are done and compares them to what's in ``setup.py`` and
 warn when discovering missing or unneeded dependencies.
 
