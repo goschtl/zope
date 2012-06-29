@@ -58,8 +58,8 @@ Status and Change History
 This package has been used for years on Linux and Mac OS X.  The
 author doesn't use it on Windows, but, presumably, other people do.
 
-0.9.0 (2012/06/29)
-------------------
+0.9.0b1 (2012/06/29)
+--------------------
 
 Added support for:
 
