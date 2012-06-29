@@ -20,8 +20,8 @@ setup(
     extras_require = dict(test=['zope.testing', 'mock']),
     zip_safe=False,
     entry_points = {
-        'zc.buildout.extension': ['default = %s.buildoutsftp:install' % name],
-        'zc.buildout.unloadextension': ['default = %s.buildoutsftp:unload' % name],
+        'zc.buildout.extension': ['default = %s:install' % name],
+        'zc.buildout.unloadextension': ['default = %s:unload' % name],
         },
     classifiers = [
        'Framework :: Buildout',
