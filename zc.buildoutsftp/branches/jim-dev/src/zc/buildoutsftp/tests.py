@@ -13,6 +13,7 @@
 ##############################################################################
 from zope.testing import setupstack
 import doctest
+import mimetypes
 import mock
 import os
 import paramiko
@@ -30,6 +31,9 @@ def hack_path(path):
 
 def setup(test):
     globs = test.globs
+
+    mimetypes.init()
+
     setupstack.setUpDirectory(test)
     setupstack.context_manager(test, mock.patch('urllib2.install_opener'))
     setupstack.context_manager(test, mock.patch('urllib2.build_opener'))
@@ -72,15 +76,20 @@ def setup(test):
             self.addr = addr
 
         def connect(self, username, pkey):
-            if pkey != creds.get((self.addr, username))['user_key']:
-                raise paramiko.AuthenticationException()
-            self.username = username
+            try:
+                key = creds[(self.addr, username)]['user_key']
+                if pkey == key:
+                    self.username = username
+                    return
+            except KeyError:
+                pass
+            raise paramiko.AuthenticationException()
 
         def close(self):
             pass
 
         def get_remote_server_key(self):
-            return creds.get((self.addr, self.username))['user_key']
+            return creds.get((self.addr, self.username))['host_key']
 
     @side_effect(
         setupstack.context_manager(
@@ -103,10 +112,10 @@ def setup(test):
             else:
                 return base
 
-        def stat(path):
+        def stat(self, path):
             return os.stat(self._path(path))
 
-        def listdir(self):
+        def listdir(self, path):
             return os.listdir(self._path(path))
 
         def open(self, path):
@@ -116,7 +125,7 @@ def setup(test):
         setupstack.context_manager(
             test, mock.patch('paramiko.SFTPClient.from_transport')))
     def from_transport(trans):
-        return SFTPClient(addr)
+        return SFTPClient(trans)
 
     os.makedirs(os.path.join('example.com:22', 'data', 'moredata'))
     with open(os.path.join('example.com:22', 'data', 'index.html'), 'w') as f:

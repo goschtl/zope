@@ -40,13 +40,18 @@ parse_url_host = re.compile(
     '(?:' '([^@:]+)(?::([^@]*))?@' ')?'
     '([^:]*)(?::(\d+))?$').match
 
+def deunixpath(path):
+    return os.path.join(*path.split('/'))
+
 _configs = None
 def _get_config(host):
     global _configs
     if _configs is None:
         _configs = []
-        for path in ('/etc/ssh/ssh_config', '/etc/ssh/ssh_config',
-                     os.path.expanduser('~/.ssh/config')):
+        for path in (
+            deunixpath('/etc/ssh/ssh_config'), deunixpath('/etc/ssh_config'),
+            os.path.expanduser(deunixpath('~/.ssh/config')),
+            ):
             if os.path.exists(path):
                 config = paramiko.SSHConfig()
                 with open(path) as f:
@@ -91,15 +96,15 @@ else:
             host_keys = paramiko.HostKeys(user_host_keys)
         else:
             host_keys = {}
-        global_host_keys = config.get('GlobalKnownHostsFile')
+        global_host_keys = config.get('globalknownhostsfile')
         if not global_host_keys:
-            for path in ('/etc/ssh/GlobalKnownHostsFile',
+            for path in ('/etc/ssh/ssh_known_hosts',
                          '/etc/ssh_known_hosts'):
                 if os.path.exists(path):
                     global_host_keys = path
                     break
         if global_host_keys:
-            host_keys.update(paramiko.HostKeys(user_host_keys))
+            host_keys.update(paramiko.HostKeys(global_host_keys))
         return host_keys
 
 class Result:
@@ -138,6 +143,9 @@ def cleanup():
         trans = _connection_pool.pop(k)
         if trans is not False:
             trans.close()
+
+    global _configs
+    _configs = None
 
 atexit.register(cleanup)
 
@@ -188,9 +196,9 @@ class SFTPHandler(urllib2.BaseHandler):
                     raise
         else:
             keys = list(paramiko.Agent().get_keys())
-            IdentityFile = config.get('IdentityFile')
+            IdentityFile = config.get('identityfile')
             if IdentityFile:
-                key = _open_key(IdentityFile)
+                key = _open_key(os.path.expanduser(IdentityFile))
                 if key is None:
                     logger.error('IdentityFile, %s, does not exist',
                                  IdentityFile)
@@ -199,6 +207,7 @@ class SFTPHandler(urllib2.BaseHandler):
             else:
                 for path in (
                     '~/.ssh/identity', '~/.ssh/id_rsa', '~/.ssh/id_dsa'):
+                    path = deunixpath(path)
                     key = _open_key(os.path.expanduser(path))
                     if key is not None:
                         keys.insert(0, key)

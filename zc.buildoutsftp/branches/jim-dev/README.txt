@@ -55,9 +55,23 @@ ontained from ssh agent (pagent on Windows).
 Status and Change History
 =========================
 
-This package is experimental.  It seems to work based on manual
-testing. I'm still trying to figure out how to write automated tests
-for this.
+This package has been used for years on Linux and Mac OS X.  The
+author doesn't use it on Windows, but, presumably, other people do.
+
+1.0.0 (2012/06/29)
+------------------
+
+Added support for:
+
+- Global-configuration settings.
+
+- Global known-hosts files.
+
+- Host-specific ssh keys.
+
+Added mock-based tests for unix-like systems.  Unfortunately, these
+tests will fail for Windows and windows support, while present, is
+untested.
 
 0.6.1 (2010/03/17)
 ------------------
