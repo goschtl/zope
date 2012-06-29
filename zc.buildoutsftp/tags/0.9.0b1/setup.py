@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 name='zc.buildoutsftp'
 setup(
     name=name,
-    version = "0",
+    version = "0.9.0b1",
     author = "Jim Fulton",
     author_email = "jim@zope.com",
     description = "Specialized zc.buildout plugin to add sftp support.",
