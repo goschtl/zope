@@ -1,0 +1,431 @@
+.. include:: <s5defs.txt>
+
+=======================================
+A Resume-Based WSGI Load Balancer
+=======================================
+
+.. raw:: html
+
+   <center>
+   <br />
+   PyCon 2012<br />
+   March 9, 2012<br /><br />
+   Jim Fulton<br />
+   jim@zope.com<br /><br />
+   </center>
+
+Problem
+=======
+
+- Host >500 newspaper sites.
+
+- Multiple layers of caching
+
+- Large corpus at each level
+
+- Working set very large, too large to fit in cache(s).
+
+- Many (10s) workers (thank you GIL)
+
+- Database loads a significant part of request processing
+
+  - Secondary effects of large load on database server.
+
+Cache Architecture
+==================
+
+.. image:: caching.png
+
+ZODB Object Cache
+=================
+
+- Persistent Object System
+
+- Database is simple collection of database records indexed by object id.
+
+- Object cache simply graph of objects in memory
+
+- Objects are removed from memory when necessary
+
+  - reduce memory usage
+
+  - object invalidation
+
+- Object cache is per application thread
+
+Client Cache
+============
+
+- Disk-based local cache of database records
+
+- Objects take less space in the client cache
+
+  - pickles smaller than in-memory objects
+
+  - records are compressed
+
+- Ideally client cache records fit in local disk cache.
+
+- Loads from client cache
+
+  - ~20 microseconds to load data record, when record is in disk cache
+    and
+
+  - another ~100 microseconds to decompress and unpickle.
+
+- Much slower (milliseconds) if we have to go to disk or to storage server.
+
+Application memory usage
+========================
+
+- Practical to have up to 4G/core on our servers
+
+- Thanks to GIL, Python processes can't use more than 1 core.
+
+- Aim to be CPU bound
+
+  - 1 application thread per process
+
+  - process per core.
+
+- Need enough memory for process memory and disk cache.
+
+- Process memory and ZEO cache must be less than 4G
+
+- EC2 instances have ~2G/core
+
+- Ideally, working set would fit in object cache.
+
+Shared cache / Memcached
+========================
+
+With a naive approach, each worker works on the same data.
+
+- Too much data for each worker.
+
+- Lots of duplication
+
+- With a shared cache, the size of the cache can me amortized over
+  many workers.
+
+- IPC is fairly slow ~100 microseconds
+
+- Cross-machine communication even slower
+
+- ZODB database requests are fine-grained
+
+Squid Caches
+============
+
+- Two levels of caching to minimize application-server requests.
+
+- At each level, each cache contains entire corpus.
+
+- We don't cache data as long as we could, because can't store working
+  set.
+
+- Invalidation is painful
+
+  - Many caches to invalidate
+
+  - Many caches to fill
+
+Spread corpus across workers
+===================================
+
+If workers could specialize, then they could work on smaller part of
+corpus.
+
+- Classify requests
+
+  Ideally, different request classes use completely different data.
+
+- Always send requests of a given class to the same worker(s).
+
+- Manual distribution to needed level isn't practical.
+
+Resume-based load balancer
+==========================
+
+- Specialized lb routes requests based on:
+
+  - Request class and worker skills, and
+
+  - Worker backlog
+
+- Knowledge of worker skills has to survive lb restarts.
+
+- Should be possible to have multiple lbs (for spreading load and availability).
+
+- Automatic
+
+Request classification
+======================
+
+- Application-supplied classification function takes a WSGI
+  environment and returns a request class string.
+
+- Built-in classifiers
+
+  - Host classifier uses host header, with leading 'www.' prefix
+    removed.
+
+  - Regular-expression factory takes a regular expression with a
+    ``class`` group and an environment key.
+
+Load-balancing algorithm
+========================
+
+- List of skilled workers for each request class, usually length 1
+
+- Pick worker with smallest weighted backlog for a given request
+  class.
+
+  - Weight backlog by average seconds/request for recent requests.
+
+- Don't use a worker if it's backlog is too large.
+
+  - ``variance`` * mean backlog
+
+- Use an unskilled worker if all of the skilled backlogs too large.
+
+Secondary benefit of algorithm
+==============================
+
+No request class uses more than ~ 1/variance fraction of users.
+
+- Degradation under high load is limited
+
+- DDOS or misbehaving request-class doesn't take down whole pool.
+
+Worker resumes
+==============
+
+- Workers keep track of what they're good at::
+
+  {request_class -> sampled_requests_per_second}
+
+- If skills are persistent (e.g. persistent cache data)
+  then workers save and load their resumes on restart.
+
+- On connection to a lb, worker sends resume.
+
+- Worker recomputes resume after a configurable number of requests.
+
+  - Worker sends new resume to lb(s)
+
+Adding Workers
+==============
+
+- LB notices new workers and adds to pool.
+
+- Used when backlogs become high, or when there are no workers for a
+  request class.
+
+Removing workers
+================
+
+- LB -> Worker connections is long-lived, so LB can see when worker
+  goes away.
+
+- In-flight requests are retried if possible (GET/HEAD with no output)
+
+- Load automatically shifts to other workers.
+
+Network Architecture
+====================
+
+.. image:: network.png
+
+gevent
+======
+
+- Implemented with gevent (1.0b1)
+
+  - Greenlets (but largely invisible)
+
+  - WSGI server, with HTTPS support
+
+  - Thread-pool support
+
+  - Easier than threading or event-based programming
+
+- Asynchronous IO well suited to LB.
+
+- Workers can use thread pools
+
+- With 16 workers in a stress test, the LB consumed 4% CPU.
+
+ZooKeeper
+=========
+
+- High-availability high-performance coordination system
+
+  - Tree of nodes with data
+
+- Workers register with ZooKeeper.
+
+- LB discovers workers by *watching* a ZooKeeper node.
+
+- Configuration parameters are stored on nodes
+
+  - lb and workers watch their nodes
+
+  - real-time update
+
+- Tree-based application models
+
+Tree Example
+============
+
+::
+
+  /ee-resumelb
+    variance = 4
+    /ee-pool
+      main -> /ghm/databases/main
+      sessions -> /ghm/databases/sessions
+      ugc -> /ghm/databases/ugc
+    /providers
+      /10.1.1.50:8080
+        backdoor = u'127.0.0.1:55253'
+        pid = 11375
+    /workers
+      history = 9999
+      /providers
+        /10.1.1.50:30894
+          pid = 11064
+        /10.1.1.50:35284
+          pid = 11001
+        ...
+
+See http://pypi.python.org/pypi/zc.zk
+
+Evaluation
+==========
+
+- Initial simulations very promising.
+
+  - Application managed virtual cache.
+
+  - Simulate impact of cache misses with sleeps.
+
+- Log-playback test
+
+  - Play back GETs from access logs
+
+  - Server with production data
+
+- Production test
+
+Log Playback
+============
+
+- 8-core (hyper-threaded) 32G RAM
+
+- 16 worker processes
+
+- Play access logs
+
+- Production data
+
+- Baseline tests (all workers to all requests)
+
+- Resume-lb tests
+
+Playback results
+================
+
+- 90% reduction in database loads per request
+
+- 33% improvement in speed
+
+  - Speed improvement limited through sharing of cores.
+
+- Database overlap between workers
+
+  - 33% for baseline, which is much lower than expected
+
+  -  7% with resume-lb
+
+Production test
+===============
+
+- 8-core (hyper-threaded) 32G RAM
+
+- 8 worker processes
+
+- lb taking production load in an IPVS pool alongside non-resume-based
+  (30) workers.
+
+- 80% reduction in database loads
+
+- 45% improvement in speed
+
+- Expect performance to improve when fully deployed with more workers.
+
+Other applications
+==================
+
+- Basic approach should be helpful whenever there's a large working
+  set and a request classifier can be found that segments the working
+  set.
+
+- Not ZODB dependent.
+
+- Mileage will vary a lot.
+
+Issues
+======
+
+- Under light load, new workers may not get work.
+
+- In initial production testing, we used an incorrect request
+  classifier and workers didn't recover quickly when the classifier
+  was fixed. Performance improved quickly after removing worker
+  resumes.
+
+Related work
+============
+
+- Classic LB algorithm: least (-weighted) connections
+
+- IP/Site affinity
+
+- Worker cookies
+
+- IP/Request hashing
+
+- Locality-aware request distribution (LARD), Workload-aware request
+  distribution (WARD)
+
+  - HTTP protocol doesn't provide for feedback from workers (resumes)
+
+Future: Response Caching
+========================
+
+- Move response caching into WSGI stack.
+
+- Response cache benefits from resume-based load-balancer.
+
+- Leverage ZODB caching and invalidation protocol.
+
+- Store compressed results and "inflate" when necessary.
+
+Status
+======
+
+- In testing production
+
+- Released as zc.resumelb
+
+- In subversion at:
+
+  - svn://svn.zope.org/repos/main/zc.resumelb
+
+  - http://svn.zope.org/zc.resumelb
+
+Questions?
+==========
+
+http://jimfulton.info/talks/resumelb.html
