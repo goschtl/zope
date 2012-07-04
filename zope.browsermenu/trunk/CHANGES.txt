@@ -5,6 +5,11 @@ CHANGES
 4.0.0 (unreleased)
 ==================
 
+- Strip noise from context actions in doctests.
+ 
+  The output is now more meaningful, and hides irrelevant details.
+  (forward-compatibility with ``zope.component`` 4.0.0).
+
 - Replaced deprecated ``zope.interface.implements`` usage with equivalent
   ``zope.interface.implementer`` decorator.
 
