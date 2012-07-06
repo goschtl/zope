@@ -1,0 +1,44 @@
+Recipe to create ebs volumes
+============================
+
+The recipe takes a the following options:
+
+region
+   AWS Region
+
+zone
+   The name of an aws zone.
+
+size
+   Size in GB
+
+name
+   A logical name for the volumes.
+
+Note that a volume is identified by name and an index.
+
+    >>> import zc.awsrecipes
+    >>> zc.awsrecipes.EBS({}, 'myvolume', dict(
+    ...     region = 'funky',
+    ...     zone = 'us-east-1b',
+    ...     size = '50',
+    ...     name = 'data',
+    ... )).install()
+    ()
+
+    >>> import boto.ec2.connection
+    >>> boto.ec2.connection.EC2Connection.assert_called_with(region='funky')
+    >>> conn = boto.ec2.connection.EC2Connection.return_value
+
+    >>> conn.create_volume.assert_called_with(50, 'us-east-1b')
+
+Now, if we look throug our ebs volumes, we should see 2 with a name of
+data:
+
+    >>> import boto.ec2.connection
+    >>> conn = conn = boto.ec2.connection.EC2Connection()
+    >>> for v in conn.get_all_volumes():
+    ...     if v.tags['Name'] == 'data':
+    ...         print v.size
+    50
+
