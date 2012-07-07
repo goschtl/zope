@@ -1,8 +1,0 @@
-<zcml>
-
-  <include package="needed.by.zcml"/>
-  <securityPolicy
-      component="also.needed.by.zcml.ZopeSecurityPolicy"
-      />
-
-</zcml>

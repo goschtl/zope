@@ -1,8 +1,0 @@
-"""Test the from imports"""
-
-from zope import interface
-from something import origname as newname
-
-# Use it to prevent "unused!" warnings
-interface
-newname

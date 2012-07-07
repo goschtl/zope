@@ -1,7 +1,0 @@
-"""Imports that are available, but that we do not use"""
-
-# The project we explicitly depend on:
-import zest.releaser
-# Some stdlib import
-import os
-import tempfile
