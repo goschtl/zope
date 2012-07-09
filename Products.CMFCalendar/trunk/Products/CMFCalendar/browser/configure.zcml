@@ -40,7 +40,6 @@
       for="*"
       layer="Products.CMFDefault.interfaces.ICMFDefaultSkin"
       name="calendar_widget"
-      class="Products.CMFDefault.browser.utils.MacroView"
       template="templates/calendar_widgets.pt"
       permission="zope2.View"
       />
