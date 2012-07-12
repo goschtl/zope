@@ -32,6 +32,9 @@ Bugs fixed:
 
 -Work around distribute's way of dealing with setuptools.
 
+- Handle both addition and subtraction of elements (+= and -=) on the same key
+  in the same section.
+
 1.5.2 (2010-10-11)
 ==================
 
