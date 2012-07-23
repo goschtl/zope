@@ -1,0 +1,68 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+  <browser:page
+      for="Products.CMFTopic.interfaces.ITopic"
+      layer="Products.CMFDefault.interfaces.ICMFDefaultSkin"
+      name="view.html"
+      class=".topic.TopicView"
+      template="topic.pt"
+      permission="zope2.View"
+      />
+
+  <browser:page
+      for="Products.CMFTopic.interfaces.IMutableTopic"
+      layer="Products.CMFDefault.interfaces.ICMFDefaultSkin"
+      name="criteria.html"
+      class=".topic.TopicCriteriaView"
+      template="topic_criteria.pt"
+      permission="cmf.ChangePortalTopics"
+      />
+
+  <browser:page
+      for="Products.CMFTopic.DateCriteria.FriendlyDateCriterion"
+      layer="Products.CMFDefault.interfaces.ICMFDefaultSkin"
+      name="edit"
+      template="../skins/zpt_topic/friendlydatec_editform.pt"
+      permission="cmf.ChangePortalTopics"
+      />
+
+  <browser:page
+      for="Products.CMFTopic.ListCriterion.ListCriterion"
+      layer="Products.CMFDefault.interfaces.ICMFDefaultSkin"
+      name="edit"
+      template="../skins/zpt_topic/listc_edit.pt"
+      permission="cmf.ChangePortalTopics"
+      />
+
+  <browser:page
+      for="Products.CMFTopic.SimpleIntCriterion.SimpleIntCriterion"
+      layer="Products.CMFDefault.interfaces.ICMFDefaultSkin"
+      name="edit"
+      template="../skins/zpt_topic/sic_edit.pt"
+      permission="cmf.ChangePortalTopics"
+      />
+
+  <browser:page
+      for="Products.CMFTopic.SortCriterion.SortCriterion"
+      layer="Products.CMFDefault.interfaces.ICMFDefaultSkin"
+      name="edit"
+      template="../skins/zpt_topic/sort_edit.pt"
+      permission="cmf.ChangePortalTopics"
+      />
+
+  <browser:page
+      for="Products.CMFTopic.SimpleStringCriterion.SimpleStringCriterion"
+      layer="Products.CMFDefault.interfaces.ICMFDefaultSkin"
+      name="edit"
+      template="../skins/zpt_topic/ssc_edit.pt"
+      permission="cmf.ChangePortalTopics"
+      />
+
+  <browser:resource
+      name="topic_icon.gif"
+      image="../skins/zpt_topic/topic_icon.gif"
+      />
+
+</configure>

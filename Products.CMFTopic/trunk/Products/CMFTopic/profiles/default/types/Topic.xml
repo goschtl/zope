@@ -4,22 +4,22 @@
  <property name="title" i18n:translate="">Topic</property>
  <property name="description"
     i18n:translate="">Topics are canned queries for organizing content with up to date queries into the catalog.</property>
- <property name="icon_expr">string:${portal_url}/topic_icon.gif</property>
+ <property name="icon_expr">string:${portal_url}/++resource++topic_icon.gif</property>
  <property name="content_meta_type">Portal Topic</property>
  <property name="product"></property>
  <property name="factory">cmf.topic</property>
  <property name="add_view_expr">string:${folder_url}/++add++Topic</property>
  <property name="link_target"></property>
- <property name="immediate_view">topic_edit_form</property>
+ <property name="immediate_view">properties.html</property>
  <property name="global_allow">True</property>
  <property name="filter_content_types">True</property>
  <property name="allowed_content_types">
   <element value="Topic"/>
  </property>
  <property name="allow_discussion">False</property>
- <alias from="(Default)" to="topic_view"/>
- <alias from="index.html" to="topic_view"/>
- <alias from="view" to="topic_view"/>
+ <alias from="(Default)" to="view.html"/>
+ <alias from="index.html" to="view.html"/>
+ <alias from="view" to="view.html"/>
  <action title="View" action_id="view" category="object" condition_expr=""
     icon_expr="string:${portal_url}/preview_icon.png" link_target=""
     url_expr="string:${object_url}" visible="True">
@@ -27,18 +27,18 @@
  </action>
  <action title="Edit" action_id="edit" category="object" condition_expr=""
     icon_expr="string:${portal_url}/edit_icon.png" link_target=""
-    url_expr="string:${object_url}/topic_edit_form" visible="True">
+    url_expr="string:${object_url}/properties.html" visible="True">
   <permission value="Change portal topics"/>
  </action>
  <action title="Criteria" action_id="criteria" category="object"
     condition_expr="" icon_expr="string:${portal_url}/criteria_icon.png"
-    link_target="" url_expr="string:${object_url}/topic_criteria_form"
+    link_target="" url_expr="string:${object_url}/criteria.html"
     visible="True">
   <permission value="Change portal topics"/>
  </action>
  <action title="Subtopics" action_id="folderContents" category="object"
     condition_expr="" icon_expr="string:${portal_url}/folder_icon.png"
-    link_target="" url_expr="string:${object_url}/folder_contents"
+    link_target="" url_expr="string:${object_url}/edit.html"
     visible="True">
   <permission value="List folder contents"/>
  </action>

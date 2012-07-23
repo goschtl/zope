@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<object name="Topic">
+ <alias from="(Default)" to="topic_view"/>
+ <alias from="criteria.html" to="topic_criteria_form"/>
+ <alias from="edit.html" to="folder_contents"/>
+ <alias from="index.html" to="topic_view"/>
+ <alias from="properties.html" to="topic_edit_form"/>
+ <alias from="view.html" to="topic_view"/>
+ <alias from="view" to="topic_view"/>
+</object>

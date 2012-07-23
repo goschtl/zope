@@ -1,0 +1,49 @@
+<html metal:use-macro="context/@@standard_macros/page">
+<body>
+
+<metal:slot metal:fill-slot="body">
+<h2>Topic Criteria: <span tal:replace="context/getId" /></h2>
+
+<form action="" method="post" tal:attributes="action request/ACTUAL_URL">
+<div>
+   <label for="acquireCriteria" i18n:translate="">Acquire Criteria from Parent</label>:
+   <input id="acquireCriteria" name="acquireCriteria:boolean" type="checkbox"
+          tal:attributes="checked context/acquireCriteria" />
+</div>
+<div tal:repeat="criterion context/listCriteria">
+    <div tal:replace="structure criterion/@@edit" />
+</div>
+<div>
+    <input name="EDIT" type="submit" value="Save changes" />
+    <input name="DELETE" type="submit" value="Delete selected" />
+</div>
+</form>
+
+<form action="" method="post" tal:attributes="action request/ACTUAL_URL">
+<h2> Add New Topic Criteria: </h2>
+<table class="FormLayout">
+<tr valign="top">
+    <th align="right"> Field id: </th>
+    <td>
+        <select name="field" tal:define="fields context/listAvailableFields">
+            <option value="" tal:repeat="field fields" tal:attributes="value field" tal:content="field">Field</option>
+        </select>
+    </td>
+</tr>
+<tr valign="top">
+    <th align="left"> Criteria type: </th>
+    <td>
+        <select name="criterion_type" tal:define="types context/listCriteriaTypes">
+            <option value="" tal:repeat="type types" tal:attributes="value type/name" tal:content="type/name">Type</option>
+        </select>
+    </td>
+</tr>
+</table>
+<div>
+    <input name="ADD" type="submit" value="Add" />
+</div>
+</form>
+</metal:slot>
+
+</body>
+</html>

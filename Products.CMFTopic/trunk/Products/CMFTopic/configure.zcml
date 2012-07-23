@@ -10,6 +10,11 @@
       title="Add portal topics"
       />
 
+  <permission
+      id="cmf.ChangePortalTopics"
+      title="Change portal topics"
+      />
+
   <!-- Topic -->
 
   <five:registerClass
@@ -23,6 +28,11 @@
       name="cmf.topic"
       />
 
+  <!-- Load CMFDefault.skin first, we use the layer named "cmf" it defines -->
+  <include package="Products.CMFDefault.skin"/>
+
+  <include package=".browser"/>
+
   <!-- directories -->
 
   <cmf:registerDirectory name="zpt_topic"/>
@@ -33,6 +43,14 @@
       name="default"
       title="CMFTopic"
       description="Adds topic portal type."
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      for="Products.CMFCore.interfaces.ISiteRoot"
+      />
+
+  <genericsetup:registerProfile
+      name="skins_support"
+      title="CMFTopic Oldstyle Skins"
+      description="Hooks up the oldstyle skins."
       provides="Products.GenericSetup.interfaces.EXTENSION"
       for="Products.CMFCore.interfaces.ISiteRoot"
       />

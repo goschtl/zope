@@ -14,6 +14,7 @@
 """
 
 from zope.interface import Interface
+from zope.schema import Bool
 
 
 class ITopic(Interface):
@@ -23,6 +24,8 @@ class ITopic(Interface):
     o Each topic holds a set of zero or more Criteria objects specifying
       the query.
     """
+
+    acquireCriteria = Bool(title=u'Acquire Criteria from Parent')
 
     def queryCatalog(REQUEST=None, **kw):
         """ Invoke the catalog using our criteria.

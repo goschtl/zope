@@ -4,6 +4,9 @@ Products.CMFTopic Changelog
 2.3.0 (unreleased)
 ------------------
 
+- Browser views are now used by default. An additional setup profile allows you
+  to hook up the oldstyle skins and to make customizations TTW.
+
 
 2.3.0-beta (2012-03-21)
 -----------------------

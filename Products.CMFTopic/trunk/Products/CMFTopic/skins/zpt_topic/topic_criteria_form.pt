@@ -5,12 +5,12 @@
 <h2>Topic Criteria: <span tal:replace="context/getId" /></h2>
 
 <form action="" method="post" tal:attributes="action context/absolute_url">
-<span tal:define="criteria context/listCriteria">
-    <span tal:repeat="criterion criteria">
-        <span tal:define="editform string:criterion/${criterion/getEditForm}"
+<div tal:define="criteria context/listCriteria">
+    <div tal:repeat="criterion criteria">
+        <div tal:define="editform string:criterion/${criterion/getEditForm}"
             tal:replace="structure python:path(editform)" />
-    </span>
-</span>
+    </div>
+</div>
 <input type="submit" name="topic_editCriteria:action"
        value=" Save changes " /> &nbsp;&nbsp;
 <input type="submit" name="topic_deleteCriteria:action"
