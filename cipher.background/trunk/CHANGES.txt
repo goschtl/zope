@@ -3,7 +3,7 @@ CHANGES
 =======
 
 
-1.0.2 (unreleased)
+1.0.2 (2012-07-31)
 ------------------
 
 - Refactor BackgroundWorkerThread to have the site returned from getSite()

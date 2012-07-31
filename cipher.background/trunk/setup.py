@@ -22,7 +22,7 @@ def read(*rnames):
 
 setup(
     name='cipher.background',
-    version='1.0.2.dev0',
+    version='1.0.2',
     url="http://pypi.python.org/pypi/cipher.background/",
     author='Zope Foundation and Contributors',
     author_email='zope-dev@zope.org',
