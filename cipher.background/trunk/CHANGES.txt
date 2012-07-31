@@ -6,7 +6,7 @@ CHANGES
 1.0.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Refactor BackgroundWorkerThread to have the site returned from getSite()
 
 
 1.0.1 (2012-04-05)

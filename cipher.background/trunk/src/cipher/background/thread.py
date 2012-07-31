@@ -87,6 +87,9 @@ class BackgroundWorkerThread(threading.Thread):
                     site_name=self.site_name,
                     user_name=self.user_name)
 
+    def getSite(self, connection):
+        return connection.get(self.site_oid)
+
     def run(self):
         """Main loop of the thread."""
         try:
@@ -94,7 +97,7 @@ class BackgroundWorkerThread(threading.Thread):
                 with ZopeInteraction():
                     with ZodbConnection(self.site_db) as conn:
                         try:
-                            with ZopeSite(conn.get(self.site_oid)):
+                            with ZopeSite(self.getSite(conn)):
                                 try:
                                     with ZopeTransaction(
                                             user=self.user_name,
@@ -146,4 +149,3 @@ class BackgroundWorkerThread(threading.Thread):
         Cleanup is also called when doWork() raises an exception.  It is
         performed in a separate transaction.  It can access the site.
         """
-
