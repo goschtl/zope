@@ -68,7 +68,7 @@ setup (
     install_requires = [
         'setuptools',
         'zope.component >= 3.9.4',
-        'zope.configuration',
+        'zope.configuration >= 3.8.0',
         'zope.i18nmessageid',
         'zope.interface',
         'zope.schema',
