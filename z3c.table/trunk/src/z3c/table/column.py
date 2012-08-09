@@ -31,7 +31,7 @@ _ = zope.i18nmessageid.MessageFactory('z3c')
 
 
 def addColumn(self, class_, name, cellRenderer=None, headCellRenderer=None,
-    colspan= None, weight=None, header=None, cssClasses=None, **kws):
+    colspan=None, weight=None, header=None, cssClasses=None, **kws):
     if not interfaces.IColumn.implementedBy(class_):
         raise ValueError('class_ %s must implement IColumn.' % class_)
     column = class_(self.context, self.request, self)

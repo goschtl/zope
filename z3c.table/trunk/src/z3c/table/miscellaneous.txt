@@ -27,6 +27,7 @@ string:
 Try to render an empty table adapting an empty mapping:
 
   >>> simpleTable = table.Table({}, request)
+  >>> simpleTable.cssClassSortedOn = None
   >>> simpleTable.render()
   u''
 
@@ -85,7 +86,7 @@ Test if we can set additional kws in addColumn:
   >>> simpleColumn.counter
   99
 
-The NoneCell class provides some methods which never get called. But these 
+The NoneCell class provides some methods which never get called. But these
 are defined in the interface. Let's test the default values
 and make coverage report happy.
 

@@ -75,6 +75,7 @@ Create a test request and represent the table:
   >>> from z3c.table import table
   >>> request = TestRequest()
   >>> plainTable = table.Table(container, request)
+  >>> plainTable.cssClassSortedOn = None
 
 Now we can update and render the table. As you can see with an empty container
 we will not get anything that looks like a table. We just get an empty string:
@@ -260,6 +261,7 @@ Let's define our table which defines the columns explicitly. you can also see
 that we do not return the columns in the correct order:
 
   >>> class PrivateTable(table.Table):
+  ...     cssClassSortedOn = None
   ...
   ...     def setUpColumns(self):
   ...         firstColumn = TitleColumn(self.context, self.request, self)
@@ -315,6 +317,7 @@ a table and columns with some css class values:
   ...                   'th': 'th',
   ...                   'tr': 'tr',
   ...                   'td': 'td'}
+  ...     cssClassSortedOn = None
   ...
   ...     def setUpColumns(self):
   ...         firstColumn = TitleColumn(self.context, self.request, self)
@@ -378,6 +381,7 @@ we only need to define the ``cssClassEven`` and ``cssClassOdd`` CSS classes:
   ...
   ...     cssClassEven = u'even'
   ...     cssClassOdd = u'odd'
+  ...     cssClassSortedOn = None
   ...
   ...     def setUpColumns(self):
   ...         firstColumn = TitleColumn(self.context, self.request, self)
@@ -448,6 +452,7 @@ Now we can define our table and use the custom cell renderer:
   ...
   ...     cssClassEven = u'even'
   ...     cssClassOdd = u'odd'
+  ...     cssClassSortedOn = None
   ...
   ...     def setUpColumns(self):
   ...         return [
@@ -565,7 +570,7 @@ We'll use a fresh almost empty container.:
   >>> container[u'third'] = Content('Third', 3)
 
   >>> class myTableClass(table.Table):
-  ...     pass
+  ...     cssClassSortedOn = None
 
   >>> myTable = myTableClass(container, request)
 
@@ -619,7 +624,8 @@ ascending again:
   ...
   </table>
 
-If the table is ascending but the request was descending, the link should allow to switch again to ascending:
+If the table is ascending but the request was descending,
+the link should allow to switch again to ascending:
 
   >>> descendingRequest = TestRequest(form={'table-sortOn': 'table-titleColumn-0',
   ...                                   'table-sortOrder':'descending'})
@@ -635,6 +641,3 @@ If the table is ascending but the request was descending, the link should allow 
       title="Sort">Title</a></th>
   ...
   </table>
-
-
-

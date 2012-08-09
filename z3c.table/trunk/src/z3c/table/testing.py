@@ -19,7 +19,7 @@ __docformat__ = "reStructuredText"
 import datetime
 import zope.interface
 import zope.component
-from zope.container import btree
+from zope.container import btree, ordered
 from zope.dublincore.interfaces import IZopeDublinCore
 from zope.security import checker
 from zope.app.testing import setup
@@ -50,6 +50,11 @@ class NumberColumn(column.Column):
 
 
 class Container(btree.BTreeContainer):
+    """Sample container."""
+    __name__ = u'container'
+
+
+class OrderedContainer(ordered.OrderedContainer):
     """Sample container."""
     __name__ = u'container'
 

@@ -56,6 +56,7 @@ Let's define a table using the NameColumn:
 
   >>> from z3c.table import table
   >>> class NameTable(table.Table):
+  ...     cssClassSortedOn = None
   ...
   ...     def setUpColumns(self):
   ...         return [
@@ -111,6 +112,7 @@ RadioColumn
 Let's define a table using the RadioColumn:
 
   >>> class RadioTable(table.Table):
+  ...     cssClassSortedOn = None
   ...
   ...     def setUpColumns(self):
   ...         return [
@@ -202,6 +204,7 @@ CheckBoxColumn
 Let's define a table using the RadioColumn:
 
   >>> class CheckBoxTable(table.Table):
+  ...     cssClassSortedOn = None
   ...
   ...     def setUpColumns(self):
   ...         return [
@@ -377,6 +380,7 @@ CreatedColumn
 Let's define a table using the CreatedColumn:
 
   >>> class CreatedColumnTable(table.Table):
+  ...     cssClassSortedOn = None
   ...
   ...     def setUpColumns(self):
   ...         return [
@@ -423,6 +427,7 @@ ModifiedColumn
 Let's define a table using the CreatedColumn:
 
   >>> class ModifiedColumnTable(table.Table):
+  ...     cssClassSortedOn = None
   ...
   ...     def setUpColumns(self):
   ...         return [
@@ -477,6 +482,7 @@ test the column itself and force some use case:
   ...     defaultValue = u'missing'
 
   >>> class GetAttrColumnTable(table.Table):
+  ...     cssClassSortedOn = None
   ...
   ...     attrName = 'title'
   ...     defaultValue = u'missing'
@@ -526,6 +532,7 @@ get the default value defined from the ``GetAttrColumnTable``:
   ...     defaultValue = u'missing'
 
   >>> class GetAttrColumnTable(table.Table):
+  ...     cssClassSortedOn = None
   ...
   ...     attrName = 'title'
   ...     defaultValue = u'missing'
@@ -627,6 +634,7 @@ format the value. Let's use the Dublin Core adapter for our sample:
   ...         return dc.created
 
   >>> class GetAttrFormatterColumnTable(table.Table):
+  ...     cssClassSortedOn = None
   ...
   ...     def setUpColumns(self):
   ...         return [
@@ -679,6 +687,7 @@ We can also change the formatter settings in such a column:
   ...         return dc.created
 
   >>> class LongFormatterColumnTable(table.Table):
+  ...     cssClassSortedOn = None
   ...
   ...     def setUpColumns(self):
   ...         return [
@@ -732,6 +741,7 @@ address is displayed, too.
   ...     defaultValue = u'missing'
 
   >>> class EMailColumnTable(table.Table):
+  ...     cssClassSortedOn = None
   ...
   ...     def setUpColumns(self):
   ...         return [
@@ -779,6 +789,7 @@ The link content can be overwriten by setting the ``linkContent`` attribute:
   ...     linkContent = 'Mail me'
 
   >>> class StaticEMailColumnTable(table.Table):
+  ...     cssClassSortedOn = None
   ...
   ...     def setUpColumns(self):
   ...         return [
@@ -829,6 +840,7 @@ columns which can point to a page with the item as context:
   ...     linkCSS = 'myClass'
 
   >>> class MyLinkTable(table.Table):
+  ...     cssClassSortedOn = None
   ...
   ...     def setUpColumns(self):
   ...         return [
@@ -886,6 +898,7 @@ There are some predefined link columns available. This one will generate a
 ``contents.html`` link for each item:
 
   >>> class ContentsLinkTable(table.Table):
+  ...     cssClassSortedOn = None
   ...
   ...     def setUpColumns(self):
   ...         return [
@@ -938,6 +951,7 @@ IndexLinkColumn
 This one will generate a ``index.html`` link for each item:
 
   >>> class IndexLinkTable(table.Table):
+  ...     cssClassSortedOn = None
   ...
   ...     def setUpColumns(self):
   ...         return [
@@ -990,6 +1004,7 @@ EditLinkColumn
 And this one will generate a ``edit.html`` link for each item:
 
   >>> class EditLinkTable(table.Table):
+  ...     cssClassSortedOn = None
   ...
   ...     def setUpColumns(self):
   ...         return [

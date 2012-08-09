@@ -22,6 +22,7 @@ Now we can create our table:
   >>> root['container-1'] = container
   >>> request = TestRequest()
   >>> batchingTable = SimpleTable(container, request)
+  >>> batchingTable.cssClassSortedOn = None
 
 We also need to give the table a location and a name like we normally setup
 in traversing:
@@ -382,7 +383,8 @@ the sorting concept:
   ...                                     'table-batchSize': '5',
   ...                                     'table-sortOn': 'table-number-1'})
   >>> requestBatchingTable = SimpleTable(container, batchingRequest)
-
+  >>> requestBatchingTable.cssClassSortedOn = None
+  
 We also need to give the table a location and a name like we normally set up
 in traversing:
 
@@ -483,6 +485,7 @@ and sorted on the second numbered column:
   ...                                     'table-sortOn': 'table-number-1'})
   >>> requestBatchingTable = SimpleTable(container, batchingRequest)
   >>> requestBatchingTable.startBatchingAt = 5
+  >>> requestBatchingTable.cssClassSortedOn = None
 
 We also need to give the table a location and a name like we normally setup
 in traversing:
@@ -647,4 +650,3 @@ Update the table and render the batch:
   <a href="...html?table-batchSize=5&table-batchStart=100&table-sortOn=table-number-1" class="current">21</a>
   xxx
   <a href="...html?table-batchSize=5&table-batchStart=1015&table-sortOn=table-number-1" class="last">204</a>
-

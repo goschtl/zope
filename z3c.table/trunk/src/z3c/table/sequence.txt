@@ -52,6 +52,7 @@ Now we can create our table adapting our sequence:
   >>> sequenceRequest = TestRequest(form={'table-batchStart': '0',
   ...                                     'table-sortOn': 'table-number-1'})
   >>> sequenceTable = SequenceTable(dataSequence, sequenceRequest)
+  >>> sequenceTable.cssClassSortedOn = None
 
 We also need to give the table a location and a name like we normally setup
 in traversing:
@@ -250,4 +251,3 @@ And we set the sort order to ``reverse`` even if we use batching:
       </tr>
     </tbody>
   </table>
-
