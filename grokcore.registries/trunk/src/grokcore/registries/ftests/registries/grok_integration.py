@@ -27,14 +27,14 @@
 
 """
 
-from zope.component.persistentregistry import PersistentComponents
+from zope.component.registry import Components
 from grokcore.registries.ftests.registries.basic import specialRegistry
 
 
 class MyApplication(object):
 
     def __init__(self):
-        self._sm = PersistentComponents()
+        self._sm = Components()
 
     def getSiteManager(self):
         current = self._sm

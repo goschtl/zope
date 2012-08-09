@@ -4,6 +4,7 @@
    i18n_domain="grokcore.registries"
    package="grokcore.registries">
 
+  <include package="grokcore.component" file="meta.zcml" />
   <include package="grokcore.registries" file="meta.zcml" />
   <include package="grokcore.registries" />
 

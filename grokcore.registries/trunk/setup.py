@@ -15,7 +15,6 @@ long_description = (
 
 tests_require = [
     'grokcore.component',
-    'grokcore.site',
     'zope.testing',
     ]
 

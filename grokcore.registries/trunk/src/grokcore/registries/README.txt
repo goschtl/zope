@@ -68,7 +68,6 @@ from ´registries.global´ to the GlobalSiteManager, and the contents of
   ... <configure i18n_domain="zope">
   ...   <include package="zope.component" file="meta.zcml" />
   ...   <include package="grokcore.registries" file="meta.zcml" />
-  ...   <include package="grokcore.site" />
   ... </configure>
   ... ''')
 
@@ -103,11 +102,6 @@ We start in searching in the GlobalSiteManager:
 
 Now we use our ´custom´ one:
 
-  >>> custom.getUtility(IExample, name="global")
-  Traceback (most recent call last):
-  ...
-  ComponentLookupError: (<InterfaceClass grokcore.registries.tests.registries.interfaces.IExample>, 'global')
-
   >>> custom.getUtility(IExample, name="local")
   <grokcore.registries.tests.registries.local.MyExample object at ...>
 
@@ -115,18 +109,11 @@ Now we use our ´custom´ one:
 Using BaseRegistries (Stacked Registries)
 -----------------------------------------
 
-  >>> from grokcore.site import Application
-  >>> site = Application()
-  >>> from zope.site.site import LocalSiteManager
-  >>> site.setSiteManager(LocalSiteManager(site))
-  >>> sm = site.getSiteManager()
+  >>> from zope.component.registry import Components
+  >>> sm = Components()
 
   >>> sm.__bases__
-  (<BaseGlobalComponents base>,)
-
-
-  >>> sm.getUtility(IExample, name="global")
-  <grokcore.registries.tests.registries.global.MyExample object at 0...>
+  ()
 
   >>> sm.getUtility(IExample, name="local")
   Traceback (most recent call last):
@@ -137,10 +124,7 @@ If we stack our "custom" registry, in to the GlobalSiteManager we found all regi
 
   >>> sm.__bases__ += (custom,)
   >>> sm.__bases__
-  (<BaseGlobalComponents base>, <BaseComponents custom>)
-
-  >>> sm.getUtility(IExample, name="global")
-  <grokcore.registries.tests.registries.global.MyExample object at 0...>
+  (<BaseComponents custom>,)
 
   >>> sm.getUtility(IExample, name="local")
   <grokcore.registries.tests.registries.local.MyExample object at 0...>
