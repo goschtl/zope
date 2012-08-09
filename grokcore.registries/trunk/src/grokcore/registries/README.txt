@@ -3,9 +3,9 @@ grokcore.registries
 ===================
 
 With the help of this package you are now able to create
-your on BaseComponents Registries. With the help of
-a zcml directive ´registerIn´ you can choose in which
-Registry your grok Components will be registerd.
+your on BaseComponents Registries. thanks to a zcml
+directive, ´registerIn´, you can choose in which
+Registry your grok Components will be registered.
 
 Setup
 -----
@@ -60,16 +60,17 @@ We make the custom Registry a Utility:
 Now the registerIn function comes into the game. We register all stuff
 from ´registries.global´ to the GlobalSiteManager, and the contents of
 ´registries.local´ to our custom Registry.
+
+
   >>> from zope.configuration import xmlconfig
 
-
- >>> context = xmlconfig.string('''
- ... <configure i18n_domain="zope">
- ...   <include package="zope.component" file="meta.zcml" />
- ...   <include package="grokcore.registries" file="meta.zcml" />
- ...   <include package="grokcore.site" />
- ... </configure>
- ... ''')
+  >>> context = xmlconfig.string('''
+  ... <configure i18n_domain="zope">
+  ...   <include package="zope.component" file="meta.zcml" />
+  ...   <include package="grokcore.registries" file="meta.zcml" />
+  ...   <include package="grokcore.site" />
+  ... </configure>
+  ... ''')
 
   >>> context = xmlconfig.string('''
   ... <configure xmlns="http://namespaces.zope.org/zope"

@@ -1,11 +1,13 @@
+# -*- coding: utf-8 -*-
+
 import unittest
 import grokcore.registries
 
 from pkg_resources import resource_listdir
 from zope.testing import doctest
-from zope.app.appsetup.testlayer import ZODBLayer
+from zope.component.testlayer import ZCMLFileLayer
 
-FunctionalLayer = ZODBLayer(grokcore.registries)
+FunctionalLayer = ZCMLFileLayer(grokcore.registries)
 
 
 def suiteFromPackage(name):
@@ -20,7 +22,6 @@ def suiteFromPackage(name):
         dottedname = 'grokcore.registries.ftests.%s.%s' % (name, filename[:-3])
         test = doctest.DocTestSuite(
             dottedname,
-            extraglobs=dict(getRootFolder=FunctionalLayer.getRootFolder),
             optionflags=(doctest.ELLIPSIS+
                          doctest.NORMALIZE_WHITESPACE+
                          doctest.REPORT_NDIFF)

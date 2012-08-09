@@ -14,9 +14,6 @@ long_description = (
     )
 
 tests_require = [
-    'zope.app.appsetup',
-    'zope.app.wsgi',
-    'zope.app.testing',
     'grokcore.component',
     'grokcore.site',
     'zope.testing',
@@ -28,7 +25,7 @@ setup(
     author='Grok Team',
     author_email='grok-dev@zope.org',
     url='http://grok.zope.org',
-    download_url='http://cheeseshop.python.org/pypi/grokcore.json/',
+    download_url='http://cheeseshop.python.org/pypi/grokcore.registries/',
     description='Advanced Registry Behavior for Grok.',
     long_description=long_description,
     license='ZPL',

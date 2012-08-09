@@ -1,7 +1,6 @@
 """
- >>> root = getRootFolder()
- >>> create_application(MyApplication, root, 'app')
- <grokcore.registries.ftests.registries.grok_integration.MyApplication ...>
+ >>> root = {}
+ >>> root['app'] = MyApplication()
 
  >>> from zope.component import getUtility
  >>> from grokcore.registries.tests.registries.interfaces import IExample
@@ -17,8 +16,8 @@
  >>> specialRegistry.getUtility(IExample, name=u'local')
  <grokcore.registries.tests.registries.local.MyExample object at ...>
 
- >>> app = root['app']
  >>> from zope.component.hooks import setSite
+ >>> app = root['app']
  >>> setSite(root['app'])
 
  >>> getUtility(IExample, name=u'local')
@@ -28,14 +27,16 @@
 
 """
 
-from grokcore.site import Application
-from grokcore.site.util import create_application
+from zope.component.persistentregistry import PersistentComponents
 from grokcore.registries.ftests.registries.basic import specialRegistry
 
 
-class MyApplication(Application):
+class MyApplication(object):
+
+    def __init__(self):
+        self._sm = PersistentComponents()
 
     def getSiteManager(self):
-        current = super(MyApplication, self).getSiteManager()
+        current = self._sm
         current.__bases__ += (specialRegistry,)
         return current
