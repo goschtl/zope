@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.9.2 (unreleased)
+1.0.0 (2012-08-09)
 ------------------
 
 - Added sorting (``cssClassSortedOn`` and ``getCSSSortClass``) CSS options
