@@ -471,10 +471,9 @@ adapter which only returns ``02/02/02 02:02`` as modified date:
 GetAttrColumn
 -------------
 
-The ``GetAttrColumn`` column is a mixin which is used in ``CreatedColumn`` and
-in ``ModifiedColumn``. Not all code get used if everything is fine. So let's
-test the column itself and force some use case:
-
+The ``GetAttrColumn`` column is a handy column that retrieves the value from
+the item by attribute access.
+It also provides a ``defaultValue`` in case an exception happens.
 
   >>> class GetTitleColumn(column.GetAttrColumn):
   ...
@@ -483,9 +482,6 @@ test the column itself and force some use case:
 
   >>> class GetAttrColumnTable(table.Table):
   ...     cssClassSortedOn = None
-  ...
-  ...     attrName = 'title'
-  ...     defaultValue = u'missing'
   ...
   ...     def setUpColumns(self):
   ...         return [
@@ -524,7 +520,7 @@ Render and update the table:
   </table>
 
 If we use a non-existing Attribute, we do not raise an AttributeError, we will
-get the default value defined from the ``GetAttrColumnTable``:
+get the default value:
 
   >>> class UndefinedAttributeColumn(column.GetAttrColumn):
   ...
@@ -533,9 +529,6 @@ get the default value defined from the ``GetAttrColumnTable``:
 
   >>> class GetAttrColumnTable(table.Table):
   ...     cssClassSortedOn = None
-  ...
-  ...     attrName = 'title'
-  ...     defaultValue = u'missing'
   ...
   ...     def setUpColumns(self):
   ...         return [
@@ -617,6 +610,227 @@ And test the attribute access:
   >>> simpleTable = table.Table(container, request)
   >>> badColumn = column.addColumn(simpleTable, ForbiddenAttributeColumn, u'x')
   >>> badColumn.renderCell(protectedItem)
+  u'missing'
+
+
+GetItemColumn
+-------------
+
+The ``GetItemColumn`` column is a handy column that retrieves the value from
+the item by index or key access. That means the item can be a tuple, list, dict
+or anything that implements that.
+It also provides a ``defaultValue`` in case an exception happens.
+
+Dict-ish
+.........
+
+  >>> sampleDictData = [
+  ...     dict(name='foo', value=1),
+  ...     dict(name='bar', value=7),
+  ...     dict(name='moo', value=42),]
+
+  >>> class GetDictColumnTable(table.Table):
+  ...     cssClassSortedOn = None
+  ...
+  ...     def setUpColumns(self):
+  ...         return [
+  ...             column.addColumn(self, column.GetItemColumn, u'name',
+  ...                              header=u'Name',
+  ...                              idx='name', defaultValue='missing'),
+  ...             column.addColumn(self, column.GetItemColumn, u'value',
+  ...                              header=u'Value',
+  ...                              idx='value', defaultValue='missing'),
+  ...             ]
+  ...     @property
+  ...     def values(self):
+  ...         return sampleDictData
+
+Render and update the table:
+
+  >>> request = TestRequest()
+  >>> getDictColumnTable = GetDictColumnTable(sampleDictData, request)
+  >>> getDictColumnTable.update()
+  >>> print getDictColumnTable.render()
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>bar</td>
+        <td>7</td>
+      </tr>
+      <tr>
+        <td>foo</td>
+        <td>1</td>
+      </tr>
+      <tr>
+        <td>moo</td>
+        <td>42</td>
+      </tr>
+    </tbody>
+  </table>
+
+If we use a non-existing index/key, we do not raise an exception, we will
+get the default value:
+
+  >>> class GetDictColumnTable(table.Table):
+  ...     cssClassSortedOn = None
+  ...
+  ...     def setUpColumns(self):
+  ...         return [
+  ...             column.addColumn(self, column.GetItemColumn, u'name',
+  ...                              idx='not-existing', defaultValue='missing'),
+  ...             ]
+  ...     @property
+  ...     def values(self):
+  ...         return sampleDictData
+
+Render and update the table:
+
+  >>> request = TestRequest()
+  >>> getDictColumnTable = GetDictColumnTable(container, request)
+  >>> getDictColumnTable.update()
+  >>> print getDictColumnTable.render()
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>missing</td>
+      </tr>
+      <tr>
+        <td>missing</td>
+      </tr>
+      <tr>
+        <td>missing</td>
+      </tr>
+    </tbody>
+  </table>
+
+A missing ``idx`` in ``GetItemColumn`` would also end in return the
+``defaultValue``:
+
+  >>> class BadIdxColumn(column.GetItemColumn):
+  ...
+  ...     defaultValue = u'missing'
+
+  >>> firstItem = sampleDictData[0]
+  >>> simpleTable = table.Table(sampleDictData, request)
+  >>> badColumn = column.addColumn(simpleTable, BadIdxColumn, u'bad')
+  >>> badColumn.renderCell(firstItem)
+  u'missing'
+
+Tuple/List-ish
+...............
+
+  >>> sampleTupleData = [
+  ...     (50, 'bar'),
+  ...     (42, 'cent'),
+  ...     (7, 'bild'),]
+
+  >>> class GetTupleColumnTable(table.Table):
+  ...     cssClassSortedOn = None
+  ...
+  ...     def setUpColumns(self):
+  ...         return [
+  ...             column.addColumn(self, column.GetItemColumn, u'name',
+  ...                              header=u'Name',
+  ...                              idx=1, defaultValue='missing'),
+  ...             column.addColumn(self, column.GetItemColumn, u'value',
+  ...                              header=u'Value',
+  ...                              idx=0, defaultValue='missing'),
+  ...             ]
+  ...     @property
+  ...     def values(self):
+  ...         return sampleTupleData
+
+Render and update the table:
+
+  >>> request = TestRequest()
+  >>> getTupleColumnTable = GetTupleColumnTable(sampleTupleData, request)
+  >>> getTupleColumnTable.update()
+  >>> print getTupleColumnTable.render()
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>bar</td>
+        <td>50</td>
+      </tr>
+      <tr>
+        <td>bild</td>
+        <td>7</td>
+      </tr>
+      <tr>
+        <td>cent</td>
+        <td>42</td>
+      </tr>
+    </tbody>
+  </table>
+
+If we use a non-existing index/key, we do not raise an exception, we will
+get the default value:
+
+  >>> class GetTupleColumnTable(table.Table):
+  ...     cssClassSortedOn = None
+  ...
+  ...     def setUpColumns(self):
+  ...         return [
+  ...             column.addColumn(self, column.GetItemColumn, u'name',
+  ...                              idx=42, defaultValue='missing'),
+  ...             ]
+  ...     @property
+  ...     def values(self):
+  ...         return sampleTupleData
+
+Render and update the table:
+
+  >>> request = TestRequest()
+  >>> getTupleColumnTable = GetTupleColumnTable(container, request)
+  >>> getTupleColumnTable.update()
+  >>> print getTupleColumnTable.render()
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>missing</td>
+      </tr>
+      <tr>
+        <td>missing</td>
+      </tr>
+      <tr>
+        <td>missing</td>
+      </tr>
+    </tbody>
+  </table>
+
+A missing ``idx`` in ``GetItemColumn`` would also end in return the
+``defaultValue``:
+
+  >>> class BadIdxColumn(column.GetItemColumn):
+  ...
+  ...     defaultValue = u'missing'
+
+  >>> firstItem = sampleTupleData[0]
+  >>> simpleTable = table.Table(sampleTupleData, request)
+  >>> badColumn = column.addColumn(simpleTable, BadIdxColumn, u'bad')
+  >>> badColumn.renderCell(firstItem)
   u'missing'
 
 

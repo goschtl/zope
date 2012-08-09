@@ -224,9 +224,9 @@ class CheckBoxColumn(Column):
     def renderCell(self, item):
         selected = u''
         if item in self.selectedItems:
-            selected='checked="checked"'
+            selected = 'checked="checked"'
         return u'<input type="checkbox" class="%s" name="%s" value="%s" %s />' \
-            %('checkbox-widget', self.getItemKey(item), self.getItemValue(item),
+            % ('checkbox-widget', self.getItemKey(item), self.getItemValue(item),
             selected)
 
 
@@ -239,6 +239,24 @@ class GetAttrColumn(Column):
     def getValue(self, obj):
         if obj is not None and self.attrName is not None:
             return safeGetAttr(obj, self.attrName, self.defaultValue)
+        return self.defaultValue
+
+    def renderCell(self, item):
+        return self.getValue(item)
+
+
+class GetItemColumn(Column):
+    """Get value from item index/key column."""
+
+    idx = None
+    defaultValue = u''
+
+    def getValue(self, obj):
+        if obj is not None and self.idx is not None:
+            try:
+                return obj[self.idx]
+            except (KeyError, IndexError, Unauthorized):
+                return self.defaultValue
         return self.defaultValue
 
     def renderCell(self, item):

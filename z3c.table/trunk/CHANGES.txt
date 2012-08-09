@@ -9,6 +9,7 @@ CHANGES
 
 - Added cell highlight (``getCSSHighlightClass``) CSS option
 
+- Added ``GetItemColumn`` which gets the value by index/key access.
 
 0.9.1 (2011-08-03)
 ------------------
