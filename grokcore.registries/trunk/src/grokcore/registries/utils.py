@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import pkg_resources
-from zope.component import queryUtility, getSiteManager, getGlobalSiteManager
+from zope.component import getSiteManager, getGlobalSiteManager
 from zope.component.interfaces import IComponents
 
 

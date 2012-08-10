@@ -13,4 +13,4 @@
 ##############################################################################
 
 from grokcore.registries.components import BaseComponents
-from grokcore.registries.components import create_components_registry 
+from grokcore.registries.components import create_components_registry

@@ -21,9 +21,9 @@ provided here.
 
 from grokcore.registries.utils import query_registry, contextualSiteManager
 from zope.component.globalregistry import GlobalAdapterRegistry
-from zope.interface import implements, directlyProvides
 from zope.component.interfaces import IComponents, IComponentLookup
 from zope.component.registry import Components
+from zope.interface import implements, directlyProvides
 from zope.location import Location
 
 

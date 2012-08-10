@@ -21,7 +21,6 @@ and available as `martian` recursively examines the packages and modules
 of a Grok-based web application.
 
 """
-import warnings
 from zope.component.hooks import setSite, getSite
 from grokcore.registries.components import query_registry
 from zope.configuration.config import GroupingContextDecorator
