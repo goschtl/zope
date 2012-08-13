@@ -19,15 +19,13 @@ provided here.
 
 """
 
+from grokcore.component.util import provideUtility
 from grokcore.registries.utils import query_registry, contextualSiteManager
 from zope.component.globalregistry import GlobalAdapterRegistry
 from zope.component.interfaces import IComponents, IComponentLookup
 from zope.component.registry import Components
 from zope.interface import implements, directlyProvides
 from zope.location import Location
-
-
-registries = {}
 
 
 class BaseComponents(Location, Components):
@@ -54,7 +52,5 @@ def create_components_registry(parent=None, name='', bases=()):
         parent = contextualSiteManager()
     registry = BaseComponents(parent, name, bases)
     directlyProvides(registry, IComponents)
-    if name in registries.keys():
-        RuntimeError('Duplicated key for registry %r found.' % name)
-    registries[name] = registry
+    provideUtility(registry, provides=IComponents, name=name)
     return registry
