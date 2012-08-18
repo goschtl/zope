@@ -50,6 +50,7 @@ setup(name='Products.%s' % NAME,
           'Products.CMFCore',
           'Products.CMFDefault',
           'Products.GenericSetup',
+          'zope.app.form',
           ],
       tests_require=[
           'zope.testing >= 3.7.0',
