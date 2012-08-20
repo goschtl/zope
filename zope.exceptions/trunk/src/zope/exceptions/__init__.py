@@ -30,7 +30,7 @@ try:
     import zope.security
 except ImportError as v: #pragma NO COVER
     # "ImportError: No module named security"
-    if not str(v).endswith('security'):
+    if 'security' not in str(v):
         raise
 else: #pragma NO COVER
     from zope.security.interfaces import IUnauthorized

@@ -4,7 +4,7 @@ zope.exceptions Changelog
 4.0.1 (unreleased)
 ------------------
 
-- TBD
+- Fixed optional dependency code for `zope.security` to work under Python 3.3.
 
 
 4.0.0.1 (2012-05-16)
