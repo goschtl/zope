@@ -27,7 +27,7 @@ def read(*rnames):
 
 
 setup(name='zope.exceptions',
-      version='4.0.1dev',
+      version='4.0.1',
       author='Zope Foundation and Contributors',
       author_email='zope-dev@zope.org',
       description='Zope Exceptions',
@@ -44,6 +44,7 @@ setup(name='zope.exceptions',
           'Programming Language :: Python :: 2.7',
           'Programming Language :: Python :: 3',
           'Programming Language :: Python :: 3.2',
+          'Programming Language :: Python :: 3.3',
           "Programming Language :: Python :: Implementation :: CPython",
           "Programming Language :: Python :: Implementation :: PyPy",
           'Natural Language :: English',
