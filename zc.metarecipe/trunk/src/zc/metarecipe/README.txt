@@ -203,16 +203,16 @@ zc.metarecipe.testing module.
                           path ${:path}
                         </filestorage>
                       </zlibstorage>
-    [ctl]
-    chkconfig = 345 99 10
-    deployment = deployment
-    parts = main
-    recipe = zc.recipe.rhrc
     [pack]
     command = ${buildout:bin-directory}/zeopack -d3 -t00 ${main:address}
     deployment = deployment
     recipe = zc.recipe.deployment:crontab
     times = 1 2 * * 6
+    [ctl]
+    chkconfig = 345 99 10
+    deployment = deployment
+    parts = main
+    recipe = zc.recipe.rhrc
 
 When we call our recipe, it will add sections to the test buildout and
 these are simply printed as added, so we can verify that the correct
