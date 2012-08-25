@@ -134,18 +134,18 @@ a link which knows hot to select the item:
               <table class="contents">
                 <thead>
                   <tr>
-                    <th>Name</th>
+                    <th class="sorted-on ascending">Name</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr class="even">
-                    <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=first">first</a></td>
+                    <td class="sorted-on ascending"><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=first">first</a></td>
                   </tr>
                   <tr class="odd">
-                    <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=second">second</a></td>
+                    <td class="sorted-on ascending"><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=second">second</a></td>
                   </tr>
                   <tr class="even">
-                    <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=third">third</a></td>
+                    <td class="sorted-on ascending"><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=third">third</a></td>
                   </tr>
                 </tbody>
               </table>
@@ -196,18 +196,18 @@ set the relevant data in the request:
               <table class="contents">
     <thead>
       <tr>
-        <th>Name</th>
+        <th class="sorted-on ascending">Name</th>
       </tr>
     </thead>
     <tbody>
       <tr class="even">
-        <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=first">first</a></td>
+        <td class="sorted-on ascending"><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=first">first</a></td>
       </tr>
       <tr class="selected odd">
-        <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=second">second</a></td>
+        <td class="sorted-on ascending"><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=second">second</a></td>
       </tr>
       <tr class="even">
-        <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=third">third</a></td>
+        <td class="sorted-on ascending"><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=third">third</a></td>
       </tr>
     </tbody>
   </table>
@@ -287,18 +287,18 @@ Clicking the ``Edit`` button at the same time should hold the same result:
               <table class="contents">
     <thead>
       <tr>
-        <th>Name</th>
+        <th class="sorted-on ascending">Name</th>
       </tr>
     </thead>
     <tbody>
       <tr class="even">
-        <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=first">first</a></td>
+        <td class="sorted-on ascending"><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=first">first</a></td>
       </tr>
       <tr class="selected odd">
-        <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=second">second</a></td>
+        <td class="sorted-on ascending"><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=second">second</a></td>
       </tr>
       <tr class="even">
-        <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=third">third</a></td>
+        <td class="sorted-on ascending"><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=third">third</a></td>
       </tr>
     </tbody>
   </table>
@@ -381,18 +381,18 @@ In this case the editform won't appear.
               <table class="contents">
                 <thead>
                   <tr>
-                    <th>Name</th>
+                    <th class="sorted-on ascending">Name</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr class="even">
-                    <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=first">first</a></td>
+                    <td class="sorted-on ascending"><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=first">first</a></td>
                   </tr>
                   <tr class="selected odd">
-                    <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=second">second</a></td>
+                    <td class="sorted-on ascending"><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=second">second</a></td>
                   </tr>
                   <tr class="even">
-                    <td><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=third">third</a></td>
+                    <td class="sorted-on ascending"><a href="http://127.0.0.1/container/view.html?subFormTable-selectedItem-0-selectedItems=third">third</a></td>
                   </tr>
                 </tbody>
               </table>
