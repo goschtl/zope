@@ -1,19 +1,7 @@
-<html metal:use-macro="context/@@standard_macros/page">
-<head>
-
-<metal:slot fill-slot="style_slot">
-<tal:span tal:replace="structure context/getBaseTag" />
-</metal:slot>
-
-</head>
+<html metal:use-macro="context/@@content_macros/page">
 <body>
 
-<metal:slot metal:fill-slot="body" i18n:domain="cmf_default"
-><h1 id="DesktopTitle" tal:content="view/title">TOPIC TITLE</h1>
-
-<p id="DesktopDescription" tal:condition="view/description|nothing"
-   tal:content="view/description">DESCRIPTION OF THE TOPIC.</p>
-
+<metal:slot metal:fill-slot="main" i18n:domain="cmf_default">
 <tal:case tal:condition="view/listSubtopicInfos"
 ><h4 i18n:translate="">Subtopics:</h4>
  <div tal:repeat="item_info view/listSubtopicInfos">
