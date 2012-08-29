@@ -54,68 +54,6 @@ Build servers
 This is a list of servers that run regular builds of various parts of the code
 base.
 
-MAC OS X
-~~~~~~~~
-
-The software currently being tested is not compatible with python 2.4.
-The tests run on OS X 10.6
-
-.. list-table::
-
-    * - **Project**
-      - **OS X / Python2.4**
-      - **OS X / Python2.5**
-      - **OS X / Python2.6**
-      - **OS X / Python2.7**
-
-    * - `Zope 2.12 <http://svn.zope.org/Zope/branches/2.12>`__
-      - unsupported
-      - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zope2.12-py2.6%20slave-osx THA
-      - unsupported
-
-    * - `Zope 2.13 <http://svn.zope.org/Zope/branches/2.13>`__
-      - unsupported
-      - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zope2.13-py2.6%20slave-osx THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zope2.13-py2.7%20slave-osx THA
-
-    * - `Zope 2 trunk <http://svn.zope.org/Zope/trunk>`__
-      - unsupported
-      - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zope2.14-py2.6%20slave-osx THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zope2.14-py2.7%20slave-osx THA
-
-    * - `ZTK 1.0 <http://svn.zope.org/zopetoolkit/branches/1.0>`__
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-1.0-py2.4%20slave-osx THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-1.0-py2.5%20slave-osx THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-1.0-py2.6%20slave-osx THA
-      - unsupported
-
-    * - `ZTK 1.1 <http://svn.zope.org/zopetoolkit/branches/1.1>`__
-      - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-1.1-py2.5%20slave-osx THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-1.1-py2.6%20slave-osx THA
-      - unsupported
-
-    * - `ZTK trunk <http://svn.zope.org/zopetoolkit/trunk>`__
-      - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-py2.5%20slave-osx THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-py2.6%20slave-osx THA
-      - unsupported
-
-    * - `Groktoolkit 1.4 <http://svn.zope.org/groktoolkit/branches/1.4>`__
-      - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-1.4-py2.5%20slave-osx THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-1.4-py2.6%20slave-osx THA
-      - unsupported
-
-    * - `Groktoolkit trunk <http://svn.zope.org/groktoolkit/trunk>`__
-      - unsupported
-      - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-py2.6%20slave-osx THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-py2.7%20slave-osx THA
-
 Windows
 ~~~~~~~
 
@@ -134,14 +72,6 @@ no testing support for those
       - **Win64 / Py2.6**
       - **Win64 / Py2.7**
 
-    * - `Zope 2.13 <http://svn.zope.org/Zope/branches/2.13>`__
-      - unsupported
-      - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zope2.13_win-py2.6%20slave-win THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zope2.13_win-py2.7%20slave-win THA
-      - unsupported
-      - unsupported
-
     * - `ZODB trunk <http://svn.zope.org/ZODB/trunk>`__
       - unsupported
       - .. buildbotresult:: http://winbot.zope.org/builders/ZODB_dev%20py_254_win32 winbot
@@ -151,30 +81,17 @@ no testing support for those
       - .. buildbotresult:: http://winbot.zope.org/builders/ZODB_dev%20py_270_win64 winbot
 
     * - `ZTK 1.0 <http://svn.zope.org/zopetoolkit/branches/1.0>`__
-      - * .. buildbotresult:: http://winbot.zope.org/builders/ztk_10%20py_244_win32 winbot
-        * .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-1.0_win-py2.4%20slave-win THA
-      - * .. buildbotresult:: http://winbot.zope.org/builders/ztk_10%20py_254_win32 winbot
-        * .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-1.0_win-py2.5%20slave-win THA
-      - * .. buildbotresult:: http://winbot.zope.org/builders/ztk_10%20py_265_win32 winbot
-        * .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-1.0_win-py2.6%20slave-win THA
+      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_10%20py_244_win32 winbot
+      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_10%20py_254_win32 winbot
+      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_10%20py_265_win32 winbot
       - unsupported
       - .. buildbotresult:: http://winbot.zope.org/builders/ztk_10%20py_265_win64 winbot
       - unsupported
 
-    * - `ZTK 1.1 <http://svn.zope.org/zopetoolkit/branches/1.1>`__
-      - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-1.1_win-py2.5%20slave-win THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-1.1_win-py2.6%20slave-win THA
-      - unsupported
-      - unsupported
-      - unsupported
-
     * - `ZTK trunk <http://svn.zope.org/zopetoolkit/trunk>`__
       - unsupported
-      - * .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_254_win32 winbot
-        * .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit_win-py2.5%20slave-win THA
-      - * .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_265_win32 winbot
-        * .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit_win-py2.6%20slave-win THA
+      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_254_win32 winbot
+      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_265_win32 winbot
       - .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_270_win32 winbot
       - .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_265_win64 winbot
       - .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_270_win64 winbot
@@ -194,22 +111,6 @@ no testing support for those
       - .. buildbotresult:: http://winbot.zope.org/builders/BlueBream_dev%20py_270_win32 winbot
       - .. buildbotresult:: http://winbot.zope.org/builders/BlueBream_dev%20py_265_win64 winbot
       - .. buildbotresult:: http://winbot.zope.org/builders/BlueBream_dev%20py_270_win64 winbot
-
-    * - `Groktoolkit 1.4 <http://svn.zope.org/groktoolkit/branches/1.4>`__
-      - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-1.4_win-py2.5%20slave-win THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-1.4_win-py2.6%20slave-win THA
-      - unsupported
-      - unsupported
-      - unsupported
-
-    * - `Groktoolkit trunk <http://svn.zope.org/groktoolkit/trunk>`__
-      - unsupported
-      - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit_win-py2.6%20slave-win THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit_win-py2.7%20slave-win THA
-      - unsupported
-      - unsupported
 
 Linux
 ~~~~~
@@ -249,33 +150,12 @@ Linux
     * - `Zope 2.12 <http://svn.zope.org/Zope/branches/2.12>`__
       - unsupported
       - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zope2.12-py2.6%20slave-ubuntu32 THA
       - unsupported
       - unsupported
       - unsupported
-      - * .. buildbotresult:: http://dev.thehealthagency.com/builders/zope2.12-py2.6%20slave-ubuntu64 THA
-        * EPY
       - unsupported
-
-    * - `Zope 2.13 <http://svn.zope.org/Zope/branches/2.13>`__
+      - EPY
       - unsupported
-      - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zope2.13-py2.6%20slave-ubuntu32 THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zope2.13-py2.7%20slave-ubuntu32 THA
-      - unsupported
-      - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zope2.13-py2.6%20slave-ubuntu64 THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zope2.13-py2.7%20slave-ubuntu64 THA
-
-    * - `Zope 2.14 (trunk) <http://svn.zope.org/Zope/trunk>`__
-      - unsupported
-      - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zope2.14-py2.6%20slave-ubuntu32 THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zope2.14-py2.7%20slave-ubuntu32 THA
-      - unsupported
-      - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zope2.14-py2.6%20slave-ubuntu64 THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zope2.14-py2.7%20slave-ubuntu64 THA
 
     * - `Zope 3.4 KGS <http://svn.zope.org/zope.release/branches/3.4>`__
       - .. buildbotresult:: http://zope3.pov.lt/buildbot/builders/py2.4-32bit-linux POV
@@ -290,16 +170,13 @@ Linux
       - unsupported
 
     * - `ZTK 1.0 <http://svn.zope.org/zopetoolkit/branches/1.0>`__
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-1.0-py2.4%20slave-ubuntu32 THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-1.0-py2.5%20slave-ubuntu32 THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-1.0-py2.6%20slave-ubuntu32 THA
       - unsupported
-      - * .. buildbotresult:: http://buildbot.afpy.org/ztk1.0/builders/Python2.4.6%20Linux%2064bit AFPY
-        * .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-1.0-py2.4%20slave-ubuntu64 THA
-      - * .. buildbotresult:: http://buildbot.afpy.org/ztk1.0/builders/Python2.5.5%20Linux%2064bit AFPY
-        * .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-1.0-py2.5%20slave-ubuntu64 THA
-      - * .. buildbotresult:: http://buildbot.afpy.org/ztk1.0/builders/Python2.6.5%20Linux%2064bit AFPY
-        * .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-1.0-py2.6%20slave-ubuntu64 THA
+      - unsupported
+      - unsupported
+      - unsupported
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0/builders/Python2.4.6%20Linux%2064bit AFPY
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0/builders/Python2.5.5%20Linux%2064bit AFPY
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0/builders/Python2.6.5%20Linux%2064bit AFPY
       - unsupported
 
     * - `ZTK 1.0 <http://svn.zope.org/zopetoolkit/branches/1.0>`_ dev
@@ -314,27 +191,23 @@ Linux
 
     * - `ZTK 1.1 <http://svn.zope.org/zopetoolkit/branches/1.1>`__
       - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-1.1-py2.5%20slave-ubuntu32 THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-1.1-py2.6%20slave-ubuntu32 THA
       - unsupported
       - unsupported
-      - * .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-1.1-py2.5%20slave-ubuntu64 THA
-        * .. buildbotresult:: http://buildbot.afpy.org/ztk1.1/builders/Python2.5.5%20Linux%2064bit AFPY
-      - * .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-1.1-py2.6%20slave-ubuntu64 THA
-        * .. buildbotresult:: http://buildbot.afpy.org/ztk1.1/builders/Python2.6.5%20Linux%2064bit AFPY
-      - * .. buildbotresult:: http://buildbot.afpy.org/ztk1.1/builders/Python2.7.2%20Linux%2064bit AFPY
+      - unsupported
+      - unsupported
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.1/builders/Python2.5.5%20Linux%2064bit AFPY
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.1/builders/Python2.6.5%20Linux%2064bit AFPY
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.1/builders/Python2.7.2%20Linux%2064bit AFPY
 
     * - `ZTK trunk <http://svn.zope.org/zopetoolkit/trunk>`_
       - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-py2.5%20slave-ubuntu32 THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-py2.6%20slave-ubuntu32 THA
       - unsupported
       - unsupported
-      - * .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-py2.5%20slave-ubuntu64 THA
-        * .. buildbotresult:: http://buildbot.afpy.org/ztk1.1dev/builders/Python2.5.5%20Linux%2064bit AFPY
-      - * .. buildbotresult:: http://dev.thehealthagency.com/builders/zopetoolkit-py2.6%20slave-ubuntu64 THA
-        * .. buildbotresult:: http://buildbot.afpy.org/ztk1.1dev/builders/Python2.6.5%20Linux%2064bit AFPY
-      - * .. buildbotresult:: http://buildbot.afpy.org/ztk1.1dev/builders/Python2.7.2%20Linux%2064bit AFPY
+      - unsupported
+      - unsupported
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.1dev/builders/Python2.5.5%20Linux%2064bit AFPY
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.1dev/builders/Python2.6.5%20Linux%2064bit AFPY
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.1dev/builders/Python2.7.2%20Linux%2064bit AFPY
 
     * - `Bluebream <http://svn.zope.org/bluebream/trunk>`__
       -
@@ -345,27 +218,6 @@ Linux
       - .. buildbotresult:: http://buildbot.afpy.org/bluebream/builders/Python2.5.5%2064bit%20linux AFPY
       - .. buildbotresult:: http://buildbot.afpy.org/bluebream/builders/Python2.6.5%2064bit%20linux AFPY
       - .. buildbotresult:: http://buildbot.afpy.org/bluebream/builders/Python2.7.2%2064bit%20linux AFPY
-
-    * - `Groktoolkit 1.4 <http://svn.zope.org/groktoolkit/branches/1.4>`__
-      - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-1.4-py2.5%20slave-ubuntu32 THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-1.4-py2.6%20slave-ubuntu32 THA
-      - unsupported
-      - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-1.4-py2.5%20slave-ubuntu64 THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-1.4-py2.6%20slave-ubuntu64 THA
-      - unsupported
-
-    * - `Groktoolkit trunk <http://svn.zope.org/groktoolkit/trunk>`__
-      - unsupported
-      - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-py2.6%20slave-ubuntu32 THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-py2.7%20slave-ubuntu32 THA
-      - unsupported
-      - unsupported
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-py2.6%20slave-ubuntu64 THA
-      - .. buildbotresult:: http://dev.thehealthagency.com/builders/groktoolkit-py2.7%20slave-ubuntu64 THA
-
 
 The Buildbot Maintainers
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -379,12 +231,6 @@ We would like to thank all providers of automated test facilities:
       - **Platforms**
       - **Python**
       - **Packages / Branches**
-
-    * - `The Health Agency <http://dev.thehealthagency.com/>`_ (THA)
-      - Jan-Jaap Driessen
-      - OS X, Ubuntu 32/64, Windows
-      - 2.4, 2.5, 2.6, 2.7
-      - ZTK, Zope 2, groktoolkit, many grok and ZTK packages
 
     * - `POV <http://zope3.pov.lt/buildbot/>`_
       - Marius Gedminas
