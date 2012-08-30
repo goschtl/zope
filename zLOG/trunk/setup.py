@@ -32,7 +32,7 @@ probably better off using Python's logging module.""",
       packages=find_packages('src'),
       package_dir={'': 'src'},
 
-      install_requires=['ZConfig'],
+      install_requires=['ZConfig >= 2.9.2'],
       include_package_data=True,
       zip_safe=False,
       )

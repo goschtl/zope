@@ -16,7 +16,7 @@
 import logging
 import unittest
 
-from ZConfig.components.logger.tests.test_logger import LoggingTestBase
+from ZConfig.components.logger.tests.test_logger import LoggingTestHelper
 
 import zLOG
 
@@ -33,10 +33,10 @@ class CollectingHandler(logging.Handler):
         self.records.append(record)
 
 
-class LoggingIntegrationTestCase(LoggingTestBase):
+class LoggingIntegrationTestCase(LoggingTestHelper, unittest.TestCase):
 
     def setUp(self):
-        LoggingTestBase.setUp(self)
+        LoggingTestHelper.setUp(self)
         self.handler = CollectingHandler()
         self.records = self.handler.records
         self.logger = logging.getLogger()
