@@ -74,35 +74,35 @@ no testing support for those
 
     * - `ZODB trunk <http://svn.zope.org/ZODB/trunk>`__
       - unsupported
-      - .. buildbotresult:: http://winbot.zope.org/builders/ZODB_dev%20py_254_win32 winbot
+      - unsupported
       - .. buildbotresult:: http://winbot.zope.org/builders/ZODB_dev%20py_265_win32 winbot
       - .. buildbotresult:: http://winbot.zope.org/builders/ZODB_dev%20py_270_win32 winbot
       - .. buildbotresult:: http://winbot.zope.org/builders/ZODB_dev%20py_265_win64 winbot
       - .. buildbotresult:: http://winbot.zope.org/builders/ZODB_dev%20py_270_win64 winbot
 
     * - `ZTK 1.0 <http://svn.zope.org/zopetoolkit/branches/1.0>`__
-      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_10%20py_244_win32 winbot
+      - 
       - .. buildbotresult:: http://winbot.zope.org/builders/ztk_10%20py_254_win32 winbot
       - .. buildbotresult:: http://winbot.zope.org/builders/ztk_10%20py_265_win32 winbot
       - unsupported
       - .. buildbotresult:: http://winbot.zope.org/builders/ztk_10%20py_265_win64 winbot
       - unsupported
 
-    * - `ZTK trunk <http://svn.zope.org/zopetoolkit/trunk>`__
+    * - `zc.buildout 1.6.x <https://github.com/buildout/buildout/tree/1.6.x>`__
       - unsupported
-      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_254_win32 winbot
-      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_265_win32 winbot
-      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_270_win32 winbot
-      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_265_win64 winbot
-      - .. buildbotresult:: http://winbot.zope.org/builders/ztk_dev%20py_270_win64 winbot
+      - .. buildbotresult:: http://winbot.zope.org/builders/zc_buildout_dev%20py_254_win32%201.6.x winbot
+      - .. buildbotresult:: http://winbot.zope.org/builders/zc_buildout_dev%20py_265_win32%201.6.x winbot
+      - .. buildbotresult:: http://winbot.zope.org/builders/zc_buildout_dev%20py_270_win32%201.6.x winbot
+      - .. buildbotresult:: http://winbot.zope.org/builders/zc_buildout_dev%20py_265_win64%201.6.x winbot
+      - .. buildbotresult:: http://winbot.zope.org/builders/zc_buildout_dev%20py_270_win64%201.6.x winbot
 
-    * - `zc.buildout trunk <http://svn.zope.org/zc.buildout/trunk>`__
+    * - `zc.buildout master <https://github.com/buildout/buildout>`__
       - unsupported
-      - .. buildbotresult:: http://winbot.zope.org/builders/zc_buildout_dev%20py_254_win32 winbot
-      - .. buildbotresult:: http://winbot.zope.org/builders/zc_buildout_dev%20py_265_win32 winbot
-      - .. buildbotresult:: http://winbot.zope.org/builders/zc_buildout_dev%20py_270_win32 winbot
-      - .. buildbotresult:: http://winbot.zope.org/builders/zc_buildout_dev%20py_265_win64 winbot
-      - .. buildbotresult:: http://winbot.zope.org/builders/zc_buildout_dev%20py_270_win64 winbot
+      - 
+      - .. buildbotresult:: http://winbot.zope.org/builders/zc_buildout_dev%20py_265_win32%20master winbot
+      - .. buildbotresult:: http://winbot.zope.org/builders/zc_buildout_dev%20py_270_win32%20master winbot
+      - .. buildbotresult:: http://winbot.zope.org/builders/zc_buildout_dev%20py_265_win64%20master winbot
+      - .. buildbotresult:: http://winbot.zope.org/builders/zc_buildout_dev%20py_270_win64%20master winbot
 
     * - `Bluebream <http://svn.zope.org/bluebream/trunk>`__
       - .. buildbotresult:: http://winbot.zope.org/builders/BlueBream_dev%20py_244_win32 winbot
@@ -129,8 +129,8 @@ Linux
 
     * - `Zope 2.10 <http://svn.zope.org/Zope/branches/2.10>`__
       -
-      - unsupported
-      - unsupported
+      - unsuported
+      - unsupported 
       - unsupported
       - EPY
       - unsupported
@@ -150,7 +150,7 @@ Linux
     * - `Zope 2.12 <http://svn.zope.org/Zope/branches/2.12>`__
       - unsupported
       - unsupported
-      - unsupported
+      - 
       - unsupported
       - unsupported
       - unsupported
@@ -158,25 +158,24 @@ Linux
       - unsupported
 
     * - `Zope 3.4 KGS <http://svn.zope.org/zope.release/branches/3.4>`__
-      - .. buildbotresult:: http://zope3.pov.lt/buildbot/builders/py2.4-32bit-linux POV
-      - .. buildbotresult:: http://zope3.pov.lt/buildbot/builders/py2.5-32bit-linux POV
+      - 
+      - 
       - unsupported
       - unsupported
-      - * .. buildbotresult:: http://buildbot.afpy.org/kgs3.4/builders/Python2.4.6%2064bit%20linux AFPY
-        * .. buildbotresult:: http://zope3.pov.lt/buildbot/builders/py2.4-64bit-linux POV
-      - * .. buildbotresult:: http://buildbot.afpy.org/kgs3.4/builders/Python2.5.5%2064bit%20linux AFPY
+      - * .. buildbotresult:: http://zope3.pov.lt/buildbot/builders/py2.4-64bit-linux POV
+      - * .. buildbotresult:: http://buildbot.afpy.org/kgs3.4/builders/Python2.5.6%2064bit%20linux AFPY
         * .. buildbotresult:: http://zope3.pov.lt/buildbot/builders/py2.5-64bit-linux POV
       - unsupported
       - unsupported
 
     * - `ZTK 1.0 <http://svn.zope.org/zopetoolkit/branches/1.0>`__
-      - unsupported
-      - unsupported
-      - unsupported
+      - 
+      - 
+      - 
       - unsupported
       - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0/builders/Python2.4.6%20Linux%2064bit AFPY
-      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0/builders/Python2.5.5%20Linux%2064bit AFPY
-      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0/builders/Python2.6.5%20Linux%2064bit AFPY
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0/builders/Python2.5.6%20Linux%2064bit AFPY
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0/builders/Python2.6.7%20Linux%2064bit AFPY
       - unsupported
 
     * - `ZTK 1.0 <http://svn.zope.org/zopetoolkit/branches/1.0>`_ dev
@@ -185,39 +184,29 @@ Linux
       -
       - unsupported
       - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0dev/builders/Python2.4.6%20Linux%2064bit AFPY
-      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0dev/builders/Python2.5.5%20Linux%2064bit AFPY
-      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0dev/builders/Python2.6.5%20Linux%2064bit AFPY
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0dev/builders/Python2.5.6%20Linux%2064bit AFPY
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.0dev/builders/Python2.6.7%20Linux%2064bit AFPY
       - unsupported
 
     * - `ZTK 1.1 <http://svn.zope.org/zopetoolkit/branches/1.1>`__
       - unsupported
+      - 
+      -
+      - 
       - unsupported
-      - unsupported
-      - unsupported
-      - unsupported
-      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.1/builders/Python2.5.5%20Linux%2064bit AFPY
-      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.1/builders/Python2.6.5%20Linux%2064bit AFPY
-      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.1/builders/Python2.7.2%20Linux%2064bit AFPY
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.1/builders/Python2.5.6%20Linux%2064bit AFPY
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.1/builders/Python2.6.7%20Linux%2064bit AFPY
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.1/builders/Python2.7.3%20Linux%2064bit AFPY
 
     * - `ZTK trunk <http://svn.zope.org/zopetoolkit/trunk>`_
       - unsupported
-      - unsupported
-      - unsupported
-      - unsupported
-      - unsupported
-      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.1dev/builders/Python2.5.5%20Linux%2064bit AFPY
-      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.1dev/builders/Python2.6.5%20Linux%2064bit AFPY
-      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.1dev/builders/Python2.7.2%20Linux%2064bit AFPY
-
-    * - `Bluebream <http://svn.zope.org/bluebream/trunk>`__
+      - 
       -
-      -
-      -
-      -
-      - .. buildbotresult:: http://buildbot.afpy.org/bluebream/builders/Python2.4.6%2064bit%20linux AFPY
-      - .. buildbotresult:: http://buildbot.afpy.org/bluebream/builders/Python2.5.5%2064bit%20linux AFPY
-      - .. buildbotresult:: http://buildbot.afpy.org/bluebream/builders/Python2.6.5%2064bit%20linux AFPY
-      - .. buildbotresult:: http://buildbot.afpy.org/bluebream/builders/Python2.7.2%2064bit%20linux AFPY
+      - 
+      - 
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.1dev/builders/Python2.5.6%20Linux%2064bit AFPY
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.1dev/builders/Python2.6.7%20Linux%2064bit AFPY
+      - .. buildbotresult:: http://buildbot.afpy.org/ztk1.1dev/builders/Python2.7.3%20Linux%2064bit AFPY
 
 The Buildbot Maintainers
 ~~~~~~~~~~~~~~~~~~~~~~~~

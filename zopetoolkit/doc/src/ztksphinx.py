@@ -1,6 +1,6 @@
 from docutils import nodes
 from sphinx.util.compat import Directive
-from xmlrpclib import ServerProxy
+import json
 
 import urllib
 import socket
@@ -40,19 +40,17 @@ def process_buildbot_nodes(app, doctree, fromdocname):
         socket.setdefaulttimeout(min(socket_timeout, 5))
         by_url = {}
         for node in doctree.traverse(BuildbotColor):
-            url, builder = parse_builder_url(node.buildbot_url)
-            by_url.setdefault(url, []).append((node, builder))
+            url = parse_builder_url(node.buildbot_url)
+            by_url.setdefault(url, []).append(node)
         jobs = []
         for url, nodes in by_url.items():
-            pieces = [nodes[0::2], nodes[1::2]]
-            for n, nodes in enumerate(pieces):
-                if not nodes:
-                    continue
-                thread = threading.Thread(target=update_buildbot_nodes,
-                                          args=(url, nodes),
-                                          name='%s-%d' % (url, n+1))
-                thread.start()
-                jobs.append(thread)
+            if not nodes:
+                continue
+            thread = threading.Thread(target=update_buildbot_nodes,
+                                      args=(url, nodes),
+                                      name='%s' % (url,))
+            thread.start()
+            jobs.append(thread)
         for thread in jobs:
             thread.join()
     finally:
@@ -61,20 +59,20 @@ def process_buildbot_nodes(app, doctree, fromdocname):
 
 def parse_builder_url(url):
     """Parse a builder URL into buildbot URL and builder name."""
-    url = url.rstrip('/') # make sure trailing slashes don't cause failures
-    xmlrpc_url = '/'.join(url.split('/')[:-2] + ['xmlrpc'])
-    builder = urllib.unquote(url.split('/')[-1])
-    return xmlrpc_url, builder
+    # make sure trailing slashes don't cause failures
+    url = url.rstrip('/').split('/')
+    cut_index = url.index('builders')
+    json_url = '/'.join(url[:cut_index] + ['json'] + url[cut_index:])
+    return json_url
 
 
-def update_buildbot_nodes(url, nodes_and_builders):
+def update_buildbot_nodes(url, nodes):
     """Get build status of a number of builders and update document nodes.
 
     ``nodes_and_builders`` is a list of tuples (node, builder_name).
     """
-    results = get_buildbot_results(url, [b for n, b in nodes_and_builders])
-    for node, builder in nodes_and_builders:
-        result = results[builder]
+    result = get_buildbot_result(url)
+    for node in nodes:
         if isinstance(result, Exception):
             node.css_class = 'tests_could_not_determine'
             node.title = '%s: %s' % (result.__class__.__name__, result)
@@ -84,7 +82,7 @@ def update_buildbot_nodes(url, nodes_and_builders):
             node.css_class = 'tests_not_passed'
 
 
-def get_buildbot_results(xmlrpc_url, builders):
+def get_buildbot_result(json_url):
     """Return build status of a number of builders.
 
     ``builders`` is a list of builder names.
@@ -93,56 +91,11 @@ def get_buildbot_results(xmlrpc_url, builders):
     objects, in case of errors.
     """
     try:
-        xmlrpc = ServerProxy(xmlrpc_url)
+        data = json.load(urllib.urlopen(json_url + '/builds/-1'))
+        print data['text']
+        return u'successful' in data['text']
     except Exception, e:
-        return dict.fromkeys(builders, e)
-    results = {}
-    for builder in builders:
-        try:
-            results[builder] = (xmlrpc.getLastBuildResults(builder) == 'success')
-        except Exception, e:
-            # If the builder is currently running a build, you'll get an
-            # generic "Fault 8002: error".  The server's twistd.log contains
-            # something like:
-            #   2010-10-14 04:05:56+0300 [HTTPChannel,3237,127.0.0.1] Unhandled Error
-            #     Traceback (most recent call last):
-            #       File "/usr/lib/python2.6/dist-packages/twisted/web/server.py", line 132, in render
-            #         body = resrc.render(self)
-            #       File "/usr/lib/python2.6/dist-packages/buildbot/status/web/xmlrpc.py", line 16, in render
-            #         return xmlrpc.XMLRPC.render(self, req)
-            #       File "/usr/lib/python2.6/dist-packages/twisted/web/resource.py", line 210, in render
-            #         return m(request)
-            #       File "/usr/lib/python2.6/dist-packages/twisted/web/xmlrpc.py", line 123, in render_POST
-            #         d = defer.maybeDeferred(function, *args)
-            #     --- <exception caught here> ---
-            #       File "/usr/lib/python2.6/dist-packages/twisted/internet/defer.py", line 117, in maybeDeferred
-            #         result = f(*args, **kw)
-            #       File "/usr/lib/python2.6/dist-packages/buildbot/status/web/xmlrpc.py", line 29, in xmlrpc_getLastBuildResults
-            #         return Results[lastbuild.getResults()]
-            #     exceptions.TypeError: list indices must be integers, not NoneType
-            # and the XML-RPC response returned to the client looks like
-            #   HTTP/1.1 200 OK
-            #   ...
-            #   <?xml version='1.0'?>
-            #   <methodResponse>
-            #   <fault>
-            #   <value><struct>
-            #   <member>
-            #   <name>faultCode</name>
-            #   <value><int>8002</int></value>
-            #   </member>
-            #   <member>
-            #   <name>faultString</name>
-            #   <value><string>error</string></value>
-            #   </member>
-            #   </struct></value>
-            #   </fault>
-            #   </methodResponse>
-            # Buildbot version 0.7.12-1ubuntu1
-            # Buildbot bug, I haven't had time to search for/file a ticket yet.
-            results[builder] = e
-    return results
-
+        return e
 
 class BuildbotColor(nodes.Inline, nodes.TextElement):
     pass
