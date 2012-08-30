@@ -128,9 +128,9 @@ generated script uses the ``paste.script.command.run`` for starting our server:
   import paste.script.command
   <BLANKLINE>
   if __name__ == '__main__':
-      paste.script.command.run([
-    'serve', '...myapp.ini',
-    ]+sys.argv[1:])
+      sys.exit(paste.script.command.run([
+    'serve', '/sample-buildout/parts/myapp/myapp.ini',
+    ]+sys.argv[1:]))
 
 Those ``sample-pyN.N.egg`` lines should be PasteScript and it's dependencies.
 

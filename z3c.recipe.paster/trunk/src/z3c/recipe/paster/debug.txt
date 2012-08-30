@@ -122,4 +122,4 @@ Check the content of our new generated script.
   import z3c.recipe.paster.debug
   <BLANKLINE>
   if __name__ == '__main__':
-      z3c.recipe.paster.debug.main('/sample-buildout/parts/myapp/zope.conf')
+      sys.exit(z3c.recipe.paster.debug.main('/sample-buildout/parts/myapp/zope.conf'))

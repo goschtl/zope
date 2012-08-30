@@ -102,4 +102,4 @@ This script is generic but uses the path of our eggs and uses the given name:
   import paste.script.command
   <BLANKLINE>
   if __name__ == '__main__':
-      paste.script.command.run()
+      sys.exit(paste.script.command.run())
