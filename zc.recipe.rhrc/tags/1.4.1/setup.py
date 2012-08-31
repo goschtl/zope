@@ -27,7 +27,7 @@ default=zc.recipe.rhrc:uninstall
 name = 'zc.recipe.rhrc'
 setup(
     name = name,
-    version = '0',
+    version = '1.4.1',
     author = 'Jim Fulton',
     author_email = 'jim@zope.com',
     description = 'ZC Buildout recipe for Redhat RC scripts',
