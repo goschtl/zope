@@ -178,8 +178,7 @@ class Recipe:
         if start and subprocess.call([ctlpath, 'start']):
             raise RuntimeError("%s start failed" % ctlpath)
 
-    def update(self):
-        pass
+    update = install
 
 def uninstall(name, options):
     name = options.get('deployment-name', name)

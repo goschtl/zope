@@ -807,7 +807,45 @@ to, we can use the process-management option with a 'true' value.
     ... run-script = echo zope
     ... """ % dict(dest=demo))
 
+When the part is installed, the process is started:
+
     >>> print system('bin/buildout'),
+    Installing zoperc.
+    zope start
+
+It also gets started when the part updates. This is just to make sure
+it is running.
+
+    >>> print system('bin/buildout'),
+    Updating zoperc.
+    zope start
+
+If we update the part, then when the part is uninstalled and
+reinstalled, the process will be stopped and started.  We'll often
+force this adding a digest option that exists solely to force a
+reinstall, typically because something else in the buildout has
+changed.
+
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = zoperc
+    ...
+    ... [zoperc]
+    ... recipe = zc.recipe.rhrc
+    ... parts = zope
+    ... dest = %(dest)s
+    ... process-management = true
+    ... digest = 1
+    ...
+    ... [zope]
+    ... run-script = echo zope
+    ... """ % dict(dest=demo))
+
+    >>> print system('bin/buildout'),
+    Uninstalling zoperc.
+    Running uninstall recipe.
+    zope stop
     Installing zoperc.
     zope start
 

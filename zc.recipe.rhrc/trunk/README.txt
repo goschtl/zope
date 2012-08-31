@@ -10,6 +10,16 @@ compatible run-control scripts.
 Changes
 *******
 
+1.4.1 (2012-08-31)
+==================
+
+Fixed: Processes weren't started on update.
+
+       In a perfect world, this wouldn't be necessary, as in the
+       update case, the process would already be running, however,
+       it's helpful to make sure the process is running by trying to
+       start it.
+
 1.4.0 (2012-05-18)
 ==================
 
