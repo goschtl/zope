@@ -1,5 +1,0 @@
-include *
-
-recursive-include src *
-
-global-exclude *pyc
