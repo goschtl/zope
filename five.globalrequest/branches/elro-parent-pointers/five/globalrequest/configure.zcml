@@ -1,7 +1,7 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     i18n_domain="five.globalrequest">
-
+<!--
     <subscriber
         for="ZPublisher.interfaces.IPubStart"
         handler=".hooks.set_"
@@ -11,5 +11,5 @@
         for="ZPublisher.interfaces.IPubEnd"
         handler=".hooks.clear"
         />
-
+-->
 </configure>
