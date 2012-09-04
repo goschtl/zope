@@ -25,9 +25,8 @@ from zope.browser.interfaces import IAdding
 from zope.browsermenu.metaconfigure import menuItemDirective
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
-from Products.Five.metaclass import makeClass
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
-from Products.Five.browser.metaconfigure import makeClassForTemplate
+from Products.Five.browser.metaconfigure import SimpleViewClass
 
 from five.formlib import EditView, AddView
 
@@ -37,7 +36,7 @@ _ = MessageFactory('zope')
 def EditViewFactory(name, schema, label, permission, layer,
                     template, default_template, bases, for_, fields,
                     fulledit_path=None, fulledit_label=None, menu=u''):
-    class_ = makeClassForTemplate(template, globals(), used_for=schema,
+    class_ = SimpleViewClass(template, globals(), used_for=schema,
                                   bases=bases)
     class_.schema = schema
     class_.label = label
@@ -67,7 +66,7 @@ class FiveFormDirective(BaseFormDirective):
 
     def _processWidgets(self):
         if self._widgets:
-            customWidgetsObject = makeClass(
+            customWidgetsObject = type(
                 'CustomWidgetsMixin', (Base,), self._widgets)
             self.bases = self.bases + (customWidgetsObject,)
 
@@ -100,7 +99,7 @@ def AddViewFactory(name, schema, label, permission, layer,
                    fields, content_factory, arguments,
                    keyword_arguments, set_before_add, set_after_add,
                    menu=u''):
-    class_ = makeClassForTemplate(template, globals(), used_for=schema,
+    class_ = SimpleViewClass(template, globals(), used_for=schema,
                                   bases=bases)
 
     class_.schema = schema
