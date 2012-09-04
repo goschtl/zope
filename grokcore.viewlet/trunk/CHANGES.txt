@@ -4,8 +4,9 @@ Changes
 1.10.2 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
+- Make the ``has_render()`` and ``has_no_render()`` symmetrical to those
+  in grokcore.view, grokcore.layout and grokcore.formlib, where a
+  ``render.base_method`` attribute is checked.
 
 1.10.1 (2012-05-02)
 -------------------

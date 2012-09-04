@@ -75,6 +75,9 @@ class ViewletManager(ViewletManagerBase):
             return self.template.render(self)
         else:
             return u'\n'.join([viewlet.render() for viewlet in self.viewlets])
+    # Mark the render() method as a method from the base class. That
+    # way we can detect whether somebody overrides render() in a subclass.
+    render.base_method = True
 
 
 class Viewlet(ViewletBase):
@@ -123,3 +126,6 @@ class Viewlet(ViewletBase):
 
     def render(self):
         return self.template.render(self)
+    # Mark the render() method as a method from the base class. That
+    # way we can detect whether somebody overrides render() in a subclass.
+    render.base_method = True

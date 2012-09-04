@@ -32,7 +32,9 @@ class ViewletManagerTemplateGrokker(TemplateGrokker):
     martian.component(grokcore.viewlet.ViewletManager)
 
     def has_render(self, factory):
-        return factory.render != components.ViewletManager.render
+        render = getattr(factory, 'render', None)
+        base_method = getattr(render, 'base_method', False)
+        return render and not base_method
 
     def has_no_render(self, factory):
         # always has a render method
@@ -68,11 +70,12 @@ class ViewletTemplateGrokker(TemplateGrokker):
     martian.component(grokcore.viewlet.Viewlet)
 
     def has_render(self, factory):
-        return factory.render != components.Viewlet.render
+        render = getattr(factory, 'render', None)
+        base_method = getattr(render, 'base_method', False)
+        return render and not base_method
 
     def has_no_render(self, factory):
         return not self.has_render(factory)
-
 
 class ViewletGrokker(martian.ClassGrokker):
     martian.component(grokcore.viewlet.Viewlet)
