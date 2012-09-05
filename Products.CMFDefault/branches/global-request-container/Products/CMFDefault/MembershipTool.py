@@ -19,9 +19,7 @@ from Acquisition import aq_inner
 from Acquisition import aq_parent
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
-from zope.globalrequest import getRequest
 from zope.interface import implements
-from ZPublisher.BaseRequest import RequestContainer
 
 from Products.CMFCore.MembershipTool import MembershipTool as BaseTool
 from Products.CMFCore.utils import _checkPermission
@@ -110,8 +108,7 @@ class MembershipTool(BaseTool):
             members_folder = parent.restrictedTraverse(self.membersfolder_id)
         except (AttributeError, KeyError):
             return None
-        request_container = RequestContainer(REQUEST=getRequest())
-        return members_folder.__of__(request_container)
+        return members_folder
 
     security.declarePublic('createMemberArea')
     def createMemberArea(self, member_id=''):

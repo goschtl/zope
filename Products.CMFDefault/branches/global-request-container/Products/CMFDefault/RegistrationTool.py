@@ -21,7 +21,6 @@ from App.class_init import InitializeClass
 from Products.MailHost.interfaces import IMailHost
 from zope.component import getUtility
 from zope.schema import ValidationError
-from ZPublisher.BaseRequest import RequestContainer
 
 from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.RegistrationTool import RegistrationTool as BaseTool
@@ -121,7 +120,7 @@ class RegistrationTool(BaseTool):
         return None
 
     security.declarePublic('mailPassword')
-    def mailPassword(self, forgotten_userid, REQUEST):
+    def mailPassword(self, forgotten_userid, REQUEST=None):
         """ Email a forgotten password to a member.
 
         o Raise an exception if user ID is not found.
@@ -138,12 +137,7 @@ class RegistrationTool(BaseTool):
         # Rather than have the template try to use the mailhost, we will
         # render the message ourselves and send it from here (where we
         # don't need to worry about 'UseMailHost' permissions).
-        if getattr(self, 'REQUEST', None) is None:
-            context = RequestContainer(REQUEST=REQUEST)
-            for item in reversed(aq_chain(self)):
-                context = aq_base(item).__of__(context)
-        else:
-            context = self
+        context = self
         method = context.unrestrictedTraverse('password_email')
         kw = {'member': member, 'password': member.getPassword()}
 
