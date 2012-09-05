@@ -20,9 +20,7 @@ from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from OFS.SimpleItem import SimpleItem
 from zope.component import queryUtility
-from zope.globalrequest import getRequest
 from zope.interface import implements
-from ZPublisher.BaseRequest import RequestContainer
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import ISiteRoot
@@ -74,12 +72,11 @@ class URLTool(UniqueObject, SimpleItem, ActionProviderBase):
     def getPortalObject(self):
         """ Get the portal object itself.
         """
-        request_container = RequestContainer(REQUEST=getRequest())
         portal_obj = queryUtility(ISiteRoot)
         if portal_obj is None:
             # fallback for bootstrap
             portal_obj = aq_parent(aq_inner(self))
-        return portal_obj.__of__(request_container)
+        return portal_obj
 
     security.declarePublic('getRelativeContentPath')
     def getRelativeContentPath(self, content):

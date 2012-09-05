@@ -31,9 +31,7 @@ from Persistence import PersistentMapping
 from ZODB.POSException import ConflictError
 from zope.component import getUtility
 from zope.component import queryUtility
-from zope.globalrequest import getRequest
 from zope.interface import implements
-from ZPublisher.BaseRequest import RequestContainer
 
 from Products.CMFCore.exceptions import AccessControl_Unauthorized
 from Products.CMFCore.exceptions import BadRequest
@@ -205,10 +203,7 @@ class MembershipTool(UniqueObject, Folder):
         """
         parent = aq_parent(aq_inner(self))
         members_folder = getattr(parent, 'Members', None)
-        if members_folder is None:
-            return None
-        request_container = RequestContainer(REQUEST=getRequest())
-        return members_folder.__of__(request_container)
+        return members_folder
 
     security.declareProtected(ManagePortal, 'getMemberareaCreationFlag')
     def getMemberareaCreationFlag(self):
