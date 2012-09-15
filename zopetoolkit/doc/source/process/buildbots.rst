@@ -274,7 +274,8 @@ by Jens Vagelpohl.
 
 To ensure that your build output is correctly picked up, you need to
 
-- ensure the formatting of the subject line to start with OK/FAILED/UNKNOWN,
+- ensure the formatting of the subject line to start with 
+  OK:/FAILED:/UNKNOWN:,
 - provide a sender email address / sender name that allows to identify the
   build server quickly, and
 - subscribe your sender email address to `zope-tests@zope.org
