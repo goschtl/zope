@@ -16,7 +16,7 @@
 """
 __docformat__ = "reStructuredText"
 
-import zope.app.form.browser
+import zope.formlib
 
 import zc.resourcelibrary
 
