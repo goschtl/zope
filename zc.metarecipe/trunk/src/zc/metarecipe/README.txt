@@ -62,7 +62,7 @@ buildout configuration that builds a database deployment::
   [main]
   recipe = zc.zodbrecipes:server
   deployment = deployment
-  address = :8100
+  address = 8100
   path = /var/databases/ample/main.fs
   zeo.conf =
      <zeo>
@@ -124,7 +124,7 @@ So now, let's see the meta recipe that automates this::
           self['main'] = dict(
               recipe = 'zc.zodbrecipes:server',
               deployment = 'deployment',
-              address = ':8100',
+              address = 8100,
               path = options['path'],
               **{
                 'zeo.conf': '''
@@ -172,6 +172,10 @@ string substitutions and other dependencies are evaluated, so the
 referenced parts must be defined first.  This is why, for example, the
 ``pack`` part is added after the ``main`` part.
 
+Note that the meta recipe supplied an integer for one of the
+options. In addition to strings, it's legal to supply integer and
+unicode values.
+
 Testing
 =======
 
@@ -188,7 +192,7 @@ zc.metarecipe.testing module.
     recipe = zc.recipe.deployment
     user = zope
     [main]
-    address = :8100
+    address = 8100
     deployment = deployment
     path = /var/databases/ample/main.fs
     recipe = zc.zodbrecipes:server
@@ -223,13 +227,19 @@ That's pretty much it.
 Changes
 =======
 
-0.1.1 (2012-09-24)
+0.2.0 (2012-09-24)
 ------------------
 
-Fixed: When using the meta-recipe parse method, the order that
-       resulting sections were added was not=deterministic, due to the
-       way ConfigParser works.  Not sections are added to a buildout
-       in sortd order, by section name.
+- When setting option values, unicode and int values will be converted
+  to strings.  Other non-string values are rejected.  Previously, it
+  was easy to get errors from buildout when setting options with
+  values read from ZooKeeper trees, which are unicode due to the use
+  of JSON.
+
+- Fixed: When using the meta-recipe parse method, the order that
+  resulting sections were added was non-deterministic, due to the
+  way ConfigParser works.  Not sections are added to a buildout
+  in sortd order, by section name.
 
 0.1.0 (2012-05-31)
 ------------------

@@ -12,10 +12,33 @@
 #
 ##############################################################################
 from zope.testing import setupstack
+import doctest
 import manuel.capture
 import manuel.doctest
 import manuel.testing
 import unittest
+
+def test_funky_option_types():
+    """
+    We can supply unicode and int option values and they're stringified:
+
+    >>> import zc.metarecipe.testing
+    >>> buildout = zc.metarecipe.testing.Buildout()
+    >>> recipe = zc.metarecipe.Recipe(buildout, '', {})
+    >>> recipe['s'] = dict(o1=1, o2=u'foo', o3='bar')
+    [s]
+    o1 = 1
+    o2 = foo
+    o3 = bar
+
+    Other types are not OK:
+
+    >>> recipe['x'] = dict(o1=1.0)
+    Traceback (most recent call last):
+    ...
+    TypeError: Invalid type: <type 'float'> for x:o1, 1.0
+
+    """
 
 def test_suite():
     return unittest.TestSuite((
@@ -24,5 +47,6 @@ def test_suite():
             'README.txt',
             setUp=setupstack.setUpDirectory, tearDown=setupstack.tearDown,
             ),
+        doctest.DocTestSuite(),
         ))
 
