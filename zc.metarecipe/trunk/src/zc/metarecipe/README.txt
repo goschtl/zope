@@ -203,16 +203,16 @@ zc.metarecipe.testing module.
                           path ${:path}
                         </filestorage>
                       </zlibstorage>
-    [pack]
-    command = ${buildout:bin-directory}/zeopack -d3 -t00 ${main:address}
-    deployment = deployment
-    recipe = zc.recipe.deployment:crontab
-    times = 1 2 * * 6
     [ctl]
     chkconfig = 345 99 10
     deployment = deployment
     parts = main
     recipe = zc.recipe.rhrc
+    [pack]
+    command = ${buildout:bin-directory}/zeopack -d3 -t00 ${main:address}
+    deployment = deployment
+    recipe = zc.recipe.deployment:crontab
+    times = 1 2 * * 6
 
 When we call our recipe, it will add sections to the test buildout and
 these are simply printed as added, so we can verify that the correct
@@ -222,6 +222,14 @@ That's pretty much it.
 
 Changes
 =======
+
+0.1.1 (2012-09-24)
+------------------
+
+Fixed: When using the meta-recipe parse method, the order that
+       resulting sections were added was not=deterministic, due to the
+       way ConfigParser works.  Not sections are added to a buildout
+       in sortd order, by section name.
 
 0.1.0 (2012-05-31)
 ------------------

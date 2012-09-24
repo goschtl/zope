@@ -20,5 +20,5 @@ class Recipe(object):
         parser = ConfigParser.RawConfigParser()
         parser.readfp(cStringIO.StringIO(textwrap.dedent(data)))
 
-        for section in parser.sections():
+        for section in sorted(parser.sections()):
             self[section] = dict(parser.items(section))
