@@ -231,6 +231,9 @@ Fixed: When using the meta-recipe parse method, the order that
        way ConfigParser works.  Not sections are added to a buildout
        in sortd order, by section name.
 
+Fixed: Testing support didn't catch type errors resulting from using
+       non-string data (especially unicode) in recipe options.
+
 0.1.0 (2012-05-31)
 ------------------
 
