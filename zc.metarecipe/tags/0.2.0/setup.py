@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-name, version = 'zc.metarecipe', '0'
+name, version = 'zc.metarecipe', '0.2.0'
 
 install_requires = ['setuptools']
 extras_require = dict(test=['zope.testing', 'manuel'])
