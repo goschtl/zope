@@ -14,6 +14,7 @@
 from zope.testing import renormalizing
 import doctest
 import re
+import sys
 import unittest
 import zc.buildout.testing
 
@@ -73,6 +74,10 @@ def setUp(test):
     zc.buildout.testing.install('zope.testing', test)
     zc.buildout.testing.install('zope.traversing', test)
     zc.buildout.testing.install_develop('z3c.recipe.paster', test)
+
+    if sys.version_info < (2, 7, 0):
+        # 2.6 and below needs ordereddict
+        zc.buildout.testing.install('ordereddict', test)
 
 checker = renormalizing.RENormalizing([
     zc.buildout.testing.normalize_path,
