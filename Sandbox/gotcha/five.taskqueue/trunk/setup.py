@@ -24,7 +24,6 @@ setup(name='five.taskqueue',
       install_requires=[
           'setuptools',
           'z3c.taskqueue',
-          'five.dbevent',
       ],
       entry_points="""
       # -*- Entry points: -*-

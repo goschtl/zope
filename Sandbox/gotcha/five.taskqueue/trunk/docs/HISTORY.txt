@@ -4,7 +4,7 @@ Changelog
 0.1-alpha-4 (unreleased)
 ------------------------
 
-- Nothing changed yet.
+- Remove five.dbevent dependency
 
 
 0.1-alpha-3 (2011-05-16)
