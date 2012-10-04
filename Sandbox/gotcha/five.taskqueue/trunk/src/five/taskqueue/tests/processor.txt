@@ -13,6 +13,8 @@ API. Let's create the necessary components to test the processor:
 
 1. Create the task service and add it to the root site:
 
+  >>> import transaction
+  >>> transaction.abort()
   >>> from five.taskqueue import service
   >>> tasks = service.TaskService()
   >>> tasks.id = 'tasks'
@@ -44,6 +46,9 @@ API. Let's create the necessary components to test the processor:
 
   >>> import zope.component
   >>> zope.component.provideUtility(sleepTask, name='sleep')
+
+4. Setup reference of global DB on service
+
   >>> import Zope2
   >>> from z3c.taskqueue.startup import storeDBReference
   >>> storeDBReference(Zope2.DB)
@@ -63,7 +68,6 @@ Let's first register a few tasks:
   >>> jobid = tasks.add(u'sleep', (0.1,  2))
   >>> jobid = tasks.add(u'sleep', (0,    3))
   >>> jobid = tasks.add(u'sleep', (0.08, 4))
-  >>> import transaction
   >>> transaction.commit()
 
 Let's start by executing a job directly. The first argument to the simple
@@ -75,7 +79,7 @@ the task service. All other arguments are optional:
   >>> proc = processor.SimpleProcessor(
   ...     db, tasks.getServicePath(), waitTime=0.0)
 
-Let's now process the first job. We clear the log.
+Let's now process the first job. We first clear the log.
 
   >>> log_info.clear()
 

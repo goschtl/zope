@@ -70,17 +70,17 @@ class TestIdGenerator(unittest.TestCase):
         random.seed()
 
     def test_sequence(self):
-        id = 8852258758999665121
+        id = 1392637175
         self.assertEquals(id, self.service._generateId())
         self.assertEquals(id + 1, self.service._generateId())
         self.assertEquals(id + 2, self.service._generateId())
         self.assertEquals(id + 3, self.service._generateId())
 
     def test_in_use_randomises(self):
-        id = 8852258758999665121
+        id = 1392637175
         self.assertEquals(id, self.service._generateId())
         self.service.jobs[id + 1] = object()
-        id = 5113777911774377050
+        id = 1506179619
         self.assertEquals(id, self.service._generateId())
         self.assertEquals(id + 1, self.service._generateId())
         self.service.jobs[id + 1] = object()
