@@ -1,0 +1,7 @@
+include *.txt *.rst
+recursive-include docs *.txt
+exclude bootstrap.py MANIFEST.in .gitignore .travis.tml buildout.cfg
+prune lib
+prune include
+prune bin
+global-exclude *.pyc
