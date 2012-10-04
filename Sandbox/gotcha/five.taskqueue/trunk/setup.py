@@ -23,6 +23,7 @@ setup(name='five.taskqueue',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'Zope2',
           'z3c.taskqueue',
       ],
       entry_points="""
