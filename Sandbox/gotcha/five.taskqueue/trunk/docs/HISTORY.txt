@@ -1,8 +1,8 @@
 Changelog
 =========
 
-0.1-alpha-4 (unreleased)
-------------------------
+0.2 (2012-10-04)
+----------------
 
 - Zope 2.13 support (no more 2.10 support)
 
