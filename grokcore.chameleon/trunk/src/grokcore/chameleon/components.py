@@ -54,9 +54,10 @@ class PageTemplate(PageTemplate):
         request = vars.get('request')
 
         def translate(
-            msgid, domain=None, mapping=None, target_language=None,
-            default=None, context=None):
-
+            msgid, domain=None, mapping=None, context=None,
+            target_language=None, default=None):
+            # We swap context with the request, that is required for
+            # zope.i18ntranslate.
             return zope.i18n.translate(
                 msgid, domain, mapping, request, target_language, default)
 
