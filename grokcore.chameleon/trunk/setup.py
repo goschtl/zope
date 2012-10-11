@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 version = '1.0.3.dev0'
 
 install_requires = [
-    'Chameleon >= 2.8.4',
+    'Chameleon >= 2.9',
     'grokcore.component',
     'grokcore.view',
     'setuptools',

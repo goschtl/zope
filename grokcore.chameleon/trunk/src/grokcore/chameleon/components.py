@@ -49,13 +49,21 @@ class PageTemplate(PageTemplate):
         }
 
     def render(self, **vars):
-        if 'target_language' not in vars:
-            try:
-                target_language = zope.i18n.negotiate(vars['request'])
-            except:
-                target_language = None
-            vars['target_language'] = target_language
+        # zope.i18n.translate will call negociate to retrieve the
+        # target_language if it is None.
+        request = vars.get('request')
+
+        def translate(
+            msgid, domain=None, mapping=None, target_language=None,
+            default=None, context=None):
+
+            return zope.i18n.translate(
+                msgid, domain, mapping, request, target_language, default)
+
+        vars['translate'] = translate
+
         return super(PageTemplate, self).render(**vars)
+
 
 def _module_relative_to_abs(ctx, filename):
     # Taken and adapted from z3c.pth.pagetemplate.

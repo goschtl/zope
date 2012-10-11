@@ -4,6 +4,7 @@
 
   <include package="grokcore.view" file="meta-minimal.zcml" />
   <include package="grokcore.view" />
+
   <grok:grok package="." />
 
 </configure>

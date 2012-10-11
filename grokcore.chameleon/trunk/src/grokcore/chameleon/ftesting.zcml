@@ -15,6 +15,7 @@
   <include package="zope.traversing.browser"/>
   <include package="zope.container"/>
   <include package="zope.i18n" />
+  <include package="zope.publisher" />
   <include package="zope.app.appsetup"/>
   <include package="grokcore.viewlet"/>
   <include package="grokcore.chameleon"/>
