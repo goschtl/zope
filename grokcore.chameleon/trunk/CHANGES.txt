@@ -1,11 +1,10 @@
 CHANGES
 *******
 
-1.0.3 (unreleased)
+1.0.3 (2012-10-12)
 ==================
 
 - Fix broken translations when using Chameleon 2.9 or more recent.
-
 
 1.0.2 (2012-05-07)
 ==================
