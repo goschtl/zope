@@ -1,0 +1,249 @@
+=========================
+Cross-Database References
+=========================
+
+Persistent references to objects in different databases within a
+multi-database are allowed.
+
+Lets set up a multi-database with 2 databases:
+
+    >>> import ZODB.tests.util, transaction, persistent
+    >>> databases = {}
+    >>> db1 = ZODB.tests.util.DB(databases=databases, database_name='1')
+    >>> db2 = ZODB.tests.util.DB(databases=databases, database_name='2')
+
+And create a persistent object in the first database:
+
+    >>> tm = transaction.TransactionManager()
+    >>> conn1 = db1.open(transaction_manager=tm)
+    >>> p1 = MyClass()
+    >>> conn1.root()['p'] = p1
+    >>> tm.commit()
+
+First, we get a connection to the second database.  We get the second
+connection using the first connection's `get_connection` method.  This
+is important.  When using multiple databases, we need to make sure we
+use a consistent set of connections so that the objects in the
+connection caches are connected in a consistent manner.
+
+    >>> conn2 = conn1.get_connection('2')
+
+Now, we'll create a second persistent object in the second database.
+We'll have a reference to the first object:
+
+    >>> p2 = MyClass()
+    >>> conn2.root()['p'] = p2
+    >>> p2.p1 = p1
+    >>> tm.commit()
+
+Now, let's open a separate connection to database 2.  We use it to
+read `p2`, use `p2` to get to `p1`, and verify that it is in database 1:
+
+    >>> conn = db2.open()
+    >>> p2x = conn.root()['p']
+    >>> p1x = p2x.p1
+
+    >>> p2x is p2, p2x._p_oid == p2._p_oid, p2x._p_jar.db() is db2
+    (False, True, True)
+
+    >>> p1x is p1, p1x._p_oid == p1._p_oid, p1x._p_jar.db() is db1
+    (False, True, True)
+
+It isn't valid to create references outside a multi database:
+
+    >>> db3 = ZODB.tests.util.DB()
+    >>> conn3 = db3.open(transaction_manager=tm)
+    >>> p3 = MyClass()
+    >>> conn3.root()['p'] = p3
+    >>> tm.commit()
+
+    >>> p2.p3 = p3
+    >>> tm.commit() # doctest: +NORMALIZE_WHITESPACE
+    Traceback (most recent call last):
+    ...
+    InvalidObjectReference:
+    Attempt to store an object from a foreign database connection
+
+    >>> tm.abort()
+
+Databases for new objects
+-------------------------
+
+Objects are normally added to a database by making them reachable from
+an object already in the database.  This is unambiguous when there is
+only one database.  With multiple databases, it is not so clear what
+happens.  Consider:
+
+    >>> p4 = MyClass()
+    >>> p1.p4 = p4
+    >>> p2.p4 = p4
+
+In this example, the new object is reachable from both `p1` in database
+1 and `p2` in database 2.  If we commit, which database should `p4` end up
+in?  This sort of ambiguity could lead to subtle bugs.  For that reason,
+an error is generated if we commit changes when new objects are
+reachable from multiple databases:
+
+    >>> tm.commit() # doctest: +NORMALIZE_WHITESPACE
+    Traceback (most recent call last):
+    ...
+    InvalidObjectReference: A new object is reachable from multiple
+    databases. Won't try to guess which one was correct!
+
+    >>> tm.abort()
+
+To resolve this ambiguity, we can commit before an object becomes
+reachable from multiple databases.
+
+    >>> p4 = MyClass()
+    >>> p1.p4 = p4
+    >>> tm.commit()
+    >>> p2.p4 = p4
+    >>> tm.commit()
+    >>> p4._p_jar.db().database_name
+    '1'
+
+This doesn't work with a savepoint:
+
+    >>> p5 = MyClass()
+    >>> p1.p5 = p5
+    >>> s = tm.savepoint()
+    >>> p2.p5 = p5
+    >>> tm.commit() # doctest: +NORMALIZE_WHITESPACE
+    Traceback (most recent call last):
+    ...
+    InvalidObjectReference: A new object is reachable from multiple
+    databases. Won't try to guess which one was correct!
+
+    >>> tm.abort()
+
+(Maybe it should.)
+
+We can disambiguate this situation by using the connection add method
+to explicitly say what database an object belongs to:
+
+    >>> p5 = MyClass()
+    >>> p1.p5 = p5
+    >>> p2.p5 = p5
+    >>> conn1.add(p5)
+    >>> tm.commit()
+    >>> p5._p_jar.db().database_name
+    '1'
+
+This the most explicit and thus the best way, when practical, to avoid
+the ambiguity.
+
+Cross-database reference seat belt
+----------------------------------
+
+Some applications create unintentional cross-database references when
+they move objects between containers stored in ZODB. For example, an
+object might be created in a session container located in a volatile
+database, then later moved (rather than copied) to the main database.
+In that case, the reference will break when the session expires or the
+server restarts.
+
+ZODB provides an optional seat belt that prevents unintentional
+cross-database references. The seat belt is disabled by default, but
+can be enabled by passing "check_xrefs=True" to the DB constructor.
+
+When the seat belt is enabled, every cross-database reference is
+checked by the _p_check_xref method of the persistent object holding
+the reference; objects that do not have a _p_check_xref method are
+not allowed to hold any cross-database references.
+
+Lets set up a multi-database with 2 databases, this time checking
+cross-database references from `main_db` but not from `session_db`:
+
+    >>> import ZODB.tests.util, transaction, persistent
+    >>> databases = {}
+    >>> main_db = ZODB.tests.util.DB(databases=databases, database_name='main',
+    ...     check_xrefs=True)
+    >>> session_db = ZODB.tests.util.DB(databases=databases,
+    ...     database_name='sessions')
+
+Create a persistent object in both databases:
+
+    >>> tm = transaction.TransactionManager()
+    >>> main_conn = main_db.open(transaction_manager=tm)
+    >>> main_obj = MyClass()
+    >>> main_conn.root()['p'] = main_obj
+    >>> session_conn = main_conn.get_connection('sessions')
+    >>> session_obj = MyClass()
+    >>> session_conn.root()['p'] = session_obj
+    >>> tm.commit()
+
+Try to create a reference from `main_obj` to `session_obj`, which is not
+allowed because the seat belt is enabled in `main_db` and `main_obj` has
+no _p_check_xref method:
+
+    >>> main_obj.someattr = session_obj
+    >>> tm.commit() # doctest: +NORMALIZE_WHITESPACE
+    Traceback (most recent call last):
+    ...
+    InvalidObjectReference: Attempt to store a cross database reference
+    from an object that does not have a _p_check_xref method
+    >>> tm.abort()
+    >>> hasattr(main_obj, 'someattr')
+    False
+
+A reference from `session_obj` to `main_obj` is allowed, however, because
+the seat belt is disabled in session_db.
+
+    >>> session_obj.someattr = main_obj
+    >>> tm.commit()
+    >>> hasattr(session_obj, 'someattr')
+    True
+
+Create an object that has a _p_check_xref method.  Allow the object to
+refer to session_obj.
+
+    >>> main_obj = MyClass_w__p_check_xref()
+    >>> main_conn.root()['p'] = main_obj
+    >>> main_obj.allowed_xrefs = [session_obj]
+    >>> main_obj.someattr = session_obj
+    >>> tm.commit()
+
+The _p_check_xref method can disallow a reference.
+
+    >>> main_obj.allowed_xrefs = ()
+    >>> tm.commit() # doctest: +NORMALIZE_WHITESPACE
+    Traceback (most recent call last):
+    ...
+    InvalidObjectReference: A cross database reference was disallowed
+    by a _p_check_xref method
+    >>> tm.abort()
+
+Verify the right _p_check_xref method is called:
+
+    >>> main_obj.second = MyClass_w__p_check_xref()
+    >>> main_obj.second.allowed_xrefs = [session_obj]
+    >>> main_obj.second.someattr = session_obj
+    >>> tm.commit()
+
+NOTE
+----
+
+This implementation is incomplete.  It allows creating and using
+cross-database references, however, there are a number of facilities
+missing:
+
+cross-database garbage collection
+
+    Garbage collection is done on a database by database basis.
+    If an object on a database only has references to it from other
+    databases, then the object will be garbage collected when its
+    database is packed.  The cross-database references to it will be
+    broken.
+
+cross-database undo
+
+    Undo is only applied to a single database.  Fixing this for
+    multiple databases is going to be extremely difficult.  Undo
+    currently poses consistency problems, so it is not (or should not
+    be) widely used.
+
+Cross-database aware (tolerant) export/import
+
+    The export/import facility needs to be aware, at least, of cross-database
+    references.
