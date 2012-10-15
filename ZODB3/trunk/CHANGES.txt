@@ -2,14 +2,20 @@
  Change History
 ================
 
-4.0.0a1 (2012-??-??)
+3.11.0a1 (2012-??-??)
 =====================
 
 New Features
 ------------
 
-- The ``persistent`` package is now released as a separate distribution,
-  on which ZODB now depends.
+- ZODB3 has been split into 3 separate packages:
+
+  - persistent
+  - ZODB
+  - ZEO
+
+  The ZODB3 distribution is simply a meta-distribution, for backward
+  compatibility, that depends on the other 3.
 
 - ZODB no longer depends on zope.event.  It now uses ZODB.event, which
   uses zope.event if it is installed.  You can override

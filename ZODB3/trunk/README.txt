@@ -24,7 +24,7 @@ you pass --all as an argument to test.py.
 Compatibility
 =============
 
-ZODB 3.10 requires Python 2.5 or later.
+ZODB3 3.11 requires Python 2.6 or later.
 
 Note --
    When using ZEO and upgrading from Python 2.4, you need to upgrade
