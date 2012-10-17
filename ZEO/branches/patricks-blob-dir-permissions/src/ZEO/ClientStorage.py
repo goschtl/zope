@@ -122,7 +122,7 @@ class ClientStorage(object):
                  username='', password='', realm=None,
                  blob_dir=None, shared_blob_dir=False,
                  blob_cache_size=None, blob_cache_size_check=10,
-                 client_label=None,
+                 client_label=None, blob_dir_permissions=None,
                  ):
         """ClientStorage constructor.
 
@@ -236,6 +236,9 @@ class ClientStorage(object):
 
         client_label
             A label to include in server log messages for the client.
+
+        blob_dir_permissions
+            File permissions for the blob cache directory.
 
         Note that the authentication protocol is defined by the server
         and is detected by the ClientStorage upon connecting (see
@@ -383,12 +386,14 @@ class ClientStorage(object):
             # currently requires pywin32 on Windows.
             import ZODB.blob
             if shared_blob_dir:
-                self.fshelper = ZODB.blob.FilesystemHelper(blob_dir)
+                self.fshelper = ZODB.blob.FilesystemHelper(blob_dir,
+                    blob_dir_permissions=blob_dir_permissions)
             else:
                 if 'zeocache' not in ZODB.blob.LAYOUTS:
                     ZODB.blob.LAYOUTS['zeocache'] = BlobCacheLayout()
                 self.fshelper = ZODB.blob.FilesystemHelper(
-                    blob_dir, layout_name='zeocache')
+                    blob_dir, layout_name='zeocache',
+                    blob_dir_permissions=blob_dir_permissions)
                 self.fshelper.create()
             self.fshelper.checkSecure()
         else:
