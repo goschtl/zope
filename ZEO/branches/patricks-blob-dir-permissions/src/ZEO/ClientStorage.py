@@ -387,13 +387,13 @@ class ClientStorage(object):
             import ZODB.blob
             if shared_blob_dir:
                 self.fshelper = ZODB.blob.FilesystemHelper(blob_dir,
-                    blob_dir_permissions=blob_dir_permissions)
+                    permissions=blob_dir_permissions)
             else:
                 if 'zeocache' not in ZODB.blob.LAYOUTS:
                     ZODB.blob.LAYOUTS['zeocache'] = BlobCacheLayout()
                 self.fshelper = ZODB.blob.FilesystemHelper(
                     blob_dir, layout_name='zeocache',
-                    blob_dir_permissions=blob_dir_permissions)
+                    permissions=blob_dir_permissions)
                 self.fshelper.create()
             self.fshelper.checkSecure()
         else:

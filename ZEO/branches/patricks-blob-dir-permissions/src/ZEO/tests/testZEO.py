@@ -1694,23 +1694,29 @@ class ServerManagingClientStorage(ClientStorage):
         def tpc_abort(self, id):
             self.rpc.call('tpc_abort', id)
 
-    def __init__(self, name, blob_dir, shared=False, extrafsoptions=''):
+    def __init__(self, name, blob_dir, shared=False, extrafsoptions='',
+        blob_dir_permissions=None):
         if shared:
             server_blob_dir = blob_dir
         else:
             server_blob_dir = 'server-'+blob_dir
         self.globs = {}
         port = forker.get_port2(self)
+        if blob_dir_permissions:
+            options = "blob-dir-permissions %s" % (oct(blob_dir_permissions),)
+        else:
+            options = ""
         addr, admin, pid, config = forker.start_zeo_server(
             """
             <blobstorage>
                 blob-dir %s
+                %s
                 <filestorage>
                    path %s
                    %s
                 </filestorage>
             </blobstorage>
-            """ % (server_blob_dir, name+'.fs', extrafsoptions),
+            """ % (server_blob_dir, options, name+'.fs', extrafsoptions),
             port=port,
             )
         os.remove(config)
@@ -1719,16 +1725,19 @@ class ServerManagingClientStorage(ClientStorage):
             self, forker.shutdown_zeo_server, admin)
         if shared:
             ClientStorage.__init__(self, addr, blob_dir=blob_dir,
-                                   shared_blob_dir=True)
+                shared_blob_dir=True,
+                blob_dir_permissions=blob_dir_permissions)
         else:
-            ClientStorage.__init__(self, addr, blob_dir=blob_dir)
+            ClientStorage.__init__(self, addr, blob_dir=blob_dir,
+                blob_dir_permissions=blob_dir_permissions)
 
     def close(self):
         ClientStorage.close(self)
         zope.testing.setupstack.tearDown(self)
 
-def create_storage_shared(name, blob_dir):
-    return ServerManagingClientStorage(name, blob_dir, True)
+def create_storage_shared(name, blob_dir, blob_dir_permissions=None):
+    return ServerManagingClientStorage(name, blob_dir, True,
+        blob_dir_permissions=blob_dir_permissions)
 
 class ServerManagingClientStorageForIExternalGCTest(
     ServerManagingClientStorage):

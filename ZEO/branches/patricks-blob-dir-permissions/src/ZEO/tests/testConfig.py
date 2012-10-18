@@ -60,5 +60,25 @@ class ZEOConfigTest(ConfigTestBase):
                          'blobs')
         self.assertRaises(ClientDisconnected, self._test, cfg)
 
+        cfg = """
+        <zodb>
+          <zeoclient>
+            blob-dir blobs
+            blob-dir-permissions 0777
+            server localhost:56897
+            wait false
+          </zeoclient>
+        </zodb>
+        """
+        config, handle = ZConfig.loadConfigFile(getDbSchema(), StringIO(cfg))
+        self.assertEqual(config.database[0].config.storage.config.blob_dir,
+                         'blobs')
+        storage = config.database[0].config.storage.open()
+        self.assertEqual(storage.fshelper.blob_dir_permissions, 0777)
+        storage.close()
+        self.assertRaises(ClientDisconnected, self._test, cfg)
+
+
+
 def test_suite():
     return unittest.makeSuite(ZEOConfigTest)
