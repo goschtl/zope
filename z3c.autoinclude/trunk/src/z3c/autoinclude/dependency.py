@@ -1,4 +1,5 @@
 import os
+import logging
 from zope.dottedname.resolve import resolve
 from pkg_resources import resource_exists
 from pkg_resources import get_provider
@@ -21,7 +22,11 @@ class DependencyFinder(DistributionManager):
         for req in self.context.requires():
             dist_manager = DistributionManager(get_provider(req))
             for dotted_name in dist_manager.dottedNames():
-                module = resolve(dotted_name)
+                try:
+                    module = resolve(dotted_name)
+                except ImportError, exc:
+                    logging.warn(exc)
+                    continue
                 for candidate in zcml_to_look_for:
                     candidate_path = os.path.join(
                         os.path.dirname(module.__file__), candidate)
