@@ -25,7 +25,8 @@ class DependencyFinder(DistributionManager):
                 try:
                     module = resolve(dotted_name)
                 except ImportError, exc:
-                    logging.warn(exc)
+                    logging.getLogger("z3c.autoinclude").warn(
+                        "resolve(%r) raised import error: %s" % (dotted_name, exc))
                     continue
                 for candidate in zcml_to_look_for:
                     candidate_path = os.path.join(
