@@ -24,9 +24,9 @@ def get_refcount(self):
     return size
 
 
-def get_activity(db):
+def get_activity(db, delta=MUNIN_TIME_DELTA):
     now = float(DateTime.DateTime())
-    request = dict(chart_start=now-MUNIN_TIME_DELTA,
+    request = dict(chart_start=now-delta,
                    chart_end=now)
     return db.getActivityChartData(200, request)
 
@@ -52,6 +52,20 @@ def get_conflictInfo():
         #Zope >= 2.11 does not store conflict_errors globally
         return Zope2.App.startup.zpublisher_exception_hook
 
+
+def uptime(app):
+    return app.Control_Panel.process_time().strip()
+
+
+def dbsize(app):
+    size = app.Control_Panel.db_size()
+    if size[-1] == "k":
+        size = float(size[:-1]) * 1024
+    else:
+        size = float(size[:-1]) * 1048576
+    return size
+
+
 def nagios(self):
     """A method to allow nagios checks with a bit more information.
 
@@ -61,14 +75,10 @@ def nagios(self):
     result = ""
 
     # Uptime
-    result += "uptime: %s\n" % self.Control_Panel.process_time().strip()
+    result += "uptime: %s\n" % uptime(self)
 
     # Database size
-    size = self.Control_Panel.db_size()
-    if size[-1] == "k":
-        size = float(size[:-1]) * 1024
-    else:
-        size = float(size[:-1]) * 1048576
+    size = dbsize(self)
     result += "database: %s\n" % int(size)
 
     # references
