@@ -72,7 +72,6 @@ zc.recipe.egg:script recipe:
 
     >>> print system(buildout),
     Installing zodb.
-    Generated script '/sample-buildout/bin/mkzeoinst'.
     Generated script '/sample-buildout/bin/fstail'.
     Generated script '/sample-buildout/bin/zeopack'.
     Generated script '/sample-buildout/bin/runzeo'.
@@ -231,18 +230,19 @@ And we get a control script generated in our bin directory:
     <BLANKLINE>
     import sys
     sys.path[0:0] = [
-      '/sample-buildout/eggs/zdaemon-2.0-py2.4.egg',
-      '/sample-buildout/eggs/setuptools-0.6-py2.4.egg',
-      '/sample-buildout/eggs/ZConfig-2.4-py2.4.egg',
-      ]
+        '/sample-buildout/eggs/zdaemon-2.0-py2.4.egg',
+        '/sample-buildout/eggs/setuptools-0.6-py2.4.egg',
+        '/sample-buildout/eggs/ZConfig-2.4-py2.4.egg',
+        ]
+    <BLANKLINE>
     <BLANKLINE>
     import zdaemon.zdctl
     <BLANKLINE>
     if __name__ == '__main__':
-        zdaemon.zdctl.main([
+        sys.exit(zdaemon.zdctl.main([
             '-C', '/sample-buildout/parts/server/zdaemon.conf',
             ]+sys.argv[1:]
-            )
+            ))
 
 This is a zdaemon script.  We can use this to control the ZEO server
 process.
@@ -291,19 +291,20 @@ generated in our bin directory:
     <BLANKLINE>
     import sys
     sys.path[0:0] = [
-      '/sample-buildout/eggs/zope.event-2.0-py2.4.egg',
-      '/sample-buildout/eggs/zdaemon-2.0-py2.4.egg',
-      '/sample-buildout/eggs/setuptools-0.6-py2.4.egg',
-      '/sample-buildout/eggs/ZConfig-2.4-py2.4.egg',
-      ]
+        '/sample-buildout/eggs/zope.event-2.0-py2.4.egg',
+        '/sample-buildout/eggs/zdaemon-2.0-py2.4.egg',
+        '/sample-buildout/eggs/setuptools-0.6-py2.4.egg',
+        '/sample-buildout/eggs/ZConfig-2.4-py2.4.egg',
+        ]
+    <BLANKLINE>
     <BLANKLINE>
     import zdaemon.zdctl
     <BLANKLINE>
     if __name__ == '__main__':
-        zdaemon.zdctl.main([
+        sys.exit(zdaemon.zdctl.main([
             '-C', '/sample-buildout/parts/server/zdaemon.conf',
             ]+sys.argv[1:]
-            )
+            ))
 
 NB: This is a zdaemon script. If your ZEO server needs additional eggs, such as
     to provide additional storage types or log handlers, they should appear in
@@ -398,18 +399,19 @@ Instead, the control script will be in the rc directory:
     <BLANKLINE>
     import sys
     sys.path[0:0] = [
-      '/sample-buildout/eggs/zdaemon-2.0-py2.4.egg',
-      '/sample-buildout/eggs/setuptools-0.6-py2.4.egg',
-      '/sample-buildout/eggs/ZConfig-2.4-py2.4.egg',
-      ]
+        '/sample-buildout/eggs/zdaemon-2.0-py2.4.egg',
+        '/sample-buildout/eggs/setuptools-0.6-py2.4.egg',
+        '/sample-buildout/eggs/ZConfig-2.4-py2.4.egg',
+        ]
+    <BLANKLINE>
     <BLANKLINE>
     import zdaemon.zdctl
     <BLANKLINE>
     if __name__ == '__main__':
-        zdaemon.zdctl.main([
+        sys.exit(zdaemon.zdctl.main([
             '-C', '/sample-buildout/etc/server-zdaemon.conf',
             ]+sys.argv[1:]
-            )
+            ))
 
 The run-control script name now combines the deployment name and the
 script name.
