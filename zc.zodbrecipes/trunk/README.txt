@@ -9,6 +9,14 @@ Recipes for working with ZODB.
 Changes
 *******
 
+0.6.2 (2012-10-31)
+==================
+
+Bugs Fixed
+----------
+
+- Moved 'zope.testing' requirement from install to test requirement.
+
 0.6.1 (2010-05-25)
 ==================
 
