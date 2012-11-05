@@ -35,4 +35,9 @@ setup(name='five.z2monitor',
           'ZODB3',
           'zope.component',
           'zope.processlifetime'
-      ])
+      ],
+      entry_points="""
+[plone.recipe.zope2instance.ctl]
+monitor = five.z2monitor.zope2instance:monitor
+"""
+      )
