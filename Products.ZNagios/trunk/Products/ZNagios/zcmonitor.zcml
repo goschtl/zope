@@ -40,4 +40,9 @@
      provides="zc.z3monitor.interfaces.IZ3MonitorPlugin"
      name="dbactivity" />
 
+   <utility
+     component=".zcmonitor.zc_requestqueue_size"
+     provides="zc.z3monitor.interfaces.IZ3MonitorPlugin"
+     name="requestqueue_size" />
+
 </configure>

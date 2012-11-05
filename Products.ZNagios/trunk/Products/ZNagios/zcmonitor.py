@@ -63,3 +63,13 @@ def zc_dbactivity(connection, database='main', last_minutes=60 * 5):
     activity = get_activity(db)
     print >> connection, activity['total_load_count'], " ", activity['total_store_count'], " ", activity['total_connections']
     app._p_jar.close()
+
+
+def zc_requestqueue_size(connection):
+    """number of requests waiting in the queue to be handled by zope threads"""
+    from ZServer.PubCore import _handle
+    queue_size = 0
+    if _handle is not None:  # no request yet
+        zrendevous = _handle.im_self
+        queue_size = len(zrendevous._lists[1])
+    print >> connection, queue_size
