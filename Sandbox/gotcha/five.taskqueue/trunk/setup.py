@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.2.3.dev0'
+version = '0.3.0'
 
 setup(name='five.taskqueue',
       version=version,
@@ -24,7 +24,7 @@ setup(name='five.taskqueue',
       install_requires=[
           'setuptools',
           'Zope2',
-          'z3c.taskqueue',
+          'z3c.taskqueue >= 0.2.0',
       ],
       entry_points="""
       # -*- Entry points: -*-

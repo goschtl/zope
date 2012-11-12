@@ -1,7 +1,7 @@
 include *.txt *.rst
 recursive-include docs *.txt
 recursive-include src *.zcml *.txt
-exclude bootstrap.py MANIFEST.in .gitignore .travis.tml buildout.cfg
+exclude bootstrap.py MANIFEST.in buildout.cfg
 prune lib
 prune include
 prune bin

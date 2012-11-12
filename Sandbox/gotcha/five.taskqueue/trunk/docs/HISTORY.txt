@@ -4,7 +4,10 @@ Changelog
 0.2.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- `startServices` filters which services to start based on which site they are sitting in.
+
+- Better reporting when startup of service fails. Depends on `z3c.taskqueue >=
+  0.2.0`
 
 
 0.2.2 (2012-11-12)
