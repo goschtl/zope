@@ -40,18 +40,9 @@ def databaseOpened(event, productName='z3c.taskqueue'):
     startSpecifications = getStartSpecifications(configuration)
 
     for sitesIdentifier, servicesIdentifier in startSpecifications:
-        startedAnything = False
         sites = getSites(sitesIdentifier, root_folder)
         for site in sites:
-            if servicesIdentifier == '*':
-                started = startAllServices(site, root_folder)
-            else:
-                started = startOneService(site, servicesIdentifier)
-            startedAnything = startedAnything or started
-
-        if sitesIdentifier == "*" and not startedAnything:
-            msg = 'no services started by directive *@%s'
-            log.warn(msg % servicesIdentifier)
+            startOneService(site, servicesIdentifier)
 
 
 def getRootFolder(event):
@@ -107,23 +98,6 @@ def getSite(siteName, root_folder):
     return site
 
 
-def startAllServices(site, root_folder):
-    startedAnything = False
-    services = getAllServices(site, root_folder)
-    for service in services:
-        started = startService(service)
-        if started:
-            siteName = getSiteName(site)
-            msg = 'service %s on site %s started'
-            log.info(msg % (service.__name__, siteName))
-        startedAnything = startedAnything or started
-    if not startedAnything:
-        msg = 'no services started for site %s'
-        siteName = getSiteName(site)
-        log.warn(msg % siteName)
-    return startedAnything
-
-
 def getAllServices(site, root_folder):
     sm = site.getSiteManager()
     services = list(
@@ -139,14 +113,6 @@ def getAllServices(site, root_folder):
     return services
 
 
-def startService(service):
-    if not service.isProcessing():
-        service.startProcessing()
-        return service.isProcessing()
-    else:
-        return False
-
-
 def getSiteName(site):
     siteName = getattr(site, '__name__', '')
     if siteName is None:
@@ -157,14 +123,15 @@ def getSiteName(site):
 def startOneService(site, serviceName):
     service = getService(site, serviceName)
     if service is not None:
-        started = startService(service)
-        if started:
-            siteName = getSiteName(site)
-            msg = 'service %s on site %s started'
-            log.info(msg % (serviceName, siteName))
-        return started
+        if not service.isProcessing():
+            service.startProcessing()
+            if service.isProcessing():
+                siteName = getSiteName(site)
+                msg = 'service %s on site %s started'
+                log.info(msg % (serviceName, siteName))
+        return service
     else:
-        return False
+        return None
 
 
 def getService(site, serviceName):
