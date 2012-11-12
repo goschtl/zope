@@ -9,21 +9,24 @@ from z3c.taskqueue.startup import startOneService, storeDBReference
 log = logging.getLogger('five.taskqueue')
 
 
-def startServices(root_folder):
+def startServices(root_folder, siteName):
     configuration = getTaskqueueConfiguration()
     startSpecifications = getStartSpecifications(configuration)
 
-    for siteName, serviceName in startSpecifications:
-        log.debug('Starting service %s from site %s' % (serviceName, siteName))
+    for startSiteName, serviceName in startSpecifications:
+        if startSiteName != siteName:
+            continue
         site = getSite(siteName, root_folder)
         if site is None:
             continue
+        log.debug('Starting service %s from site %s' % (serviceName, siteName))
         service = startOneService(site, serviceName)
         if service and not service.isProcessing():
             msg = 'service %s from site %s was not started.'
             log.warn(msg % (serviceName, siteName))
         else:
-            log.debug('Service %s from site %s started.' % (serviceName, siteName))
+            log.debug('Service %s from site %s started.' %
+                    (serviceName, siteName))
 
 
 def databaseOpened(event):
