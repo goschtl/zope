@@ -18,8 +18,8 @@ def startServices(root_folder):
         site = getSite(siteName, root_folder)
         if site is None:
             continue
-        started = startOneService(site, serviceName)
-        if not started:
+        service = startOneService(site, serviceName)
+        if service and not service.isProcessing():
             msg = 'service %s from site %s was not started.'
             log.warn(msg % (serviceName, siteName))
         else:
