@@ -1,10 +1,10 @@
 Changelog
 =========
 
-0.2.2 (unreleased)
+0.2.2 (2012-11-12)
 ------------------
 
-- Nothing changed yet.
+- Fix `MANIFEST.in` of 0.2.1 broken release.
 
 
 0.2.1 (2012-10-04)
