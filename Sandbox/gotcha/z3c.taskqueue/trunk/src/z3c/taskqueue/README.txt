@@ -133,7 +133,7 @@ Cron jobs execute on specific times.
   >>> from z3c.taskqueue.job import CronJob
   >>> now = 0
   >>> time.gmtime(now)
-  (1970, 1, 1, 0, 0, 0, 3, 1, 0)
+  time.struct_time(tm_year=1970, tm_mon=1, tm_mday=1, tm_hour=0, tm_min=0, tm_sec=0, tm_wday=3, tm_yday=1, tm_isdst=0)
 
 We set up a job to be executed once an hour at the current minute. The next
 call time is the one our from now.
@@ -142,71 +142,71 @@ Minutes
 
   >>> cronJob = CronJob(-1, u'echo', (), minute=(0, 10))
   >>> time.gmtime(cronJob.timeOfNextCall(0))
-  (1970, 1, 1, 0, 10, 0, 3, 1, 0)
+  time.struct_time(tm_year=1970, tm_mon=1, tm_mday=1, tm_hour=0, tm_min=10, tm_sec=0, tm_wday=3, tm_yday=1, tm_isdst=0)
   >>> time.gmtime(cronJob.timeOfNextCall(10*60))
-  (1970, 1, 1, 1, 0, 0, 3, 1, 0)
+  time.struct_time(tm_year=1970, tm_mon=1, tm_mday=1, tm_hour=1, tm_min=0, tm_sec=0, tm_wday=3, tm_yday=1, tm_isdst=0)
 
 Hour
 
   >>> cronJob = CronJob(-1, u'echo', (), hour=(2, 13))
   >>> time.gmtime(cronJob.timeOfNextCall(0))
-  (1970, 1, 1, 2, 0, 0, 3, 1, 0)
+  time.struct_time(tm_year=1970, tm_mon=1, tm_mday=1, tm_hour=2, tm_min=0, tm_sec=0, tm_wday=3, tm_yday=1, tm_isdst=0)
   >>> time.gmtime(cronJob.timeOfNextCall(2*60*60))
-  (1970, 1, 1, 13, 0, 0, 3, 1, 0)
+  time.struct_time(tm_year=1970, tm_mon=1, tm_mday=1, tm_hour=13, tm_min=0, tm_sec=0, tm_wday=3, tm_yday=1, tm_isdst=0)
 
 Month
 
   >>> cronJob = CronJob(-1, u'echo', (), month=(1, 5, 12))
   >>> time.gmtime(cronJob.timeOfNextCall(0))
-  (1970, 5, 1, 0, 0, 0, 4, 121, 0)
+  time.struct_time(tm_year=1970, tm_mon=5, tm_mday=1, tm_hour=0, tm_min=0, tm_sec=0, tm_wday=4, tm_yday=121, tm_isdst=0)
   >>> time.gmtime(cronJob.timeOfNextCall(cronJob.timeOfNextCall(0)))
-  (1970, 12, 1, 0, 0, 0, 1, 335, 0)
+  time.struct_time(tm_year=1970, tm_mon=12, tm_mday=1, tm_hour=0, tm_min=0, tm_sec=0, tm_wday=1, tm_yday=335, tm_isdst=0)
 
 Day of week [0..6], jan 1 1970 is a wednesday.
 
   >>> cronJob = CronJob(-1, u'echo', (), dayOfWeek=(0, 2, 4, 5))
   >>> time.gmtime(cronJob.timeOfNextCall(0))
-  (1970, 1, 2, 0, 0, 0, 4, 2, 0)
+  time.struct_time(tm_year=1970, tm_mon=1, tm_mday=2, tm_hour=0, tm_min=0, tm_sec=0, tm_wday=4, tm_yday=2, tm_isdst=0)
   >>> time.gmtime(cronJob.timeOfNextCall(60*60*24))
-  (1970, 1, 3, 0, 0, 0, 5, 3, 0)
+  time.struct_time(tm_year=1970, tm_mon=1, tm_mday=3, tm_hour=0, tm_min=0, tm_sec=0, tm_wday=5, tm_yday=3, tm_isdst=0)
   >>> time.gmtime(cronJob.timeOfNextCall(2*60*60*24))
-  (1970, 1, 5, 0, 0, 0, 0, 5, 0)
+  time.struct_time(tm_year=1970, tm_mon=1, tm_mday=5, tm_hour=0, tm_min=0, tm_sec=0, tm_wday=0, tm_yday=5, tm_isdst=0)
   >>> time.gmtime(cronJob.timeOfNextCall(4*60*60*24))
-  (1970, 1, 7, 0, 0, 0, 2, 7, 0)
+  time.struct_time(tm_year=1970, tm_mon=1, tm_mday=7, tm_hour=0, tm_min=0, tm_sec=0, tm_wday=2, tm_yday=7, tm_isdst=0)
 
 DayOfMonth [1..31]
 
   >>> cronJob = CronJob(-1, u'echo', (), dayOfMonth=(1, 12, 21, 30))
   >>> time.gmtime(cronJob.timeOfNextCall(0))
-  (1970, 1, 12, 0, 0, 0, 0, 12, 0)
+  time.struct_time(tm_year=1970, tm_mon=1, tm_mday=12, tm_hour=0, tm_min=0, tm_sec=0, tm_wday=0, tm_yday=12, tm_isdst=0)
   >>> time.gmtime(cronJob.timeOfNextCall(12*24*60*60))
-  (1970, 1, 21, 0, 0, 0, 2, 21, 0)
+  time.struct_time(tm_year=1970, tm_mon=1, tm_mday=21, tm_hour=0, tm_min=0, tm_sec=0, tm_wday=2, tm_yday=21, tm_isdst=0)
 
 Combined
 
   >>> cronJob = CronJob(-1, u'echo', (), minute=(10,),
   ...                                 dayOfMonth=(1, 12, 21, 30))
   >>> time.gmtime(cronJob.timeOfNextCall(0))
-  (1970, 1, 1, 0, 10, 0, 3, 1, 0)
+  time.struct_time(tm_year=1970, tm_mon=1, tm_mday=1, tm_hour=0, tm_min=10, tm_sec=0, tm_wday=3, tm_yday=1, tm_isdst=0)
   >>> time.gmtime(cronJob.timeOfNextCall(10*60))
-  (1970, 1, 1, 1, 10, 0, 3, 1, 0)
+  time.struct_time(tm_year=1970, tm_mon=1, tm_mday=1, tm_hour=1, tm_min=10, tm_sec=0, tm_wday=3, tm_yday=1, tm_isdst=0)
 
   >>> cronJob = CronJob(-1, u'echo', (), minute=(10,),
   ...                                 hour=(4,),
   ...                                 dayOfMonth=(1, 12, 21, 30))
   >>> time.gmtime(cronJob.timeOfNextCall(0))
-  (1970, 1, 1, 4, 10, 0, 3, 1, 0)
+  time.struct_time(tm_year=1970, tm_mon=1, tm_mday=1, tm_hour=4, tm_min=10, tm_sec=0, tm_wday=3, tm_yday=1, tm_isdst=0)
   >>> time.gmtime(cronJob.timeOfNextCall(10*60))
-  (1970, 1, 1, 4, 10, 0, 3, 1, 0)
+  time.struct_time(tm_year=1970, tm_mon=1, tm_mday=1, tm_hour=4, tm_min=10, tm_sec=0, tm_wday=3, tm_yday=1, tm_isdst=0)
 
 
 A cron job can also be used to delay the execution of a job.
 
   >>> cronJob = CronJob(-1, u'echo', (), delay=10,)
   >>> time.gmtime(cronJob.timeOfNextCall(0))
-  (1970, 1, 1, 0, 0, 10, 3, 1, 0)
+  time.struct_time(tm_year=1970, tm_mon=1, tm_mday=1, tm_hour=0, tm_min=0, tm_sec=10, tm_wday=3, tm_yday=1, tm_isdst=0)
   >>> time.gmtime(cronJob.timeOfNextCall(1))
-  (1970, 1, 1, 0, 0, 11, 3, 1, 0)
+  time.struct_time(tm_year=1970, tm_mon=1, tm_mday=1, tm_hour=0, tm_min=0, tm_sec=11, tm_wday=3, tm_yday=1, tm_isdst=0)
 
 
 Creating Delayed Jobs
