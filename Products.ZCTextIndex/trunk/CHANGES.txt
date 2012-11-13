@@ -3,7 +3,9 @@ Changelog
 
 2.13.4 (unreleased)
 -------------------
-
+- Fixed problem where the index was not reindexed if the new value was an empty value
+  leading to inconsistence between the object attribute (that is empty) and the index
+  that still contains the old indexed value [gauthier.bastien]
 
 2.13.3 (2011-07-28)
 -------------------

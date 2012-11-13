@@ -176,6 +176,37 @@ class ZCIndexTestsBase:
         nbest, total = zc_index.query('Tuesday Tim York')
         self.assertEqual(len(nbest), 0)
 
+    def testReindex(self):
+        lexicon = PLexicon('lexicon', '',
+                            Splitter(),
+                            CaseNormalizer(),
+                            StopWordRemover())
+        caller = LexiconHolder(self.lexicon)
+        zc_index = ZCTextIndex('name',
+                                None,
+                                caller,
+                                self.IndexFactory,
+                               'text',
+                               'lexicon')
+        doc = Indexable('Hello Tim')
+        zc_index.index_object(1, doc)
+        nbest, total = zc_index.query('glorious')
+        self.assertEqual(len(nbest), 0)
+        nbest, total = zc_index.query('Tim')
+        self.assertEqual(len(nbest), 1)
+        # reindex with another value
+        doc.text = 'Goodbye George'
+        zc_index.index_object(1, doc)
+        nbest, total = zc_index.query('Tim')
+        self.assertEqual(len(nbest), 0)
+        nbest, total = zc_index.query('Goodbye')
+        self.assertEqual(len(nbest), 1)
+        # reindex with an empty value
+        doc.text = ''
+        zc_index.index_object(1, doc)
+        nbest, total = zc_index.query('George')
+        self.assertEqual(len(nbest), 0)
+
     def testStopWords(self):
         # the only non-stopword is question
         text = ("to be or not to be "
