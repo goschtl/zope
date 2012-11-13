@@ -23,20 +23,23 @@ of a Grok-based web application.
 """
 
 import martian
+import grokcore.view
 import grokcore.traverser
 import grokcore.component
 
 from zope.publisher.interfaces.http import IHTTPRequest
 from zope.publisher.interfaces.browser import IBrowserPublisher
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 
 class TraverserGrokker(martian.ClassGrokker):
     """Grokker for subclasses of `grok.Traverser`."""
     martian.component(grokcore.traverser.Traverser)
     martian.directive(grokcore.component.context)
+    martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
 
-    def execute(self, factory, config, context, **kw):
-        adapts = (context, IHTTPRequest)
+    def execute(self, factory, config, context, layer, **kw):
+        adapts = (context, layer)
         config.action(
             discriminator=('adapter', adapts, IBrowserPublisher, ''),
             callable=grokcore.component.provideAdapter,
