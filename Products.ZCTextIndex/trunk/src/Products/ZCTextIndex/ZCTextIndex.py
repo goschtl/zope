@@ -176,6 +176,7 @@ class ZCTextIndex(Persistent, Implicit, SimpleItem):
         try: fields = self._indexed_attrs
         except: fields  = [ self._fieldname ]
 
+        res = 0
         all_texts = []
         for attr in fields:
             text = getattr(obj, attr, None)
@@ -194,7 +195,9 @@ class ZCTextIndex(Persistent, Implicit, SimpleItem):
         # Check that we're sending only strings
         all_texts = filter(lambda text: isinstance(text, basestring), \
                            all_texts)
-        return self.index.index_doc(documentId, all_texts)
+        if all_texts or self.index.length():
+            return self.index.index_doc(documentId, all_texts)
+        return res
 
     def unindex_object(self, docid):
         if self.index.has_doc(docid):
