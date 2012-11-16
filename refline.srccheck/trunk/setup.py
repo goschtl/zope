@@ -26,7 +26,7 @@ setup(
     url="http://pypi.python.org/pypi/refline.srccheck/",
     install_requires=[
         'setuptools',
-        'pyflakes == 0.4.0',  # pyflakes 0.5.0 does not like python 2.6's AST
+        'pyflakes', 
         'polib',
         'cssutils',
     ],

@@ -8,6 +8,7 @@ Implementation of the command-line I{pyflakes} tool.
 
 import compiler, sys
 import os
+import _ast
 
 checker = __import__('pyflakes.checker').checker
 
@@ -61,7 +62,7 @@ def check(codeString, filename):
     else:
         # Okay, it's syntactically valid.  Now parse it into an ast and check
         # it.
-        tree = compiler.parse(codeString)
+        tree = compile(codeString, filename, "exec", _ast.PyCF_ONLY_AST)
         w = checker.Checker(tree, filename)
         w.messages.sort(lambda a, b: cmp(a.lineno, b.lineno))
         return w.messages
