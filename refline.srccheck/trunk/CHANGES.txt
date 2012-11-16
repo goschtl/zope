@@ -1,10 +1,10 @@
 CHANGES
 =======
 
-0.5.4 (unreleased)
+0.5.4 (2012-11-16)
 ------------------
 
-- Nothing changed yet.
+- Support pyflakes 0.5.0
 
 
 0.5.3 (2012-04-04)
