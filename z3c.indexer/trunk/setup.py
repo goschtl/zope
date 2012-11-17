@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.indexer',
-    version='0.6.1dev',
+    version='0.6.1',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope-dev@zope.org",
     description = "A new way to index objects for Zope3",
