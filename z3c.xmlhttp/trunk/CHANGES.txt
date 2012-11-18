@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.5.1 (unreleased)
+0.5.1 (2012-11-19)
 ------------------
 
 - cleanup msxml2 setup. See comments about the correct MSXML2.XMLHTTP usage at
