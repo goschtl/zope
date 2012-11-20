@@ -14,17 +14,36 @@
 """Grok utility functions.
 """
 import urllib
+import urlparse
 from grokcore.security.util import check_permission
 from zope.component import getMultiAdapter
 from zope.security.checker import NamesChecker, defineChecker
 from zope.traversing.browser.absoluteurl import _safe as SAFE_URL_CHARACTERS
 from zope.traversing.browser.interfaces import IAbsoluteURL
 
+import directive
 
-def url(request, obj, name=None, data=None):
+ASIS = object()
+
+def url(request, obj, name=None, skin=ASIS, data=None):
     url = getMultiAdapter((obj, request), IAbsoluteURL)()
     if name is not None:
         url += '/' + urllib.quote(name.encode('utf-8'), SAFE_URL_CHARACTERS)
+
+    if skin is not ASIS:
+        # Remove whatever ``++skin++[name]`` is active.
+        parts = list(urlparse.urlparse(url))
+        path = parts[2]
+        if path.startswith('/++skin++'):
+            # Find next / in the path.
+            idx = path.find('/', 1)
+            path = path[idx:]
+        if skin is not None:
+            # If a skin is set, add ``++skin++`` as the leading path segment.
+            name = directive.skin.bind().get(skin)
+            path = '/++skin++%s%s' % (name, path)
+        parts[2] = path
+        url = urlparse.urlunparse(parts)
 
     if not data:
         return url

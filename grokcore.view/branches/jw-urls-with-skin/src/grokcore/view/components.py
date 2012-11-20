@@ -78,7 +78,7 @@ class ViewSupport(object):
         return self.request.response.redirect(
             url, status=status, trusted=trusted)
 
-    def url(self, obj=None, name=None, data=None):
+    def url(self, obj=None, name=None, skin=util.ASIS, data=None):
         """Return string for the URL based on the obj and name.
 
         If no arguments given, construct URL to view itself.
@@ -90,6 +90,16 @@ class ViewSupport(object):
 
         If both object and name arguments are supplied, construct URL
         to `obj/name`.
+
+        Optionally pass a `skin` keyword argument. This should be a
+        skin component and the skin's name is taken from this
+        component. The effect of this argument is a leading
+        ``++skin++[skinname]/`` segment in the path-part of the URL.
+        When the argument is not passed, whatever skin is currently set
+        on the request will be effective in the URL.
+
+        When passing ``None`` whatever skin is currently effective will
+        be removed from the URLs.
 
         Optionally pass a `data` keyword argument which gets added to
         the URL as a CGI query string.
@@ -110,7 +120,7 @@ class ViewSupport(object):
             # create URL to view on context
             obj = self.context
 
-        return util.url(self.request, obj, name, data)
+        return util.url(self.request, obj, name, skin, data)
 
 
 class View(ViewSupport, BrowserPage):

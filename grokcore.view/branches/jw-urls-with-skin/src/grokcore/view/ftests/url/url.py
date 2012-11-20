@@ -171,6 +171,45 @@ Zope magic!! Here we test casting parameters in the CGI query string:
   >>> browser.contents
   '11'
 
+It is possible to compute URLs for specific skin names.
+
+First show how a view registered for a view, will by default compute URLs
+for that skin:
+
+  >>> browser.open('http://127.0.0.1/++skin++urltesting/herd/manfred/@@test')
+  >>> browser.contents
+  "I'm on a url testing skin:
+  http://127.0.0.1/++skin++urltesting/herd/manfred/test"
+
+We get the views manually so we can do a greater variety of url() calls:
+
+  >>> from zope.publisher.browser import applySkin
+  >>> request = TestRequest()
+  >>> applySkin(request, URLTestingSkin)
+  >>> # Shifting names normally happens during URL traversal.
+  >>> request._traversed_names = ['++skin++urltesting']
+  >>> request.shiftNameToApplication()
+  >>> index_view = component.getMultiAdapter((manfred, request), name='test')
+  >>> index_view.url()
+  'http://127.0.0.1/++skin++urltesting/herd/manfred/test'
+
+Explicitely remove the skin part:
+
+  >>> index_view.url(skin=None)
+  'http://127.0.0.1/herd/manfred/test'
+
+Use another skin:
+
+  >>> index_view.url(skin=AnotherURLTestingSkin)
+  'http://127.0.0.1/++skin++anotherurltesting/herd/manfred/test'
+
+Use something that is not a skin will fail:
+
+  >>> index_view.url(skin='foobar')
+  Traceback (most recent call last):
+  ...
+  AttributeError: 'str' object has no attribute 'queryTaggedValue'
+
 """
 import grokcore.view as grok
 from zope.container.contained import Contained
@@ -199,3 +238,16 @@ class Multiplier(grok.View):
         return unicode(self.age * 2)
 
 yetanother = grok.PageTemplate('<p tal:replace="view/url" />')
+
+class URLTestingSkin(grok.IBrowserRequest):
+    grok.skin('urltesting')
+
+class AnotherURLTestingSkin(grok.IBrowserRequest):
+    grok.skin('anotherurltesting')
+
+class URLTestingViewOnASkin(grok.View):
+    grok.layer(URLTestingSkin)
+    grok.name('test')
+
+    def render(self):
+        return u"I'm on a url testing skin: %s" % self.url()
